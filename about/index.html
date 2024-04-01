@@ -367,6 +367,10 @@ function switchNightMode(){
           adDiv.parentNode.removeChild(adDiv);  
           console.log('广告div已被删除。');  
           clearTimeout(timerId); 
+          var ctrmDiv = document.getElementById('ctrm_');  
+          if (ctrmDiv) {  
+              ctrmDiv.style.display = 'none';  
+          }  
       } else {  
           
           if (Date.now() - startTime > TIMEOUT) {  
