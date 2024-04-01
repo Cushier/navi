@@ -353,6 +353,41 @@ function switchNightMode(){
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
 <script src="https://topurl.cn/chat.js" async="async" fold></script>
+<script>  
+  
+  const TIMEOUT = 10000; 
+  let startTime = Date.now();  
+  let timerId = null; 
+    
+  
+  function checkAndRemoveAd() {  
+      const adDiv = document.querySelector('.ctrm-domain');  
+      if (adDiv) {  
+          
+          adDiv.parentNode.removeChild(adDiv);  
+          console.log('广告div已被删除。');  
+          clearTimeout(timerId); 
+      } else {  
+          
+          if (Date.now() - startTime > TIMEOUT) {  
+              
+              console.log('未找到广告div或已超时，停止轮询。');  
+              clearTimeout(timerId); 
+          } else {  
+              
+              console.log('广告div尚未找到，稍后再试...');  
+              
+              timerId = setTimeout(checkAndRemoveAd, 500);  
+          }  
+      }  
+  }  
+    
+  
+  document.addEventListener('DOMContentLoaded', (event) => {  
+      
+      timerId = setTimeout(checkAndRemoveAd, 500);  
+  });  
+  </script>
 </body>
 </html>
 
