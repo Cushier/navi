@@ -358,6 +358,7 @@ function switchNightMode(){
   const TIMEOUT = 10000; 
   let startTime = Date.now();  
   let timerId = null; 
+  let timerId2 = null;
   let keywords = ['小姐姐']; 
 
   
@@ -386,6 +387,7 @@ function switchNightMode(){
           if (chatWindow.is(':visible')) {  
               chatWindow.hide(); 
               chatToggle.attr('data-original-title', '在线聊天').tooltip('close').tooltip('fixTitle'); 
+              
           } else {  
               chatWindow.show(); 
               chatToggle.attr('data-original-title', '关闭聊天').tooltip('close').tooltip('fixTitle'); 
@@ -411,7 +413,7 @@ function switchNightMode(){
               
               console.log('广告div尚未找到，稍后再试...');  
               
-              timerId = setTimeout(checkAndRemoveAd, 500);  
+              timerId = setTimeout(checkAndRemoveAd, 100);  
           }  
       }  
   }  
@@ -419,7 +421,7 @@ function switchNightMode(){
   
   document.addEventListener('DOMContentLoaded', (event) => {  
       
-      timerId = setTimeout(checkAndRemoveAd, 500);  
+      timerId = setTimeout(checkAndRemoveAd, 150);  
 
 
       
@@ -452,7 +454,7 @@ function switchNightMode(){
       }  
 
       
-      setInterval(checkAndRemoveBadContent, 500);  
+      timerId2=setInterval(checkAndRemoveBadContent, 500);  
 
   });  
   </script>
