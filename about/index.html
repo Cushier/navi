@@ -352,7 +352,7 @@ function switchNightMode(){
 
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-<script src="https://topurl.cn/chat.js" async="async" fold></script>
+<script async src='https://topurl.cn/chat.js' fold></script>
 <script>  
   
   const TIMEOUT = 10000; 
@@ -364,14 +364,15 @@ function switchNightMode(){
       const adDiv = document.querySelector('.ctrm-domain');  
       if (adDiv) {  
           
-          var ctrmDiv = document.getElementById('ctrm_');  
-          if (ctrmDiv) {  
-              ctrmDiv.style.display = 'none';  
-          }  
+          
+          
+          
+          
           
           adDiv.parentNode.removeChild(adDiv);  
           console.log('广告div已被删除。');  
           clearTimeout(timerId); 
+          test();
       } else {  
           
           if (Date.now() - startTime > TIMEOUT) {  
@@ -386,11 +387,45 @@ function switchNightMode(){
           }  
       }  
   }  
-    
+
   
   document.addEventListener('DOMContentLoaded', (event) => {  
       
       timerId = setTimeout(checkAndRemoveAd, 500);  
+
+
+      
+      function checkAndRemoveBadContent() {  
+          
+          var domainItems = document.querySelectorAll('.ctrm-domain-item');  
+            
+          
+          var keywords = ['小姐姐'];  
+          domainItems.forEach(function(item) {  
+              
+              var keyword = item.textContent.trim();  
+              keywords.push(new RegExp(keyword, 'i')); 
+          });  
+            
+          
+          var dialogItems = document.querySelectorAll('.ctrm-dialog-item');  
+            
+          
+          dialogItems.forEach(function(item) {  
+              
+              keywords.forEach(function(keyword) {  
+                  
+                  if (item.textContent.match(keyword)) {  
+                      item.parentNode.removeChild(item);  
+                      return; 
+                  }  
+              });  
+          });  
+      }  
+
+      
+      setInterval(checkAndRemoveBadContent, 500);  
+
   });  
   </script>
 </body>
