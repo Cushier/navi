@@ -381,7 +381,8 @@ function switchNightMode(){
 
 
           
-          adDiv.parentNode.removeChild(adDiv);  
+          
+          adDiv.style.display = 'none'; 
           console.log('广告div已被删除。');  
           clearTimeout(timerId); 
       } else {  
