@@ -1998,16 +1998,6 @@ function switchNightMode(){
           
 
           
-          var domainItems = document.querySelectorAll('.ctrm-domain-item');  
-            
-          domainItems.forEach(function(item) {  
-              
-              var keyword = item.textContent.trim();  
-              keywords.push(new RegExp(keyword, 'i')); 
-          });  
-
-
-          
           
           adDiv.style.display = 'none'; 
           console.log('广告div已被删除。');  
@@ -2036,6 +2026,15 @@ function switchNightMode(){
       
       function checkAndRemoveBadContent() {  
             
+          
+          var domainItems = document.querySelectorAll('.ctrm-domain-item');  
+            
+          domainItems.forEach(function(item) {  
+              
+              var keyword = item.textContent.trim();  
+              keywords.push(new RegExp(keyword, 'i')); 
+          });  
+
           
           var dialogItems = document.querySelectorAll('.ctrm-dialog-item');  
             
