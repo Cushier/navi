@@ -1985,7 +1985,8 @@ function switchNightMode(){
   const TIMEOUT = 10000; 
   let startTime = Date.now();  
   let timerId = null; 
-    
+  let keywords = ['小姐姐']; 
+
   
   function checkAndRemoveAd() {  
       const adDiv = document.querySelector('.ctrm-domain');  
@@ -1995,6 +1996,17 @@ function switchNightMode(){
           
           
           
+
+          
+          var domainItems = document.querySelectorAll('.ctrm-domain-item');  
+            
+          domainItems.forEach(function(item) {  
+              
+              var keyword = item.textContent.trim();  
+              keywords.push(new RegExp(keyword, 'i')); 
+          });  
+
+
           
           adDiv.parentNode.removeChild(adDiv);  
           console.log('广告div已被删除。');  
@@ -2022,16 +2034,6 @@ function switchNightMode(){
 
       
       function checkAndRemoveBadContent() {  
-          
-          var domainItems = document.querySelectorAll('.ctrm-domain-item');  
-            
-          
-          var keywords = ['小姐姐'];  
-          domainItems.forEach(function(item) {  
-              
-              var keyword = item.textContent.trim();  
-              keywords.push(new RegExp(keyword, 'i')); 
-          });  
             
           
           var dialogItems = document.querySelectorAll('.ctrm-dialog-item');  
