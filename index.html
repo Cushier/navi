@@ -2143,7 +2143,8 @@ function switchNightMode(){
               keywords.forEach(function(keyword) {  
                   
                   if (item.textContent.match(keyword)) {  
-                      item.parentNode.removeChild(item);  
+                      item.querySelector('.ctrm-dialog-bubble').textContent = "好好学习，天天向上";
+                      
                       return; 
                   }  
               });  
