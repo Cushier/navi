@@ -1780,7 +1780,7 @@
                     rel="search" one-link-mark="yes">
                     <i class="iconfont icon-search"></i>
                 </a>
-                <a href="#" class="btn rounded-circle kefu m-1" data-toggle="tooltip" data-placement="left" data-original-title="在线聊天" id="chat-toggle">
+                <a href="#" class="btn rounded-circle kefu m-1" target="_blank" data-toggle="tooltip" data-placement="left" data-original-title="联系我们">
                     <i class="mode-ico iconfont icon-wechat"></i>
                 </a>
                 
@@ -2078,112 +2078,8 @@ function switchNightMode(){
 
 <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
 
-<script async src='https://topurl.cn/chat.js' fold></script>
-<script>  
-  
-  const TIMEOUT = 10000; 
-  let startTime = Date.now();  
-  let timerId = null; 
-  let timerId2 = null;
-  let keywords = ['小姐姐']; 
-
-  
-  function checkAndRemoveAd() {  
-      const adDiv = document.querySelector('.ctrm-domain');  
-      if (adDiv) {  
-          
-          var ctrmDiv = document.getElementById('ctrm_');  
-          if (ctrmDiv) {  
-              ctrmDiv.style.display = 'none';  
-          }  
 
 
-      
-      var chatToggle = $('#chat-toggle');  
-      chatToggle.tooltip({  
-          title: '在线聊天', 
-          placement: 'auto' 
-      });  
-    
-      chatToggle.on('click', function(e) {  
-          e.preventDefault(); 
-          var chatWindow = $('#ctrm_'); 
-    
-          
-          if (chatWindow.is(':visible')) {  
-              chatWindow.hide(); 
-              chatToggle.attr('data-original-title', '在线聊天').tooltip('close').tooltip('fixTitle'); 
-              
-          } else {  
-              chatWindow.show(); 
-              chatToggle.attr('data-original-title', '关闭聊天').tooltip('close').tooltip('fixTitle'); 
-          }  
-    
-          
-          chatToggle.tooltip('show');  
-      });  
-
-
-          
-          
-          adDiv.style.display = 'none'; 
-          console.log('广告div已被删除。');  
-          clearTimeout(timerId); 
-      } else {  
-          
-          if (Date.now() - startTime > TIMEOUT) {  
-              
-              console.log('未找到广告div或已超时，停止轮询。');  
-              clearTimeout(timerId); 
-          } else {  
-              
-              console.log('广告div尚未找到，稍后再试...');  
-              
-              timerId = setTimeout(checkAndRemoveAd, 100);  
-          }  
-      }  
-  }  
-
-  
-  document.addEventListener('DOMContentLoaded', (event) => {  
-      
-      timerId = setTimeout(checkAndRemoveAd, 200);  
-
-
-      
-      function checkAndRemoveBadContent() {  
-            
-          
-          var domainItems = document.querySelectorAll('.ctrm-domain-item');  
-            
-          domainItems.forEach(function(item) {  
-              
-              var keyword = item.textContent.trim();  
-              keywords.push(new RegExp(keyword, 'i')); 
-          });  
-
-          
-          var dialogItems = document.querySelectorAll('.ctrm-dialog-item');  
-            
-          
-          dialogItems.forEach(function(item) {  
-              
-              keywords.forEach(function(keyword) {  
-                  
-                  if (item.textContent.match(keyword)) {  
-                      item.querySelector('.ctrm-dialog-bubble').textContent = "好好学习，天天向上";
-                      
-                      return; 
-                  }  
-              });  
-          });  
-      }  
-
-      
-      timerId2=setInterval(checkAndRemoveBadContent, 500);  
-
-  });  
-  </script>
 </body>
 </html>
 

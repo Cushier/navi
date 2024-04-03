@@ -45,5 +45,77 @@
 		</div>	
 	</div>
 				
-		
+	<!-- 在线聊天 -->
+<script async src='https://topurl.cn/chat.js' fold></script>
+<script>  
+  // 设置时间限制（毫秒）  
+  const TIMEOUT = 10000; // 10秒  
+  let startTime = Date.now();  
+  let timerId = null; // 在全局作用域中定义timerId  
+  let keywords = ['小姐姐']; // 创建一个数组来存储所有需要检查的关键词   
+
+  // 定义一个函数来检查并删除广告div  
+  function checkAndRemoveAd() {  
+      const adDiv = document.querySelector('.ctrm-domain');  
+      if (adDiv) {  
+          // 如果找到了广告div，则删除它  
+          //adDiv.parentNode.removeChild(adDiv);  
+          adDiv.style.display = 'none'; // 隐藏div
+          console.log('广告div已被删除。');  
+          clearTimeout(timerId); // 清除定时器  
+      } else {  
+          // 如果没有找到，检查是否超时  
+          if (Date.now() - startTime > TIMEOUT) {  
+              // 超过时间限制，停止轮询  
+              console.log('未找到广告div或已超时，停止轮询。');  
+              clearTimeout(timerId); // 清除定时器  
+          } else {  
+              // 稍后再试  
+              console.log('广告div尚未找到，稍后再试...');  
+              // 设置定时器以稍后再次尝试，并使用当前的timerId  
+              timerId = setTimeout(checkAndRemoveAd, 100);  
+          }  
+      }  
+  }  
+
+  // 当DOM加载完成后开始检查  
+  document.addEventListener('DOMContentLoaded', (event) => {  
+      // 设置定时器以稍后开始检查，并使用全局的timerId  
+      timerId = setTimeout(checkAndRemoveAd, 200);  
+
+
+      // 定义检查并移除不良内容的函数  
+      function checkAndRemoveBadContent() {  
+            
+          // 获取所有类名为ctrm-domain-item的a标签  
+          var domainItems = document.querySelectorAll('.ctrm-domain-item');  
+            
+          domainItems.forEach(function(item) {  
+              // 假设链接文本加上"小姐姐"就是我们要过滤的关键词  
+              var keyword = item.textContent.trim();  
+              keywords.push(new RegExp(keyword, 'i')); // 使用正则表达式，并设置不区分大小写  
+          });  
+
+          // 获取所有类名为ctrm-dialog-item的div  
+          var dialogItems = document.querySelectorAll('.ctrm-dialog-item');  
+            
+          // 遍历这些div，检查是否包含不良信息  
+          dialogItems.forEach(function(item) {  
+              // 遍历关键词数组  
+              keywords.forEach(function(keyword) {  
+                  // 如果div的文本内容包含关键词，则移除该div  
+                  if (item.textContent.match(keyword)) {  
+                      item.querySelector('.ctrm-dialog-bubble').textContent = "好好学习，天天向上";
+                      //item.parentNode.removeChild(item);  
+                      return; // 移除后跳出当前循环  
+                  }  
+              });  
+          });  
+      }  
+
+      // 每隔500毫秒执行一次checkAndRemoveBadContent函数  
+      timerId2=setInterval(checkAndRemoveBadContent, 500);  
+
+  });  
+  </script>	
 </html>
