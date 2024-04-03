@@ -350,7 +350,27 @@ function switchNightMode(){
 }
 </script>
 
-<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+<script>
+    
+    window.addEventListener('DOMContentLoaded', function() {
+        
+        if (shouldLoadBusuanziScript()) {
+            const script = document.createElement('script');
+            script.src = "https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js";
+            script.async = true;
+            document.head.appendChild(script);
+        }
+    });
+    
+    function shouldLoadBusuanziScript() {
+        
+        
+        return true; 
+    }
+</script>
 
 
 
