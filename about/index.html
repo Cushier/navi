@@ -26,6 +26,8 @@
     <link rel="stylesheet" id="custom-css" href="/assets/css/custom-style.css"
         type="text/css" media="all" />
     <link rel="stylesheet" id="fortawesome-css" href="/assets/fontawesome-5.15.4/css/all.min.css" type="text/css" />
+    <link rel="preload" as="image" href="assets/images/bg-bai.jpg" id="preload-light-bg">
+    <link rel="preload" as="image" href="assets/images/bg-hei.jpg" id="preload-dark-bg">
     <script type="text/javascript" src="/assets/js/jquery.min-3.2.1.js" id="jquery-js"></script>
     <script type="text/javascript" src="/assets/js/content-search.js"  id="content-search-js"></script>
     
@@ -327,8 +329,10 @@ var theme = {"ajaxurl":"","addico":"https:\/\/nav.baidu.cn\/wp-content\/themes\/
 $("#search-bg").css("background-image", "url(assets\/images\/bg-bai.jpg)");   
 function switchNightMode(){
     var night = document.cookie.replace(/(?:(?:^|.*;\s*)night\s*\=\s*([^;]*).*$)|^.*$/, "$1") || '0';
+    var lightBg = $('#preload-light-bg')[0].src;
+    var darkBg = $('#preload-dark-bg')[0].src;
     if(night == '0'){
-	$("#search-bg").css("background-image", "url(assets\/images\/bg-bai.jpg)");
+	$("#search-bg").css("background-image", "url('" + lightBg + "')");
         document.body.classList.remove('io-grey-mode');
         document.body.classList.add('io-black-mode');
         document.cookie = "night=1;path=/"
@@ -336,7 +340,7 @@ function switchNightMode(){
         $(".mode-ico").removeClass("icon-night");
         $(".mode-ico").addClass("icon-light");
     }else{
-	$("#search-bg").css("background-image", "url(assets\/images\/bg-hei.jpg)")
+	$("#search-bg").css("background-image", "url('" + darkBg + "')")
         document.body.classList.remove('io-black-mode');
         document.body.classList.add('io-grey-mode');
         document.cookie = "night=0;path=/"
