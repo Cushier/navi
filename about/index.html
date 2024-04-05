@@ -95,14 +95,14 @@
                             <div id="he-plugin-simple" style="display: contents;"></div>
                             <script>
                                 WIDGET = {
-                                  "CONFIG": {
+                                "CONFIG": {
                                     "modules": "01234",
                                     "background": "5",
-                                    "tmpColor": "E4C600",
+                                    "tmpColor": "87CFEB",
                                     "tmpSize": "14",
-                                    "cityColor": "E4C600",
+                                    "cityColor": "87CFEB",
                                     "citySize": "14",
-                                    "aqiColor": "E4C600",
+                                    "aqiColor": "87CFEB",
                                     "aqiSize": "14",
                                     "weatherIconSize": "24",
                                     "alertIconSize": "18",
@@ -113,9 +113,8 @@
                                     "fixed": "false",
                                     "vertical": "center",
                                     "horizontal": "left",
-                                    "city": "CN101240701",
-                                    "key": "17d63006bd2944f69bb7bd3ccbcb9242"
-                                  }
+                                    "key": "4340e273db9c43358abbe2e4be97a30c"
+                                }
                                 }
                                 </script>
                                 <script src="https://widget.qweather.net/simple/static/js/he-simple-common.js?v=2.0"></script>
@@ -325,11 +324,11 @@ var theme = {"ajaxurl":"","addico":"https:\/\/nav.baidu.cn\/wp-content\/themes\/
     }
 })();
 
-$("#search-bg").css("background-image", "url(assets\/images\/bg-dna.jpg)");   
+$("#search-bg").css("background-image", "url(assets\/images\/bg-bai.jpg)");   
 function switchNightMode(){
     var night = document.cookie.replace(/(?:(?:^|.*;\s*)night\s*\=\s*([^;]*).*$)|^.*$/, "$1") || '0';
     if(night == '0'){
-	$("#search-bg").css("background-image", "url(assets\/images\/bg-dna.jpg)");
+	$("#search-bg").css("background-image", "url(assets\/images\/bg-bai.jpg)");
         document.body.classList.remove('io-grey-mode');
         document.body.classList.add('io-black-mode');
         document.cookie = "night=1;path=/"
@@ -338,7 +337,7 @@ function switchNightMode(){
         $(".mode-ico").removeClass("icon-night");
         $(".mode-ico").addClass("icon-light");
     }else{
-	$("#search-bg").css("background-image", "url(assets\/images\/bg-dna.jpg)")
+	$("#search-bg").css("background-image", "url(assets\/images\/bg-hei.jpg)")
         document.body.classList.remove('io-black-mode');
         document.body.classList.add('io-grey-mode');
         document.cookie = "night=0;path=/"
