@@ -199,24 +199,24 @@
     });
 
     //夜间模式
-    $(document).on('click', '.switch-dark-mode', function(event) {
-        event.preventDefault();
-        $.ajax({
-            url: theme.ajaxurl,
-            type: 'POST',
-            dataType: 'html',
-            data: {
-                mode_toggle: $('body').hasClass('io-black-mode') === true ? 1 : 0,
-                action: 'switch_dark_mode',
-            },
-        })
-        .done(function(response) {
-            $('body').toggleClass('io-black-mode '+theme.defaultclass);
-            switch_mode(); 
-            $("#"+ $('.switch-dark-mode').attr('aria-describedby')).remove();
-            //$('.switch-dark-mode').removeAttr('aria-describedby');
-        })
-    });
+    // $(document).on('click', '.switch-dark-mode', function(event) {
+    //     event.preventDefault();
+    //     $.ajax({
+    //         url: theme.ajaxurl,
+    //         type: 'POST',
+    //         dataType: 'html',
+    //         data: {
+    //             mode_toggle: $('body').hasClass('io-black-mode') === true ? 1 : 0,
+    //             action: 'switch_dark_mode',
+    //         },
+    //     })
+    //     .done(function(response) {
+    //         $('body').toggleClass('io-black-mode '+theme.defaultclass);
+    //         switch_mode(); 
+    //         $("#"+ $('.switch-dark-mode').attr('aria-describedby')).remove();
+    //         //$('.switch-dark-mode').removeAttr('aria-describedby');
+    //     })
+    // });
     function switch_mode(){
         if($('body').hasClass('io-black-mode')){
             if($(".switch-dark-mode").attr("data-original-title"))
