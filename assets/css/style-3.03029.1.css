@@ -881,7 +881,7 @@ input.nav-link:disabled,input.nav-link[readonly]{background-color:transparent;op
 #tougaocategorg{padding-left:8px}
 .slider_menu[sliderTab]{position:relative;display:inline-block}
 .slider_menu[sliderTab]>.menu{position:relative;white-space:nowrap;margin:0;text-align:center;display:inline-block;background:rgba(0,0,0,.1);border-radius:100px;padding:5px}
-.slider_menu[sliderTab] .anchor{background:#f1404b;border-radius:100px;width:60px;height:40px;opacity:0;-webkit-transition:.25s;transition:.25s}
+.slider_menu[sliderTab] .anchor{background:#515c6b;border-radius:100px;width:60px;height:40px;opacity:0;-webkit-transition:.25s;transition:.25s}
 .slider_menu[sliderTab]>.menu>li{display:inline-block;cursor:pointer}
 .slider_menu[sliderTab]>.menu>li{display:inline-block;cursor:pointer}
 .slider_menu[sliderTab]>.menu>li.next,.slider_menu[sliderTab]>.menu>li.prev,.slider_menu[sliderTab]>.menu>li>.sub-menu{display:none}
