@@ -201,17 +201,27 @@
     //夜间模式
     $(document).on('click', '.switch-dark-mode', function(event) {
         event.preventDefault();
+    
+        // 先执行切换背景图操作
+        const isDarkModeActive = $('body').hasClass('io-black-mode');
+        $('body').toggleClass('io-black-mode '+theme.defaultclass);
+    
         $.ajax({
             url: theme.ajaxurl,
             type: 'POST',
             dataType: 'html',
             data: {
-                mode_toggle: $('body').hasClass('io-black-mode') === true ? 1 : 0,
+                mode_toggle: isDarkModeActive ? 1 : 0,
                 action: 'switch_dark_mode',
             },
         })
         .done(function(response) {
-            $('body').toggleClass('io-black-mode '+theme.defaultclass);
+            // 根据服务器响应判断是否需要回滚背景图更改
+            const shouldRollback = /* 解析响应数据，确定是否需要回滚 */ false;
+            if (shouldRollback) {
+                $('body').toggleClass('io-black-mode '+theme.defaultclass, !isDarkModeActive);
+            }
+    
             switch_mode(); 
             $("#"+ $('.switch-dark-mode').attr('aria-describedby')).remove();
             //$('.switch-dark-mode').removeAttr('aria-describedby');
