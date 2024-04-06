@@ -2084,10 +2084,78 @@ function switchNightMode(){
         
         return true; 
     }
+
+
+(function() {
+    var a_idx = 0;
+    var heartPool = []; 
+    window.onclick = function(event) {
+        if (heartPool.length === 0) { 
+            var heart = document.createElement("b");
+            heart.onselectstart = function() { return false; }; 
+            document.body.appendChild(heart);
+            heartPool.push(heart); 
+        }
+
+        var heart = heartPool.shift(); 
+        heart.innerHTML = ["❤富强❤", "❤民主❤", "❤文明❤", "❤和谐❤", "❤自由❤", "❤平等❤", "❤公正❤", "❤法治❤", "❤爱国❤",
+            "❤敬业❤", "❤诚信❤", "❤友善❤"][a_idx % 12]; 
+        a_idx = (a_idx + 1) % 12; 
+
+        var initialStyle = "position: fixed;";
+        heart.style.cssText = initialStyle + "left:-100%;"; 
+
+        var animationConfig = {
+            fontSize: 8, 
+            initialOpacity: 1, 
+            scale: 1.2, 
+            step: 0.016, 
+            isAnimating: true,
+        };
+
+        var x = event.clientX - animationConfig.fontSize / 2, 
+            y = event.clientY - animationConfig.fontSize; 
+        var c = randomColor(); 
+
+        var timer = requestAnimationFrame(function animateHeart() {
+            if (animationConfig.initialOpacity <= 0) {
+                animationConfig.isAnimating = false;
+            } else {
+                var styleText = `font-size:${animationConfig.fontSize}px;` +
+                    `cursor: default;` +
+                    `position: fixed;` +
+                    `color:${c};` +
+                    `left:${x}px;` +
+                    `top:${y}px;` +
+                    `opacity:${animationConfig.initialOpacity - animationConfig.step};` +
+                    `transform:scale(${animationConfig.scale + animationConfig.step});`;
+                heart.style.cssText = styleText;
+                y--;
+                animationConfig.initialOpacity -= animationConfig.step;
+                animationConfig.scale += animationConfig.step;
+                requestAnimationFrame(animateHeart);
+            }
+
+            if (!animationConfig.isAnimating && !document.contains(heart)) {
+                heartPool.push(heart); 
+            }
+        });
+    }
+
+    
+    function randomColor() {
+        return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+    }
+})();
+
+
+
 </script>
 
 
 
+
+  
 </body>
 </html>
 
