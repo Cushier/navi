@@ -633,24 +633,6 @@
     
     <div class="bg-overlay"></div>
 </div>
-<style>
-
- 
-#search-bg {
-    position: relative;
-    background-size: cover;
-}
-
-#search-bg::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-}
-</style>
 
 
 <div id="content" class="content-site customize-site">
@@ -2032,7 +2014,7 @@ $("#search-bg").css("background-image", "url(assets\/images\/bg-bai.jpg)");
 function switchNightMode(){
     var night = document.cookie.replace(/(?:(?:^|.*;\s*)night\s*\=\s*([^;]*).*$)|^.*$/, "$1") || '0';
     if(night == '0'){
-	$("#search-bg").css("background-image", "url(assets\/images\/bg-bai.jpg)");
+	    $("#search-bg").css("background-image", "url(assets\/images\/bg-hei.jpg)");
         document.body.classList.remove('io-grey-mode');
         document.body.classList.add('io-black-mode');
         document.cookie = "night=1;path=/"
@@ -2040,7 +2022,7 @@ function switchNightMode(){
         $(".mode-ico").removeClass("icon-night");
         $(".mode-ico").addClass("icon-light");
     }else{
-	$("#search-bg").css("background-image", "url(assets\/images\/bg-bai.jpg)")
+	    $("#search-bg").css("background-image", "url(assets\/images\/bg-bai.jpg)")
         document.body.classList.remove('io-black-mode');
         document.body.classList.add('io-grey-mode');
         document.cookie = "night=0;path=/"
