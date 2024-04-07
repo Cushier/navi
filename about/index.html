@@ -311,7 +311,10 @@
     <main role="main" class="flex-shrink-0">
     <div class="container">
         <h1 class="mt-5">关于网站</h1>
-        <p class="text-muted">发布日期：2024年04月06日</p>
+        <p class="text-muted">
+          发布于：<span class="post-date">2024年04月06日 19:27:08</span>&nbsp;
+          更新于：<span class="post-update-date">2024年04月07日 19:18:09</span>
+        </p>
         <div class="content">
             <br/>
 <h4 id="青年科技学习导航">青年科技学习导航</h4>
@@ -404,6 +407,21 @@
           .mt-5,
           .text-muted {
             text-align: center;  
+          }
+           
+          .post-date,
+          .post-update-date {
+            display: inline-block;  
+            margin-right: 0.5em;  
+          }
+
+           
+          @media (max-width: 600px) {
+            .post-date,
+            .post-update-date {
+              display: block;  
+              margin-bottom: 0.5em;  
+            }
           }
     </style>
 
