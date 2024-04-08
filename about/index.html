@@ -814,6 +814,7 @@ function switchNightMode(){
         var timer = requestAnimationFrame(function animateHeart() {
             if (animationConfig.initialOpacity <= 0) {
                 animationConfig.isAnimating = false;
+                document.body.removeChild(heart); 
             } else {
                 var styleText = `font-size:${animationConfig.fontSize}px;` +
                     `cursor: default;` +
@@ -824,14 +825,11 @@ function switchNightMode(){
                     `opacity:${animationConfig.initialOpacity - animationConfig.step};` +
                     `transform:scale(${animationConfig.scale + animationConfig.step});`;
                 heart.style.cssText = styleText;
+                x -= animationConfig.step * 0.7;
                 y--;
                 animationConfig.initialOpacity -= animationConfig.step;
                 animationConfig.scale += animationConfig.step;
                 requestAnimationFrame(animateHeart);
-            }
-
-            if (!animationConfig.isAnimating && !document.contains(heart)) {
-                heartPool.push(heart); 
             }
         });
     }
