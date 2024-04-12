@@ -13,6 +13,7 @@ new Valine({
     serverURLs: 'https://9xvdjrps.lc-cn-n1-shared.com',
     recordIP: true,
     lang: isEN ? 'en' : 'zh-cn',
+    enableQQ: true,
     emojiCDN: 'https://i0.hdslb.com/bfs/emote/',
     emojiMaps: {
         "口罩":"3ad2f66b151496d2a5fb0a8ea75f32265d778dd3.png",
