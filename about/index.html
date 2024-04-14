@@ -283,10 +283,11 @@
     <script>
       const toggleTocButton = document.getElementById('toggle-toc');
       const toc = document.querySelector('.toc');
- 
-      toggleTocButton.addEventListener('click', () => {
-        toc.classList.toggle('d-none');
-      });
+      if (toggleTocButton != null){
+        toggleTocButton.addEventListener('click', () => {
+          toc.classList.toggle('d-none');
+        });
+      }
     </script>
     <style>
            
@@ -464,6 +465,9 @@
           .content pre {
             background-color: #f7f7f7;
             padding: 8px;
+            margin-left: 0;
+            margin-right: 0;
+            white-space: pre-wrap;
             overflow-x: auto;
              
              
@@ -474,6 +478,8 @@
           .content code {
             font-size: 0.9em;
             border-radius: 3px;
+            white-space: pre;
+            overflow-x: auto;
           }
 
            
@@ -550,7 +556,7 @@
                 
             </div>
             <div class="footer-inner">
-                <div class="footer-text">本站导航珍藏于互联网，如发现内容侵权，请联系邮箱：58062816@qq.com，我们将及时删除<br/>© 2023 - 2024 By Cushier | <a href="https://www.qnkjxx.top/">德塑人生 · 技行天下</a> | <a href="https://icp.gov.moe/?keyword=20241107" target="_blank">萌ICP备20241107号</a> | <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span><br/></div>
+                <div class="footer-text">本站导航珍藏于互联网，如发现内容侵权，请联系邮箱：qnkjxx@outlook.com，我们将及时删除<br/>© 2023 - 2024 By Cushier | <a href="https://www.qnkjxx.top/">德塑人生 · 技行天下</a> | <a href="https://icp.gov.moe/?keyword=20241107" target="_blank">萌ICP备20241107号</a> | <span id="busuanzi_container_site_pv">本站总访问量<span id="busuanzi_value_site_pv"></span>次</span><br/></div>
             </div>
         </footer>
     </div>
