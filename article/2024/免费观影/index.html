@@ -265,89 +265,9 @@
          
          
          
-         <div class="toc-container">
-           <button id="toggle-toc" class="btn btn-link d-inline-block">显示/隐藏目录</button>
-           <div class="toc d-none">
-             <nav id="TableOfContents">
-  <ul>
-    <li><a href="#目标">目标</a></li>
-    <li><a href="#一步骤1">一、步骤1</a></li>
-    <li><a href="#二步骤2">二、步骤2</a></li>
-    <li><a href="#三步骤3">三、步骤3</a></li>
-    <li><a href="#四步骤4">四、步骤4</a></li>
-    <li><a href="#五步骤5">五、步骤5</a>
-      <ul>
-        <li><a href="#51-子步骤1">5.1 子步骤1</a>
-          <ul>
-            <li><a href="#511-子步骤1">5.1.1 子步骤1</a></li>
-          </ul>
-        </li>
-        <li><a href="#52-子步骤2">5.2 子步骤2</a></li>
-      </ul>
-    </li>
-  </ul>
-</nav>
-           </div>
-         </div>
-         
-            <h2 id="目标">目标</h2>
-<ul>
-<li><input disabled="" type="checkbox"> 测试1</li>
-</ul>
-<h2 id="一步骤1">一、步骤1</h2>
-<p><img src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240413130726624.png" alt="image-20240413130726624"></p>
-<h2 id="二步骤2">二、步骤2</h2>
-<p>你只需在Typora打字时输入正确的 Markdown 语法标记 (如 ##二级标题、 <strong>粗体</strong>)，软件就像触发了键盘快捷键一样，将对应的文字会即时转变为它们应该成为的样子。</p>
-<p>斜体、加粗、插入图片、引用、插入图片、代码、表格、有序列表等等操作就在你敲完代码的一瞬间通通魔法般地“变成现实”，你在编辑器上看到的直接就是 Markdown 最终的排版效果了，这种行云流水般的写作体验真的非常非常的棒！</p>
-<p>Typora支持代码块的语法高亮（开发者的福音），对于表格、数学公式这些 MD 里比较难以输入的元素，Typora 也提供了相当方便的辅助；支持键盘快捷键；也提供了导出 Markdown 到 HTML 和 PDF 的功能。<a href="https://www.baidu.com">反对法反对法</a></p>
-<p>如果你的文章里用到一、二、三、四级标题等，界面右上角的「Outline」按钮也能自动为你的文章生成「大纲目录」。对，这一点不仅对作者有用，对于 MD 的「读者」来说也是非常方便的功能，再加上 Typora「一体化」的窗口，关联</p>
-<h2 id="三步骤3">三、步骤3</h2>
-<p>菜单管理</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4;"><code class="language-java" data-lang="java"><span style="display:flex;"><span><span style="color:#66d9ef">public</span> List<span style="color:#f92672">&lt;</span>Menu<span style="color:#f92672">&gt;</span> <span style="color:#a6e22e">findMenuList</span>(DynamicParams params) {
-</span></span><span style="display:flex;"><span>	List<span style="color:#f92672">&lt;</span>Menu<span style="color:#f92672">&gt;</span> menus <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;</span>Menu<span style="color:#f92672">&gt;</span>();
-</span></span><span style="display:flex;"><span> 
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">if</span> (<span style="color:#e6db74">&#34;allMenu&#34;</span>.<span style="color:#a6e22e">equals</span>(params.<span style="color:#a6e22e">getString</span>(<span style="color:#e6db74">&#34;allMenu&#34;</span>))) {
-</span></span><span style="display:flex;"><span>		menus <span style="color:#f92672">=</span> menuDao.<span style="color:#a6e22e">findList</span>(params);
-</span></span><span style="display:flex;"><span>	} <span style="color:#66d9ef">else</span> {
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 通过用户查询角色</span>
-</span></span><span style="display:flex;"><span>		List<span style="color:#f92672">&lt;</span>UserRole<span style="color:#f92672">&gt;</span> userRoles <span style="color:#f92672">=</span> userRoleDao.<span style="color:#a6e22e">findList</span>(params);
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 通过角色查询菜单</span>
-</span></span><span style="display:flex;"><span>		List<span style="color:#f92672">&lt;</span>RoleMenu<span style="color:#f92672">&gt;</span> roleMenus <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> ArrayList<span style="color:#f92672">&lt;</span>RoleMenu<span style="color:#f92672">&gt;</span>();
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">if</span> (userRoles <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span> <span style="color:#f92672">&amp;&amp;</span> userRoles.<span style="color:#a6e22e">size</span>() <span style="color:#f92672">&gt;</span> 0) {
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">for</span> (UserRole userRole : userRoles) {
-</span></span><span style="display:flex;"><span>				params <span style="color:#f92672">=</span> <span style="color:#66d9ef">new</span> DynamicParams();
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (userRole <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">if</span> (userRole.<span style="color:#a6e22e">getRoleId</span>().<span style="color:#a6e22e">equals</span>(params.<span style="color:#a6e22e">getString</span>(<span style="color:#e6db74">&#34;rid&#34;</span>))) {
-</span></span><span style="display:flex;"><span>						<span style="color:#66d9ef">break</span>;
-</span></span><span style="display:flex;"><span>					}
-</span></span><span style="display:flex;"><span>					params.<span style="color:#a6e22e">put</span>(<span style="color:#e6db74">&#34;roleId&#34;</span>, userRole.<span style="color:#a6e22e">getRoleId</span>().<span style="color:#a6e22e">toString</span>());
-</span></span><span style="display:flex;"><span>					List<span style="color:#f92672">&lt;</span>RoleMenu<span style="color:#f92672">&gt;</span> rms <span style="color:#f92672">=</span> roleMenuDao.<span style="color:#a6e22e">findList</span>(params);
-</span></span><span style="display:flex;"><span>					<span style="color:#66d9ef">for</span> (RoleMenu roleMenu : rms) {
-</span></span><span style="display:flex;"><span>						roleMenus.<span style="color:#a6e22e">add</span>(roleMenu);
-</span></span><span style="display:flex;"><span>					}
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span> 
-</span></span><span style="display:flex;"><span>		<span style="color:#75715e">// 查询菜单信息</span>
-</span></span><span style="display:flex;"><span>		<span style="color:#66d9ef">for</span> (RoleMenu roleMenu : roleMenus) {
-</span></span><span style="display:flex;"><span>			<span style="color:#66d9ef">if</span> (roleMenu <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
-</span></span><span style="display:flex;"><span>				Menu menu <span style="color:#f92672">=</span> menuDao.<span style="color:#a6e22e">find</span>(roleMenu.<span style="color:#a6e22e">getMenuId</span>());
-</span></span><span style="display:flex;"><span>				<span style="color:#66d9ef">if</span> (menu <span style="color:#f92672">!=</span> <span style="color:#66d9ef">null</span>) {
-</span></span><span style="display:flex;"><span>					menus.<span style="color:#a6e22e">add</span>(menu);
-</span></span><span style="display:flex;"><span>				}
-</span></span><span style="display:flex;"><span>			}
-</span></span><span style="display:flex;"><span>		}
-</span></span><span style="display:flex;"><span>		menus <span style="color:#f92672">=</span> removeDuplicate(menus);
-</span></span><span style="display:flex;"><span>		Collections.<span style="color:#a6e22e">sort</span>(menus);
-</span></span><span style="display:flex;"><span>	}
-</span></span><span style="display:flex;"><span>	<span style="color:#66d9ef">return</span> menus;
-</span></span><span style="display:flex;"><span>}
-</span></span></code></pre></div><h2 id="四步骤4">四、步骤4</h2>
-<h2 id="五步骤5">五、步骤5</h2>
-<h3 id="51-子步骤1">5.1 子步骤1</h3>
-<h4 id="511-子步骤1">5.1.1 子步骤1</h4>
-<h3 id="52-子步骤2">5.2 子步骤2</h3>
+            <p><img src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240413130726624.png" alt="image-20240413130726624"></p>
+<p><img src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240414162315104.png" alt="image-20240414162315104"></p>
+<p><img src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240414162350736.png" alt="image-20240414162350736"></p>
 
         </div>
     </div>
@@ -469,7 +389,7 @@
             font-size: 22px;
             font-weight: 700;
             line-height: 32px;
-            margin-bottom: 1..pngem;  
+            margin-bottom: 1.75rem;  
           }
 
           .content h2 {
@@ -525,6 +445,7 @@
 
            
           .content ul, .content ol {
+            font-size: 1.125rem;
             margin-top: 0.5em;
             margin-bottom: 1em;
           }
