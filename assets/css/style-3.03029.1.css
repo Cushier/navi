@@ -210,7 +210,8 @@ a>i.sidebar-more{transform:scale(.8)}
 .url-card.down a.card:after{content:'\e604';position:absolute;display:inline-block;font-family:"iconfont";font-size:60px;color:#888;margin-left:10px;bottom:-10px;right:10px;opacity:.15}
 .url-card.down .mini a.card:after,.url-card.wechat .mini a.card:after{font-size:30px;margin-left:10px;bottom:-5px;right:10px}
 .url-card.down .max a.card:after,.url-card.wechat .max a.card:after{font-size:30px;bottom:25px}
-.url-card .mini a.togo,.url-card .default a.togo{position:absolute;top:20px;right:0;width:30px;height:30px;line-height:30px;opacity:.2;transition:opacity .3s} 
+/* .url-card .mini a.togo,.url-card .default a.togo{position:absolute;top:20px;right:0;width:30px;height:30px;line-height:30px;opacity:.2;transition:opacity .3s}  */
+.url-card .mini a.togo,.url-card .default a.togo{position:absolute;top: 0;right:0;width:30px;height: 100%;line-height:30px;opacity:.2;transition:opacity .3s;display: flex;flex-direction: column; /* 更改为垂直方向（上下排列） */justify-content: center;align-items: center;background-color: rgba(0, 191, 255, 0.2);} 
 .url-card .mini a.togo{top:4px}
 .url-card .url-body:hover a.togo{opacity:1}
 .url-card .max a.togo{margin-left:auto}
