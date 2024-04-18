@@ -125,7 +125,10 @@ footer.main-footer .footer-text a:hover {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-
+/* 隐藏评论插件版本 */
+.txt-right {
+	display: none !important;
+}
 
 
 
