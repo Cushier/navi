@@ -9,7 +9,6 @@ new Valine({
     admin_email:'58062816@qq.com',
     avatar: 'mp',
     path: path,
-    visitor: true, // 阅读量统计
     enableQQ: true,
     serverURLs: 'https://9xvdjrps.lc-cn-n1-shared.com',
     recordIP: true,
