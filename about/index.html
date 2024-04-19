@@ -313,7 +313,7 @@
 </script>
           
           <div class="vcomment"></div>
-          <script src="https://cdn.staticfile.net/valine/1.5.1/Valine.min.js"></script>
+          <script async src="https://cdn.staticfile.net/valine/1.5.1/Valine.min.js" onerror="fallbackToLocalFile('Valine.min.js')"></script>
           <script src=/tougao/data.js></script>
         </div>
 
@@ -968,6 +968,22 @@ function switchNightMode(){
         
         return true; 
     }
+
+    
+    function fallbackToLocalFile(resource) {
+            console.error(`Failed to load the remote resource: ${resource}. Falling back to local copy.`);
+            const localScript = document.createElement('script');
+            localScript.src = `/assets/js/${resource}`;
+            localScript.onload = () => {
+                console.info(`Successfully loaded local backup of ${resource}.`);
+            };
+            localScript.onerror = () => {
+                console.error(`Failed to load the local backup of ${resource}. Please check the file path or network connectivity.`);
+                
+            };
+            document.head.appendChild(localScript);
+    }
+
 
 
 (function() {

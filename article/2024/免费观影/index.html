@@ -337,7 +337,7 @@
 <p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240416101333409.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240416101333409.png"  alt="image-20240416101333409"></a></p>
 <h1 id="三电视端">三、电视端</h1>
 <h2 id="31-电视直播">3.1 电视直播</h2>
-<p>1、开源的电视直播软件，安装即可使用，简单好用无广告回归最初的味道。</p>
+<p>1、开源的电视直播APP，安装即可使用，简单好用无广告回归最初的味道。</p>
 <ul>
 <li>我的电视（MY TV）官网：<a href="https://lyrics.run/my-tv.html" target="_blank">https://lyrics.run/my-tv.html</a></li>
 <li>github仓库：<a href="https://github.com/lizongying/my-tv" target="_blank">https://github.com/lizongying/my-tv</a></li>
@@ -370,7 +370,7 @@
 </script>
           
           <div class="vcomment"></div>
-          <script src="https://cdn.staticfile.net/valine/1.5.1/Valine.min.js"></script>
+          <script async src="https://cdn.staticfile.net/valine/1.5.1/Valine.min.js" onerror="fallbackToLocalFile('Valine.min.js')"></script>
           <script src=/tougao/data.js></script>
         </div>
 
@@ -1025,6 +1025,22 @@ function switchNightMode(){
         
         return true; 
     }
+
+    
+    function fallbackToLocalFile(resource) {
+            console.error(`Failed to load the remote resource: ${resource}. Falling back to local copy.`);
+            const localScript = document.createElement('script');
+            localScript.src = `/assets/js/${resource}`;
+            localScript.onload = () => {
+                console.info(`Successfully loaded local backup of ${resource}.`);
+            };
+            localScript.onerror = () => {
+                console.error(`Failed to load the local backup of ${resource}. Please check the file path or network connectivity.`);
+                
+            };
+            document.head.appendChild(localScript);
+    }
+
 
 
 (function() {

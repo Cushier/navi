@@ -3000,6 +3000,22 @@ function switchNightMode(){
         return true; 
     }
 
+    
+    function fallbackToLocalFile(resource) {
+            console.error(`Failed to load the remote resource: ${resource}. Falling back to local copy.`);
+            const localScript = document.createElement('script');
+            localScript.src = `/assets/js/${resource}`;
+            localScript.onload = () => {
+                console.info(`Successfully loaded local backup of ${resource}.`);
+            };
+            localScript.onerror = () => {
+                console.error(`Failed to load the local backup of ${resource}. Please check the file path or network connectivity.`);
+                
+            };
+            document.head.appendChild(localScript);
+    }
+
+
 
 (function() {
     var a_idx = 0;
