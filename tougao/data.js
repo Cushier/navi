@@ -1,6 +1,6 @@
 var path = window.location.pathname.replace('index.html', '');
-var isEN = path.indexOf('en') > -1;
-path = isEN ? path.replace('en/', '') : path;
+// var isEN = path.indexOf('en') > -1;
+// path = isEN ? path.replace('en/', '') : path;
 new Valine({
     el: '.vcomment',
     appId: '9xVDjrpSfbN0M5Wpra48FM9E-gzGzoHsz',
@@ -12,7 +12,8 @@ new Valine({
     enableQQ: true,
     serverURLs: 'https://9xvdjrps.lc-cn-n1-shared.com',
     recordIP: true,
-    lang: isEN ? 'en' : 'zh-cn',
+    // lang: isEN ? 'en' : 'zh-cn',
+    lang: 'zh-cn',
     enableQQ: true,
     emojiCDN: 'https://i0.hdslb.com/bfs/emote/',
     emojiMaps: {
