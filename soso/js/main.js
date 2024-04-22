@@ -24,7 +24,7 @@ window.addEventListener('load', function () {
     setTimeout(function () {
         iziToast.show({
             title: hello,
-            message: '欢迎来到 Noise导航'
+            message: '欢迎来到 青年科技学习导航'
         });
     }, 800);
 
@@ -83,18 +83,55 @@ function time() {
     t = setTimeout(time, 1000);
 }
 
-//获取天气
-//每日限量 100 次
-//请前往 https://www.tianqiapi.com/index/doc?version=v6 申请（免费）
-fetch('https://yiketianqi.com/api?unescape=1&version=v6&appid=43986679&appsecret=TksqGZT7')
-    .then(response => response.json())
-    .then(data => {
-        //$('#wea_text').html(data.wea + '&nbsp;' + data.tem_night + '℃' + '&nbsp;~&nbsp;' + data.tem_day + '℃')
-        $('#wea_text').text(data.wea)
-        $('#tem1').text(data.tem1)
-        $('#tem2').text(data.tem2)
-    })
-    .catch(console.error)
+// 获取经纬度
+async function main() {
+  try {
+    if (!navigator.geolocation) {
+      throw new Error("Geolocation is not supported by this browser.");
+    }
+
+    const position = await new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+
+    const { latitude, longitude } = position.coords;
+    // 在此处执行依赖坐标值的后续操作，如地图渲染、数据发送等
+    var Longitude = longitude;
+    var Latitude = latitude;
+    //获取天气
+    //每日限量 100 次
+    //请前往 https://www.tianqiapi.com/index/doc?version=v6 申请（免费）
+    fetch('https://devapi.qweather.com/v7/weather/now?location='+Longitude+','+Latitude+'&key=c1a71b432b774096b6df1985dd390f88')
+        .then(response => response.json())
+        .then(data => {
+            //$('#wea_text').html(data.wea + '&nbsp;' + data.tem_night + '℃' + '&nbsp;~&nbsp;' + data.tem_day + '℃')
+            $('#wea_text').text(data.now.text)
+            $('#windDir').text(data.now.windDir)
+            $('#tem1').text(data.now.temp)
+            $('#tem2').text(data.now.dew)
+        })
+        .catch(console.error)
+
+    // ...
+  } catch (error) {
+    switch (error.code) {
+      case error.PERMISSION_DENIED:
+        console.log("User denied the request for Geolocation.");
+        break;
+      case error.POSITION_UNAVAILABLE:
+        console.log("Location information is unavailable.");
+        break;
+      case error.TIMEOUT:
+        console.log("The request to get user location timed out.");
+        break;
+      case error.UNKNOWN_ERROR:
+        console.log("An unknown error occurred.");
+        break;
+    }
+  }
+}
+
+main();
 
 //火狐浏览器独立样式
 if (isFirefox = navigator.userAgent.indexOf("Firefox") > 0) {
@@ -156,32 +193,32 @@ $(window).mousedown(function (event) {
 });
 
 //控制台输出
-var styleTitle1 = `
-font-size: 20px;
-font-weight: 600;
-color: rgb(244,167,89);
-`
-var styleTitle2 = `
-font-size:12px;
-color: rgb(244,167,89);
-`
-var styleContent = `
-color: rgb(30,152,255);
-`
-var title1 = 'Snavigation'
-var title2 = `
- _____ __  __  _______     ____     __
-|_   _|  \\/  |/ ____\\ \\   / /\\ \\   / /
-  | | | \\  / | (___  \\ \\_/ /  \\ \\_/ / 
-  | | | |\\/| |\\___ \\  \\   /    \\   /  
- _| |_| |  | |____) |  | |      | |   
-|_____|_|  |_|_____/   |_|      |_|                                                     
-`
-var content = `
-版 本 号：1.1
-更新日期：2022-07-12
+// var styleTitle1 = `
+// font-size: 20px;
+// font-weight: 600;
+// color: rgb(244,167,89);
+// `
+// var styleTitle2 = `
+// font-size:12px;
+// color: rgb(244,167,89);
+// `
+// var styleContent = `
+// color: rgb(30,152,255);
+// `
+// var title1 = 'Snavigation'
+// var title2 = `
+//  _____ __  __  _______     ____     __
+// |_   _|  \\/  |/ ____\\ \\   / /\\ \\   / /
+//   | | | \\  / | (___  \\ \\_/ /  \\ \\_/ / 
+//   | | | |\\/| |\\___ \\  \\   /    \\   /  
+//  _| |_| |  | |____) |  | |      | |   
+// |_____|_|  |_|_____/   |_|      |_|                                                     
+// `
+// var content = `
+// 版 本 号：1.1
+// 更新日期：2022-07-12
 
-Github:  https://github.com/imsyy/Snavigation
-`
-console.log(`%c${title1} %c${title2}
-%c${content}`, styleTitle1, styleTitle2, styleContent)
+// Github:  https://github.com/imsyy/Snavigation
+// `
+// console.log(`%c${title1} %c${title2}
+// %c${content}`, styleTitle1, styleTitle2, styleContent)
