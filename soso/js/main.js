@@ -83,6 +83,24 @@ function time() {
     t = setTimeout(time, 1000);
 }
 
+//判断是否为当前时间之后
+function isCurrentTimeAfter(targetTime) {  
+    // 获取当前时间  
+    const now = new Date();  
+  
+    // 设置目标时间的日期部分与当前日期相同，确保比较的是同一天的时间  
+    const targetDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());  
+  
+    // 解析目标时间字符串并设置到目标日期对象上  
+    const [targetHours, targetMinutes] = targetTime.split(':').map(Number);  
+    targetDate.setHours(targetHours);  
+    targetDate.setMinutes(targetMinutes);  
+    targetDate.setSeconds(0);  
+    targetDate.setMilliseconds(0);  
+  
+    // 比较两个时间  
+    return now > targetDate;  
+}  
 // 获取经纬度
 async function main() {
   try {
@@ -101,14 +119,21 @@ async function main() {
     //获取天气
     //每日限量 100 次
     //请前往 https://www.tianqiapi.com/index/doc?version=v6 申请（免费）
-    fetch('https://devapi.qweather.com/v7/weather/now?location='+Longitude+','+Latitude+'&key=c1a71b432b774096b6df1985dd390f88')
+    fetch('https://devapi.qweather.com/v7/weather/3d?location='+Longitude+','+Latitude+'&key=c1a71b432b774096b6df1985dd390f88')
         .then(response => response.json())
         .then(data => {
             //$('#wea_text').html(data.wea + '&nbsp;' + data.tem_night + '℃' + '&nbsp;~&nbsp;' + data.tem_day + '℃')
-            $('#wea_text').text(data.now.text)
-            $('#windDir').text(data.now.windDir)
-            $('#tem1').text(data.now.temp)
-            $('#tem2').text(data.now.dew)
+            if (isCurrentTimeAfter(data.daily[1].sunset)) {  
+                // console.log("当前时间超过了 " + data.daily[1].sunset); 
+                $('#wea_text').text(data.daily[1].textNight)
+                $('#windDir').text(data.daily[1].windDirNight) 
+            } else {  
+                // console.log("当前时间还未到 " + data.daily[1].sunset); 
+                $('#wea_text').text(data.daily[1].textDay)
+                $('#windDir').text(data.daily[1].windDirDay) 
+            }
+            $('#tem1').text(data.daily[1].tempMax)
+            $('#tem2').text(data.daily[1].tempMin)
         })
         .catch(console.error)
 
