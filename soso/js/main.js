@@ -132,6 +132,7 @@ async function main() {
                 $('#wea_text').text(data.daily[1].textDay)
                 $('#windDir').text(data.daily[1].windDirDay) 
             }
+            $('#wea').attr('href',data.fxLink)
             $('#tem1').text(data.daily[1].tempMax)
             $('#tem2').text(data.daily[1].tempMin)
         })
