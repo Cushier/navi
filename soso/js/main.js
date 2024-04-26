@@ -116,6 +116,7 @@ async function main() {
     // 在此处执行依赖坐标值的后续操作，如地图渲染、数据发送等
     var Longitude = longitude;
     var Latitude = latitude;
+    // console.log(Longitude,Latitude);
     //获取天气
     //每日限量 100 次
     //请前往 https://www.tianqiapi.com/index/doc?version=v6 申请（免费）
@@ -123,18 +124,18 @@ async function main() {
         .then(response => response.json())
         .then(data => {
             //$('#wea_text').html(data.wea + '&nbsp;' + data.tem_night + '℃' + '&nbsp;~&nbsp;' + data.tem_day + '℃')
-            if (isCurrentTimeAfter(data.daily[1].sunset)) {  
-                // console.log("当前时间超过了 " + data.daily[1].sunset); 
-                $('#wea_text').text(data.daily[1].textNight)
-                $('#windDir').text(data.daily[1].windDirNight) 
+            if (isCurrentTimeAfter(data.daily[0].sunset)) {  
+                // console.log("当前时间超过了 " + data.daily[0].sunset); 
+                $('#wea_text').text(data.daily[0].textNight)
+                $('#windDir').text(data.daily[0].windDirNight) 
             } else {  
-                // console.log("当前时间还未到 " + data.daily[1].sunset); 
-                $('#wea_text').text(data.daily[1].textDay)
-                $('#windDir').text(data.daily[1].windDirDay) 
+                // console.log("当前时间还未到 " + data.daily[0].sunset); 
+                $('#wea_text').text(data.daily[0].textDay)
+                $('#windDir').text(data.daily[0].windDirDay) 
             }
             $('#wea').attr('href',data.fxLink)
-            $('#tem1').text(data.daily[1].tempMax)
-            $('#tem2').text(data.daily[1].tempMin)
+            $('#tem1').text(data.daily[0].tempMax)
+            $('#tem2').text(data.daily[0].tempMin)
         })
         .catch(console.error)
 
