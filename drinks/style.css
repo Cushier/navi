@@ -157,16 +157,16 @@ li[id$="_donate"]:hover::after {
     opacity: 0.8;
 }
 #paypal_donate {
-    background-image: url(./images/paypal.svg);
+    background-image: url(https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/paypal.svg);
 }
 #btc_donate{
-    background-image: url(./images/bitcoin.svg);
+    background-image: url(https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/bitcoin.svg);
 }
 #alipay_donate{
-    background-image: url(./images/alipay.svg);
+    background-image: url(https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/alipay.svg);
 }
 #wechat_donate{
-    background-image: url(./images/wechat.svg);
+    background-image: url(https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/wechat.svg);
 }
 #drinks-qrcodes {
     display: none;
