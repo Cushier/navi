@@ -2,17 +2,17 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>网站 on 青年科技学习导航</title>
-    <link>https://www.qnkjxx.top/categories/%E7%BD%91%E7%AB%99/</link>
+    <link>http://localhost:1313/categories/%E7%BD%91%E7%AB%99/</link>
     <description>Recent content in 网站 on 青年科技学习导航</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
     <lastBuildDate>Sat, 11 May 2024 14:42:36 +0800</lastBuildDate>
-    <atom:link href="https://www.qnkjxx.top/categories/%E7%BD%91%E7%AB%99/index.xml" rel="self" type="application/rss+xml" />
+    <atom:link href="http://localhost:1313/categories/%E7%BD%91%E7%AB%99/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>网站优化 - 青年科技学习导航</title>
-      <link>https://www.qnkjxx.top/article/2024/Website-Optimization/</link>
+      <link>http://localhost:1313/article/2024/Website-Optimization/</link>
       <pubDate>Sat, 11 May 2024 14:42:36 +0800</pubDate>
-      <guid>https://www.qnkjxx.top/article/2024/Website-Optimization/</guid>
+      <guid>http://localhost:1313/article/2024/Website-Optimization/</guid>
       <description>👉遇到问题，解决问题，记录问题，不做重复性工作，不犯同样的错，这样花的时间才最有价值。 🤞本文旨在记录此网站的一些优化方案，希望有需之人能够用</description>
     </item>
   </channel>
