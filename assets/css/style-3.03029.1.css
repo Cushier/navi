@@ -474,7 +474,7 @@ footer.main-footer{padding:20px 30px;margin-top:0px}
 .text-break-all{word-break:break-all}
 .posts-nav{font-size:14px;color:rgba(0,0,0,.44);padding:10px 0;text-align:center}
 .posts-nav .page-numbers{position:relative;min-width:35px;height:35px;padding:0 5px;line-height:35px;display:inline-block;background-color:rgba(150,150,150,.16);margin:0 2px;border-radius:.2rem;-webkit-transition:.2s ease-out;transition:.2s ease-out}
-.posts-nav .page-numbers.current,.posts-nav .page-numbers:not(.dots):hover{color:#fff!important;background-color:#f1404b;box-shadow:0px 5px 20px -3px rgba(249,100,90,.6)}
+.posts-nav .page-numbers.current,.posts-nav .page-numbers:not(.dots):hover{color:#fff!important;background-color:#007bff;box-shadow:0px 5px 20px -3px rgba(0, 140, 255,.6)}
 .posts-nav .page-numbers.dots{border-color:rgba(0,0,0,0)}
 .ajax-loading{background:rgba(250,250,250,.7)!important}
 #comments-navi>span,#comments-navi>a,.page-nav span:not(.current){position:relative;display:inline-block;background-color:rgba(150, 150, 150, 0.16);min-width:35px;height:35px;padding:0 5px;line-height:35px;margin:.2rem .1rem;font-size:0.75rem;border-radius:0.2rem;-webkit-transition:.2s ease-out;transition:.2s ease-out}
