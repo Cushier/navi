@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="io-white-mode">
+<head>
+<script>
+    var default_c = "io-white-mode";
+    var night = document.cookie.replace(/(?:(?:^|.*;\s*)night\s*\=\s*([^;]*).*$)|^.*$/, "$1");
+    try {
+        if (night === "1" || (!night && window.matchMedia("(prefers-color-scheme: dark)").matches)) {
+            document.documentElement.classList.add("io-black-mode");
+            document.documentElement.classList.remove(default_c);
+        } else {
+            document.documentElement.classList.remove("io-black-mode");
+            document.documentElement.classList.add(default_c);
+        }
+    } catch (_) {}
+</script><meta charset="utf-8">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes"> 
+<meta name="robots" content="noindex,follow">
+<title>加载中 - 青年科技学习导航</title>
+<link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico">
+<!-- <meta http-equiv="refresh" content="1;url=https://chat.openai.com/?ref=www.codernav.cn"> -->
+<style>
+body{margin:0;padding:0}body{height:100%}#loading{-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;-webkit-box-align:center;-ms-flex-align:center;align-items:center;display:-webkit-box;display:-ms-flexbox;display:flex;position:fixed;top:0;left:0;width:100%;height:100%;background:#e8eaec}.io-black-mode #loading{background:#1b1d1f}
+.loading-content{position:relative;max-width:1200px;margin:auto;margin-top:50px;padding:0 12px;box-sizing:border-box;z-index:10000000}.flex{display:flex}.flex-center{align-items:center}.flex-end{display:flex;justify-content:flex-end}.flex-fill{-ms-flex:1 1 auto !important;flex:1 1 auto !important}.logo-img{text-align:center}.logo-img img{width:200px;height:auto;margin-bottom:20px}.loading-info{padding:20px;background:#fff;border-radius:10px;box-shadow:0 15px 20px rgba(18,19,20,.2)}.loading-tip{background:rgba(255,158,77,.1);border-radius:6px;padding:5px}.loading-text{color:#b22e12;font-weight:bold}.loading-topic{padding:20px 0;border-bottom:1px solid rgba(136,136,136,.2);margin-bottom:20px;font-size:12px;word-break:break-all}a{text-decoration:none}.loading-btn,.loading-btn:active,.loading-btn:visited{color:#fc5531;border-radius:5px;border:1px solid #fc5531;padding:5px 20px;transition:.3s}.loading-btn:hover{color:#fff;background:#fc5531;box-shadow:0 15px 15px -10px rgba(184,56,25,0.8)}.loading-url{color:#fc5531}.taxt-auto{color:#787a7d;font-size:14px}.auto-second{color:#fc5531;font-size:16px;margin-right:5px;font-weight:bold}
+.safe-tip{max-width:580px;margin:10% auto 50px auto;}
+.warning-ico{width:30px;height:26px;margin-right:5px;background-image:url("data:image/svg+xml,%3Csvg class='icon' viewBox='0 0 1024 1024' xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Cpath d='M872.7 582.6L635.2 177c-53.5-91.3-186.6-88.1-235.6 5.7L187.7 588.3c-46.8 89.7 18.2 197 119.4 197h449.4c104 0 168.8-112.9 116.2-202.7zM496.6 295.2c0-20.5 11.7-31.5 35.1-32.9 22 1.5 33.7 12.5 35.1 32.9V315l-26.4 267.9h-13.2L496.6 315v-19.8zm35.2 406.3c-22-1.5-34.4-13.2-37.3-35.1 1.4-19 13.2-29.3 35.1-30.7 23.4 1.5 36.6 11.7 39.5 30.7-1.5 21.9-13.9 33.6-37.3 35.1z' fill='%23f55d49'/%3E%3C/svg%3E")}
+.io-black-mode .loading-info{color:#eee;background:#2b2d2f}.io-black-mode .loading-text{color:#ff8369}
+.container img{width:100%;height:auto;}
+@media (min-width:768px){.loading-content{min-width:450px}}
+</style>
+</head>
+<body class="go-to">
+<div id="loading">
+        <style> 
+.loader{position:absolute;top:50%;margin-left:-50px;left:50%;animation:speeder 0.4s linear infinite}
+.loader-text{position:absolute;text-transform:uppercase;left:50%;top:53%;margin-left:-20px}
+.loader>span{height:5px;width:35px;background:#000;position:absolute;top:-19px;left:60px;border-radius:2px 10px 1px 0}
+.base span{position:absolute;width:0;height:0;border-top:6px solid transparent;border-right:100px solid #000;border-bottom:6px solid transparent}
+.base span:before{content:"";height:22px;width:22px;border-radius:50%;background:#000;position:absolute;right:-110px;top:-16px}
+.base span:after{content:"";position:absolute;width:0;height:0;border-top:0 solid transparent;border-right:55px solid #000;border-bottom:16px solid transparent;top:-16px;right:-98px}
+.face{position:absolute;height:12px;width:20px;background:#000;border-radius:20px 20px 0 0;transform:rotate(-40deg);right:-125px;top:-15px}
+.face:after{content:"";height:12px;width:12px;background:#000;right:4px;top:7px;position:absolute;transform:rotate(40deg);transform-origin:50% 50%;border-radius:0 0 0 2px}
+.loader>span>span{width:30px;height:1px;background:#000;position:absolute;animation:fazer1 0.2s linear infinite}
+.loader>span>span:nth-child(2){top:3px;animation:fazer2 0.4s linear infinite}
+.loader>span>span:nth-child(3){top:1px;animation:fazer3 0.4s linear infinite;animation-delay:-1s}
+.loader>span>span:nth-child(4){top:4px;animation:fazer4 1s linear infinite;animation-delay:-1s}
+@keyframes fazer1{0%{left:0}
+100%{left:-80px;opacity:0}
+}@keyframes fazer2{0%{left:0}
+100%{left:-100px;opacity:0}
+}@keyframes fazer3{0%{left:0}
+100%{left:-50px;opacity:0}
+}@keyframes fazer4{0%{left:0}
+100%{left:-150px;opacity:0}
+}@keyframes speeder{0%{transform:translate(2px,1px) rotate(0deg)}
+10%{transform:translate(-1px,-3px) rotate(-1deg)}
+20%{transform:translate(-2px,0px) rotate(1deg)}
+30%{transform:translate(1px,2px) rotate(0deg)}
+40%{transform:translate(1px,-1px) rotate(1deg)}
+50%{transform:translate(-1px,3px) rotate(-1deg)}
+60%{transform:translate(-1px,1px) rotate(0deg)}
+70%{transform:translate(3px,1px) rotate(-1deg)}
+80%{transform:translate(-2px,-1px) rotate(1deg)}
+90%{transform:translate(2px,1px) rotate(0deg)}
+100%{transform:translate(1px,-2px) rotate(-1deg)}
+}.longfazers{position:absolute;width:100%;height:100%}
+.longfazers span{position:absolute;height:2px;width:20%;background:#000}
+.longfazers span:nth-child(1){top:20%;animation:lf 0.6s linear infinite;animation-delay:-5s}
+.longfazers span:nth-child(2){top:40%;animation:lf2 0.8s linear infinite;animation-delay:-1s}
+.longfazers span:nth-child(3){top:60%;animation:lf3 0.6s linear infinite}
+.longfazers span:nth-child(4){top:80%;animation:lf4 0.5s linear infinite;animation-delay:-3s}
+@keyframes lf{0%{left:200%}
+100%{left:-200%;opacity:0}
+}@keyframes lf2{0%{left:200%}
+100%{left:-200%;opacity:0}
+}@keyframes lf3{0%{left:200%}
+100%{left:-100%;opacity:0}
+}@keyframes lf4{0%{left:200%}
+100%{left:-100%;opacity:0}
+}
+.io-black-mode .loader>span{background:#007bff}
+.io-black-mode .base span{border-right-color:#007bff}
+.io-black-mode .base span:before{background:#007bff}
+.io-black-mode .base span:after{border-right-color:#007bff}
+.io-black-mode .face{background:#007bff}
+.io-black-mode .face:after{background:#007bff}
+.io-black-mode .loader>span>span{background:#007bff}
+.io-black-mode .longfazers span{background:#007bff}
+.io-black-mode .loader-text{color:#007bff}-text
+</style>
+<div class='loader'>
+  <span>
+    <span></span>
+    <span></span>
+    <span></span>
+    <span></span>
+  </span>
+  <div class='base'>
+    <span></span>
+    <div class='face'></div>
+  </div>
+</div>
+<div class='longfazers'>
+  <span></span>
+  <span></span>
+  <span></span>
+  <span></span>
+</div>
+<p class="loader-text">LOADING</p>
+</div>
+<div class="loading-content">
+</div>
+<script>
+    window.onload = function() {  
+            // 从URL中获取查询参数  
+            function getQueryParam(name) {  
+                const search = window.location.search;  
+                const params = new URLSearchParams(search);  
+                return params.get(name);  
+            }  
+  
+            // 获取目标网站的URL  
+            const targetUrl = getQueryParam('url');  
+  
+            // 检查是否获取到了有效的URL  
+            if (targetUrl) {  
+                // 延迟跳转，例如2秒后  
+                setTimeout(() => {  
+                    window.location.href = targetUrl;  
+                }, 1000); // 2000毫秒 = 2秒  
+            } else {  
+                // 如果没有获取到有效的URL，可以跳转到默认页面或显示错误消息  
+                console.error('没有提供有效的目标URL');  
+            }  
+    };
+    if(document.documentElement.classList.contains('io-black-mode')){
+        
+    }
+    //延时30S关闭跳转页面，用于文件下载后不会关闭跳转页的问题
+    setTimeout(function() {
+        window.opener = null;
+        window.close();
+    }, 30000);
+</script>
+</body>
+</html>
