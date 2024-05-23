@@ -26,16 +26,16 @@
     <link rel="stylesheet" id="custom-css" href="/assets/css/custom-style.css"
         type="text/css" media="all" />
     <link rel="stylesheet" id="fortawesome-css" href="https://cdn.staticfile.net/font-awesome/6.5.1/css/all.min.css" type="text/css" />
-    <link rel="stylesheet"href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.min.css"/>
+    <link rel="stylesheet"href="/assets/js/photo-sphere-viewer/core/index.min.css"/>
     
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/gallery-plugin@5/index.css">
+    <link rel="stylesheet" href="/assets/js/photo-sphere-viewer/gallery-plugin/index.css">
     <script type="text/javascript" src="https://cdn.staticfile.net/jquery/3.7.1/jquery.min.js" id="jquery-js"></script>
     <script type="text/javascript" src="/assets/js/content-search.js"  id="content-search-js"></script>
     <script src="https://cdn.staticfile.net/three.js/0.160.0/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/core/index.min.js"></script>
+    <script src="/assets/js/photo-sphere-viewer/core/index.min.js"></script>
     
     
-    <script src="https://cdn.jsdelivr.net/npm/@photo-sphere-viewer/gallery-plugin@5/index.js"></script>
+    <script src="/assets/js/photo-sphere-viewer/gallery-plugin/index.js"></script>
     
     <script>
         
@@ -426,12 +426,41 @@
 <h2 id="收费标准">收费标准</h2>
 <p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/2024qnkjxx14.jpg"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/2024qnkjxx14.jpg"  alt="2024qnkjxx14"></a></p>
 <h1 id="学校全景参观">学校全景参观</h1>
-<p><div id="viewer" style="width: 100%; height: 100vh"></div></p>
+<p><div id="viewer"></div></p>
 <script>
   const viewer = new PhotoSphereViewer.Viewer({
     container: document.querySelector("#viewer"),
-    panorama:
-      "/assets/images/quanjing.jpg",
+    panorama: "/assets/images/quanjing.jpg",
+    defaultZoomLvl:0,
+    loadingTxt:"加载中……",
+    mousewheelCtrlKey:true,
+    mousewheel:false,
+    plugins: [
+      //多图
+      [PhotoSphereViewer.GalleryPlugin, {
+          visibleOnLoad: true,
+          items: [
+              {
+                  id: '1',
+                  name: '前广场',
+                  thumbnail: '/assets/images/360/qianguangchang.jpg',
+                  panorama: '/assets/images/360/qianguangchang.jpg',
+              },
+              {
+                  id: '2',
+                  name: '足球场',
+                  thumbnail: '/assets/images/360/zuqiu.jpg',
+                  panorama: '/assets/images/360/zuqiu.jpg',
+              },
+              {
+                  id: '3',
+                  name: '羽毛球场',
+                  thumbnail: '/assets/images/360/yumaoqiu.jpg',
+                  panorama: '/assets/images/360/yumaoqiu.jpg',
+              },
+          ],
+      }],
+    ],
   });
 </script>
           
