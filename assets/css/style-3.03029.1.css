@@ -495,7 +495,7 @@ footer.main-footer{padding:20px 30px;margin-top:0px}
 #comments-navi>span,#comments-navi>a,.page-nav span:not(.current){position:relative;display:inline-block;background-color:rgba(150, 150, 150, 0.16);min-width:35px;height:35px;padding:0 5px;line-height:35px;margin:.2rem .1rem;font-size:0.75rem;border-radius:0.2rem;-webkit-transition:.2s ease-out;transition:.2s ease-out}
 .page-nav span.all{width:auto;padding:0 10px}
 #comments-navi>a:hover,#comments-navi>.current,.page-nav>a:hover span,.page-nav>.current span{color:#fff!important;background-color:#f1404b;box-shadow:0px 5px 20px -3px rgba(249, 100, 90, .6)}
-.overflow-x-auto{overflow-x:auto;overflow-y:unset}
+.overflow-x-auto{-webkit-overflow-scrolling: touch;overflow-x:auto;overflow-y:unset}
 .overflow-y-auto{overflow-y:auto;overflow-x:unset}
 .slider-menu-father{border-radius:100px;overflow:hidden}
 .media-title-bg:before{content:"";position:absolute;left:0;height:80px;right:0;bottom:0;background-image:linear-gradient(to top,rgba(0,0,0,.5) 20%,transparent 80%)}
@@ -896,7 +896,14 @@ input.nav-link:disabled,input.nav-link[readonly]{background-color:transparent;op
 #alert_placeholder .alert{display:inline-block}
 #tougaocategorg{padding-left:8px}
 .slider_menu[sliderTab]{position:relative;display:inline-block;overflow: hidden;}
-.slider_menu[sliderTab]>.menu{position:relative;white-space:nowrap;margin:0;text-align:center;display:inline-block;background:rgba(0,0,0,.1);border-radius:100px;padding:5px}
+.slider_menu[sliderTab]>.menu{position:relative;white-space:nowrap;margin:0;text-align:center;display:flex;flex-wrap: nowrap;overflow-x: auto; background:rgba(0,0,0,.1);border-radius:100px;padding:5px;
+  scrollbar-width: none; /* 隐藏滚动条，但这在某些浏览器中可能不起作用 */  
+  /* 对于WebKit浏览器，使用以下属性来隐藏滚动条 */  
+  -ms-overflow-style: -ms-autohiding-scrollbar; /* 对于IE和Edge（旧版） */  
+  &::-webkit-scrollbar {  
+      display: none; /* 隐藏WebKit浏览器的滚动条 */  
+  }  
+}
 .slider_menu[sliderTab] .anchor{background:#515c6b;border-radius:100px;width:60px;height:40px;opacity:0;-webkit-transition:.25s;transition:.25s}
 .slider_menu[sliderTab]>.menu>li{display:inline-block;cursor:pointer}
 .slider_menu[sliderTab]>.menu>li{display:inline-block;cursor:pointer}
