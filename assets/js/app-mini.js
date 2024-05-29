@@ -1116,35 +1116,33 @@ function showAlert(data) {
     $('#alert_placeholder').append( $html );//prepend
     $html.show(200).delay(3500).hide(300, function(){ $(this).remove() }); 
 } 
-function toTarget(menu, padding, isMult) {
-    var slider =  menu.children(".anchor");
-    var target = menu.children(".hover").first() ;
-    if (target && 0 < target.length){
+function toTarget(menuElement, usePadding, isMultiple) {
+    var slider = menuElement.children(".anchor"),
+        hoverElement = menuElement.children(".hover").first(),
+        parentWithScrollbar = menuElement.closest(".tab-auto-scrollbar");
+
+    if (!hoverElement || hoverElement.length === 0) {
+        hoverElement = isMultiple ? menuElement.find(".active").parent() : menuElement.find(".active");
     }
-    else{
-        if(isMult)
-            target = menu.find('.active').parent();
-        else
-            target = menu.find('.active');
-    }
-    if(0 < target.length){
-        if(padding)
-        slider.css({
-            left: target.position().left + target.scrollLeft() + "px",
-            width: target.outerWidth() + "px",
-            opacity: "1"
-        });
-        else
-        slider.css({
-            left: target.position().left + target.scrollLeft() + (target.outerWidth()/4) + "px",
-            width: target.outerWidth()/2 + "px",
-            opacity: "1"
-        });
-    }
-    else{
+
+    if (hoverElement && hoverElement.length > 0) {
+        if (usePadding) {
+            slider.css({
+                left: hoverElement.position().left + parentWithScrollbar.scrollLeft() + "px",
+                width: hoverElement.outerWidth() + "px",
+                opacity: "1"
+            });
+        } else {
+            slider.css({
+                left: hoverElement.position().left + parentWithScrollbar.scrollLeft() + hoverElement.outerWidth() / 4 + "px",
+                width: hoverElement.outerWidth() / 2 + "px",
+                opacity: "1"
+            });
+        }
+    } else {
         slider.css({
             opacity: "0"
-        })
+        });
     }
 }
 var ioadindex = 0;
