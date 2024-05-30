@@ -904,6 +904,85 @@ input.nav-link:disabled,input.nav-link[readonly]{background-color:transparent;op
       display: none; /* 隐藏WebKit浏览器的滚动条 */  
   }  
 }
+/* .url-card .site-togoicon {
+  top: 0;
+  right: 11px;
+  position: absolute;
+  opacity: .08;
+  z-index: 1;
+  line-height: 24px;
+  height: 26px;
+  color: #283593
+}
+
+.togo+.site-togoicon {
+  right: 20px
+}
+
+.url-card .site-togoicon i {
+  font-size: 13px
+}
+
+.url-card .site-togoicon .android i {
+  font-size: 11px;
+  vertical-align: 3%
+}
+
+.url-card .site-togoicon .pc i {
+  vertical-align: -1px
+}
+
+.url-card .site-togoicon .io-warning {
+  font-size: 12px
+}
+
+.url-card .site-togoicon a {
+  margin-left: 0
+}
+.url-card .url-body:hover .site-togoicon {
+  opacity: 1
+}
+
+.url-card .url-body:hover .site-togoicon .warn {
+  color: #ff6b00
+}
+
+.url-card .url-body:hover .site-togoicon .android {
+  color: #00d836
+}
+
+.url-card .url-body:hover .site-togoicon .tv {
+  color: blue
+}
+
+.url-card .url-body:hover .site-togoicon .fufei {
+  color: #ff3700;
+  font-weight: 600
+}
+
+.url-card .url-info {
+  padding-right: 0
+}
+
+.sidebar .site-togoicon {
+  display: none
+}
+.url-card .mini a.togo,.url-card .default a.togo,.url-card .max a.togo {
+  transition: opacity .3s;
+  position: absolute;
+  top: 0;
+  right: 0;
+  opacity: .08;
+  z-index: 1;
+  line-height: 24px;
+  height: 26px;
+  width: 26px;
+  color: #283593
+}
+
+.url-card .mini a.togo i,.url-card .default a.togo i,.url-card .max a.togo i {
+  font-size: 12px
+} */
 .slider_menu[sliderTab] .anchor{background:#515c6b;border-radius:100px;width:60px;height:40px;opacity:0;-webkit-transition:.25s;transition:.25s}
 .slider_menu[sliderTab]>.menu>li{display:inline-block;cursor:pointer}
 .slider_menu[sliderTab]>.menu>li{display:inline-block;cursor:pointer}
