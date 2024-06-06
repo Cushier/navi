@@ -7,7 +7,7 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
-    <title>Outlook | 网站指南 - 青年科技学习导航</title>
+    <title>赣州青年科技职业学校：机房管理 - 青年科技学习导航</title>
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <meta name="keywords" content="青年科技学习导航" />
     
@@ -17,7 +17,6 @@
         href="/assets/css/block-library.min-5.6.2.css" type="text/css" media="all" />
     <link rel="stylesheet" id="iconfont-css" href="/assets/css/iconfont-3.03029.1.css"
         type="text/css" media="all" />
-    
     <link rel="stylesheet" id="bootstrap-css" href="https://cdn.staticfile.net/bootstrap/4.5.3/css/bootstrap.min.css"
         type="text/css" media="all" />
     <link rel="stylesheet" id="fancybox-css" href="https://cdn.staticfile.net/fancybox/3.5.7/jquery.fancybox.min.css"
@@ -27,8 +26,16 @@
     <link rel="stylesheet" id="custom-css" href="/assets/css/custom-style.css"
         type="text/css" media="all" />
     <link rel="stylesheet" id="fortawesome-css" href="https://cdn.staticfile.net/font-awesome/6.5.1/css/all.min.css" type="text/css" />
+    <link rel="stylesheet"href="/assets/js/photo-sphere-viewer/core/index.min.css"/>
+    
+    <link rel="stylesheet" href="/assets/js/photo-sphere-viewer/gallery-plugin/index.css">
     <script type="text/javascript" src="https://cdn.staticfile.net/jquery/3.7.1/jquery.min.js" id="jquery-js"></script>
     <script type="text/javascript" src="/assets/js/content-search.js"  id="content-search-js"></script>
+    <script src="https://cdn.staticfile.net/three.js/0.160.0/three.min.js"></script>
+    <script src="/assets/js/photo-sphere-viewer/core/index.min.js"></script>
+    
+    
+    <script src="/assets/js/photo-sphere-viewer/gallery-plugin/index.js"></script>
     
     <script>
         
@@ -425,122 +432,68 @@
 
 
 <body class="page-body boxed-container">
-  <main role="main" class="flex-shrink-0">
-  <div class="container">
-
-    <div id="content" class="container my-4 my-md-5">
-      <div class="row site-content py-4 py-md-5 mb-xl-5 mb-0 mx-xxl-n5">
-        <div class="background-fx"> <img src="/assets/wp-content/themes/webstackproV2.0406/images/fx/shape-01.svg"
-            class="shape-01"> <img src="/assets/wp-content/themes/webstackproV2.0406/images/fx/shape-02.svg"
-            class="shape-02"> <img src="/assets/wp-content/themes/webstackproV2.0406/images/fx/shape-03.svg"
-            class="shape-03"> <img src="/assets/wp-content/themes/webstackproV2.0406/images/fx/shape-04.svg"
-            class="shape-04"> <img src="/assets/wp-content/themes/webstackproV2.0406/images/fx/shape-05.svg"
-            class="shape-05"> <img src="/assets/wp-content/themes/webstackproV2.0406/images/fx/shape-06.svg"
-            class="shape-06"> <img src="/assets/wp-content/themes/webstackproV2.0406/images/fx/shape-07.svg"
-            class="shape-07"> <img src="/assets/wp-content/themes/webstackproV2.0406/images/fx/shape-08.svg"
-            class="shape-08"> <img src="/assets/wp-content/themes/webstackproV2.0406/images/fx/shape-09.svg"
-            class="shape-09"> <img src="/assets/wp-content/themes/webstackproV2.0406/images/fx/shape-10.svg"
-            class="shape-10"> <img src="/assets/wp-content/themes/webstackproV2.0406/images/fx/shape-11.svg"
-            class="shape-11"> </div> 
+    <main role="main" class="flex-shrink-0">
+    <div class="container">
+      <nav class="text-xs mb-3 mb-md-4"  aria-label="breadcrumb"><i class="fa fa-home fa-sm mr-1"></i> <a class="crumbs" href="/">首页</a><i class="text-primary px-1">•</i><a href="/articles/page/1/" rel="category tag">所有文章</a><i class="text-primary px-1">•</i><a href="#" rel="category tag">赣州青年科技职业学校：机房管理</a>
         
-        <div class="col-12 col-sm-5 col-md-4 col-lg-3">
-          <div class="siteico">
-            <div class="blur blur-layer"
-              style="background: transparent url(https://api.iowen.cn/favicon/outlook.live.com.png) no-repeat center center;-webkit-background-size: cover;-moz-background-size: cover;-o-background-size: cover;background-size: cover;animation: rotate 30s linear infinite;">
-            </div> <img class="img-cover" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/20240429145603.png" alt="Outlook">
+      </nav>
+      <div class="section-feature">        
+        <h1 class="mt-5 title-style">赣州青年科技职业学校：机房管理</h1>
+        
+      </div>
+
+        <div class="content">
+        
+         
+         
+         
+         <div class="toc-container">
+           <button id="toggle-toc" class="btn btn-link d-inline-block">显示/隐藏目录</button>
+           <div class="toc d-none">
+             <nav id="TableOfContents">
+  <ul>
+    <li><a href="#一机房管理系统">一、机房管理系统</a>
+      <ul>
+        <li><a href="#11-软件安装">1.1 软件安装</a></li>
+      </ul>
+    </li>
+  </ul>
+</nav>
+           </div>
+         </div>
+         
             
-            <div class="tool-actions text-center mt-md-4"> 
-              
-              <a href="javascript:;"
-                class="btn-share-toggler btn btn-icon btn-light rounded-circle p-2 mx-3 mx-md-2" data-toggle="tooltip"
-                data-placement="top" title="浏览"> <span class="flex-column text-height-xs"> <i
-                    class="icon-lg iconfont icon-chakan"></i> <small id="busuanzi_container_page_pv" class="share-count text-xs mt-1"><small id="busuanzi_value_page_pv"></small></small>
-                </span> 
-              </a> 
-            </div>
-          </div>
-        </div>
-        <div class="col mt-4 mt-sm-0">
-          <div class="site-body text-sm"> <a class="btn-cat custom_btn-d mb-2"
-              href="/#366a7288b80ec8882b88467447296837">常用推荐</a>
-              
-            <div class="site-name h3 my-3">Outlook</div>
-            <div class="mt-2">
-              <p class="mb-2">Microsoft 电子邮件服务</p>
-              
-                <div class="site-go mt-3">
-                    
-                    <span class="site-go-url">
-                        <a style="margin-right: 10px;" href="/go/?url=https%3a%2f%2foutlook.live.com%2fmail%2f" title="Outlook"
-                          target="_blank" class="btn btn-arrow">
-                            <span>链接直达<i class="iconfont icon-arrow-r-m"></i></span>
-                        </a>
-                    </span>
-                    
-                </div>
-                
-              
-            </div>
-          </div>
-        </div> 
-        
-        <div class="col-12 col-md-12 col-lg-4 mt-4 mt-lg-0">
+            
           
-          <div class="apd apd-right"><a href="https://kzurl14.cn/7xD3ds" rel="nofollow sponsored" target="_blank" style="position: relative;"><span style="position: absolute; left: 4px; color: white !important" class="text-md mb-1"><i class="fas fa-ad"></i></span><img class="rounded" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/20240429155340.png" width="300px" alt="高佣联盟广告"></a></div>
-        </div>
-      </div>
-      <div class="panel site-content card transparent">
-        <div class="card-body p-0">
-          <div class="apd-bg"> </div>
-          <div class="panel-body my-4 ">
-              
-                
-              
-              
+          
+          <h1 id="一机房管理系统">一、机房管理系统</h1>
+<h2 id="11-软件安装">1.1 软件安装</h2>
+<p>原理很简单：先在一台学生机上安装好需要的软件，通过机房管理软件的“<strong>智能对拷</strong>”功能，自动把这台学生机的内容拷贝到其他学生机上。</p>
+<p><strong>提前准备</strong>：</p>
+<ul>
+<li>机房管理系统密码（<strong>切勿告诉任何学生，误操作会导致电脑系统崩坏，后果自负</strong>）</li>
+<li>至少半小时空闲时间（对拷时间无法估计，最好不要课间，会影响学生正常上机）</li>
+<li>需要安装的软件（下载或U盘拷贝或老师机发送）</li>
+</ul>
+<p><strong>操作步骤</strong>：</p>
+<p>1、首先在一台学生机上安装好需要的软件或修改好需要的设置。（此步骤省略，根据实际情况自行操作）</p>
+<p>2、登录机房管理系统，<strong>选中</strong>需要保存的磁盘，<strong>快速保存</strong>当前系统状态，重启学生机。</p>
+<p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606171151837.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606171151837.png"  alt="image-20240606171151837"></a></p>
+<p>3、重启后确认软件成功安装并未被还原，进入机房管理系统，打开<strong>智能对拷</strong>功能<strong>作为发送端</strong>，等待重启进入对拷界面。</p>
+<p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606171839199.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606171839199.png"  alt="image-20240606171839199"></a></p>
+<p>4、点击<strong>开始连线</strong>，确保其他电脑关机状态，点击<strong>开始唤醒</strong>。</p>
+<p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606172348001.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606172348001.png"  alt="image-20240606172348001"></a></p>
+<p>5、除去本机和无法开机的电脑，确认在线电脑台数正确，点击<strong>停止唤醒</strong>，再点击<strong>停止连线</strong>。</p>
+<p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606172659063.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606172659063.png"  alt="image-20240606172659063"></a></p>
+<p>6、点击<strong>智能对拷</strong>，<strong>选中</strong>需要对拷的分区，点击<strong>开始</strong>。</p>
+<p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606173056943.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606173056943.png"  alt="image-20240606173056943"></a></p>
+<p>7、对拷开始，如果正常其他电脑都会显示进度并且进度条为<strong>绿色</strong>，从上面可以看到剩余时间是多少。</p>
+<p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606173240489.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606173240489.png"  alt="image-20240606173240489"></a></p>
+<p>8、对拷结束点击<strong>取消</strong>，回到对拷界面，点击<strong>电源</strong>，快速关机或重启其他电脑。</p>
+<p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606173519623.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240606173519623.png"  alt="image-20240606173519623"></a></p>
 
-              
-              
-              
-
-              <h2 id="outlook邮箱简介">Outlook邮箱简介</h2>
-<p>Outlook邮箱是微软公司推出的一款功能强大的电子邮件服务工具，它不仅仅是一个简单的邮件收发平台，更是一个集邮件、日历、任务、联系人等功能于一体的综合性信息管理平台。Outlook邮箱凭借其高效的沟通协作能力、智能的管理工具以及便捷的移动端体验，受到了全球众多用户的喜爱和信赖。</p>
-<h2 id="outlook邮箱的注册教程">Outlook邮箱的注册教程</h2>
-<p>对于想要体验Outlook邮箱强大功能的用户来说，注册账户是第一步。下面将详细介绍Outlook邮箱的注册过程：</p>
-<p>1、<strong>打开注册页面</strong>：
-进入“Outlook邮箱”的官方网址，点击创建免费账户，进入注册页面。在注册页面，您可以选择使用微软账户直接登录，也可以选择创建新的微软账户。</p>
-<p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240501222104999.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240501222104999.png"  alt="image-20240501222104999"></a></p>
-<p>2、<strong>填写注册信息</strong>：
-在创建新账户的选项中，您需要填写一些基本信息，如姓名、电子邮件地址（即您将要使用的Outlook邮箱地址）、密码等。请确保您提供的信息真实有效，并设置一个易于记忆且安全的密码。</p>
-<p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240501222741522.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240501222741522.png"  alt="image-20240501222741522"></a></p>
-<p>3、<strong>验证身份</strong>：
-回答问题，以验证不是机器人，点击箭头调整物体方向和手指指向一致即可，共3项，完成即可验证成功。</p>
-<p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240501223453943.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240501223453943.png"  alt="image-20240501223453943"></a></p>
-<p>4、<strong>接受服务条款</strong>：
-在验证身份后，基本上已经注册成功了，根据自己需要选择是否接受服务条款。(Tip：可拒绝个人数据导出许可)</p>
-<p><a data-fancybox="article-gallery" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240501223956491.png"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/image-20240501223956491.png"  alt="image-20240501223956491"></a></p>
-<p>5、<strong>完成注册</strong>：
-完成以上步骤后，您的Outlook邮箱账户就成功注册了。现在，您可以登录Outlook邮箱，开始享受高效沟通与管理的便捷体验了。</p>
-<h2 id="outlook邮箱的特色功能">Outlook邮箱的特色功能</h2>
-<p>1、<strong>智能邮件分类</strong>：Outlook邮箱可以根据邮件的内容和发件人等信息，自动将邮件分类到不同的文件夹中，方便您快速查找和管理邮件。</p>
-<p>2、<strong>强大的日历功能</strong>：Outlook邮箱内置了强大的日历管理工具，您可以轻松创建、编辑和共享日历事件，与团队成员协同工作。</p>
-<p>3、<strong>便捷的任务管理</strong>：在Outlook邮箱中，您可以创建待办事项、设置提醒并跟踪任务的进展情况，帮助您高效完成工作任务。</p>
-<p>4、<strong>全球邮件收发</strong>：Outlook邮箱支持全球范围内的邮件收发，无论您身处何地，都能与世界各地的人保持联系。</p>
-<p>总之，Outlook邮箱是一款功能强大、易于使用的电子邮件服务工具。无论您是个人用户还是企业用户，都可以通过Outlook邮箱实现高效沟通与管理的目标。快来注册一个Outlook邮箱账户吧！</p>
-
-              <div class="text-center my-2">
-                <span class=" content-title">
-                  ─────&emsp;特别声明&emsp;─────
-                </span>
-              </div>
-                  <p class="text-muted text-sm m-0"> 本站技术导航提供的 Outlook 都来源于网络，不保证外部链接的准确性和完整性，同时，对于该外部链接的指向，不由青年科技学习导航实际控制，在 2024年05月01日 22:44 收录时，该网页上的内容，都属于合规合法，后期网页的内容如出现违规，可以直接联系网站管理员进行删除，青年科技学习导航不承担任何责任。</p>
-          </div>
-        </div>
-      </div>
-      
-      
-      
-    
-        
+          
+            
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7707360415617520"
      crossorigin="anonymous"></script>
 <ins class="adsbygoogle"
@@ -552,104 +505,366 @@
 <script>
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
-     
-     <iframe src="/drinks/" style="overflow-x:hidden;overflow-y:hidden; border:0xp none #fff; min-height:240px; width:100%;"  frameborder="0" scrolling="no"></iframe>
-      <div class="vcomment"></div>
-      <script src="https://cdn.staticfile.net/valine/1.5.1/Valine.min.js"></script>
-      <script src=/tougao/data.js></script>
-      
+          
+          <iframe src="/drinks/" style="overflow-x:hidden;overflow-y:hidden; border:0xp none #fff; min-height:240px; width:100%;"  frameborder="0" scrolling="no"></iframe>
+          <div class="vcomment"></div>
+          <script src="https://cdn.staticfile.net/valine/1.5.1/Valine.min.js"></script>
+          <script src=/tougao/data.js></script>
+        </div>
+
     </div>
-  </main>
-  <style>
-      .cat_list a:focus,.cat_list a:hover {
-        text-decoration: none;  
-        color: #ca0c16;
+    </main>
+    <script>
+      const toggleTocButton = document.getElementById('toggle-toc');
+      const toc = document.querySelector('.toc');
+      if (toggleTocButton != null){
+        toggleTocButton.addEventListener('click', () => {
+          toc.classList.toggle('d-none');
+        });
       }
-       
-      .panel-body img {
-        max-width: 100%;
-        height: auto;
-        display: block;
-        margin-left: auto;
-        margin-right: auto;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);  
-        transition: box-shadow 0.3s ease-in-out;  
-      }
-      .panel-body img:hover {
-        box-shadow: 0 4px 8px rgba(0, 140, 255, 0.2);  
-      }
-      .panel-body h2 {
-        font-weight: 600;
-      }
-  </style>
-  <script type='text/javascript'>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-  </script>
-            <footer class="main-footer footer-type-1 text-xs">
+
+    
+    
+      
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+    
+    
+    
+    </script>
+    <style>
+           
+           
+          .section-feature {
+              background-color: rgba(255, 255, 255, 0.025);  
+              backdrop-filter: blur(1px);  
+              padding: 2rem;
+              border-radius: 8px;
+              margin-bottom: 1.25rem;
+              overflow: hidden;  
+              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
+              transform: translateY(-2px);  
+              transition: transform 0.3s ease;  
+          }
+          .section-feature .title-style {
+            margin-top: 0 !important;  
+          }
+          .title-style {
+              font-size: 2.25rem;  
+              margin-bottom: 1rem;  
+              font-weight: bold;  
+              text-shadow: 0.5px 0.5px 0.5px rgba(255, 255, 255, 0.5);   
+          }
+
+           
+          .meta-info {
+              font-size: 0.9rem;  
+              color: #6c757d;  
+              line-height: 1.5;  
+              text-shadow: 0.25px 0.25px 0.25px rgba(255, 255, 255, 0.5);  
+          }
+           
+          .btn-link {
+            color: #007bff;  
+            text-decoration: none;
+            cursor: pointer;
+          }
+
+          .btn-link:hover {
+            text-decoration: underline;
+          }
+
+
+          .toc-container {
+            background-color: #f2f2f2;
+            border-radius: .5em;  
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
+            margin-bottom: 1em;  
+          }
+
+
+          body.io-black-mode .toc-container {
+            background-color: rgba(48, 48, 48, 0.9);  
+          }
+
+          .toc {
+            font-size: 0.9rem;
+            padding: 0.5em 0.75em;
+          }
+
+          .toc ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            margin-left: 2em;  
+          }
+
+          .toc ul ul {
+            margin-top: 0.⅓em;  
+            margin-bottom: 0.⅓em;
+            margin-left: 2em;  
+          }
+
+          .toc ul li {
+            margin-bottom: 0.25em;
+          }
+
+          .toc ul li a {
+            text-decoration-skip: ink;
+            text-decoration: none;
+            color: #007bff;
+          }
+
+          .toc ul li a:focus,.toc ul li a:hover {
+            text-decoration: none;
+            color: #ca0c16;  
+          }
+
+           
+          .toc ul li a.active,
+          .toc ul li a:focus-visible {
+            color: #007bff;
+            font-weight: bold;
+          }
+          body.io-black-mode .toc ul li a.active,
+          body.io-black-mode .toc ul li a:focus-visible {
+            color: #007bff;  
+          }
+
+           
+
+          body.io-black-mode .content {
+            background-color: #212529;  
+             
+          }
+
+          .content {
+              font-size: 1.25rem;
+              font-family: 'PingFang SC','Microsoft YaHei','SimHei','Arial','SimSun'; 
+              line-height: 1.6;  
+              background-color: #f5f5f5;  
+              box-shadow: inset 0 0 ¼em rgba(0, 0, 0, 0.05);  
+              padding: 1.25rem;  
+              background-image: linear-gradient(
+                to bottom,
+                rgba(255, 255, 255, 0.¾) 25%,  
+                rgba(255, 255, 255, 0.1) 75%  
+              ), radial-gradient(
+                circle at top left,
+                rgba(255, 255, 255, 0.1) 15%,  
+                transparent 20%
+              );
+              background-size: ⅔em ⅔em, 1em 1em;  
+              background-blend-mode: normal, multiply;  
+              border-radius: 8px;
+          }
+          .content h1,
+          .content h2,
+          .content h3,
+          .content h4,
+          .content h5,
+          .content h6 {
+            margin: 15px 10px 5px -1.438rem;  
+            border-color: #007bff;
+            border-left: 3px solid #007bff;
+            padding-left: 1.25rem;
+          }
+           
+          .content h1 {
+            font-size: 22px;
+            font-weight: 700;
+            line-height: 32px;
+            margin-bottom: 1.75rem;  
+          }
+
+          .content h2 {
+            font-size: 20px;
+            font-weight: 600;
+            line-height: 30px;
+            margin-bottom: 1.5rem;  
+          }
+
+          .content h3 {
+            font-size: 18px;
+            font-weight: 600;
+            line-height: 28px;
+            margin-bottom: 1.25rem;  
+          }
+
+          .content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 26px;
+            margin-bottom: 1rem;  
+          }
+
+          .content h5 {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 24px;
+            margin-bottom: 0.75rem;  
+          }
+
+          .content h6 {
+            font-size: 16px;
+            font-weight: 600;
+            line-height: 24px;
+            margin-bottom: 0.5rem;  
+          }
+
+           
+          .content p {
+            font-size: 1.125rem;  
+            line-height: 1.6;  
+            letter-spacing: -0.01em;  
+            margin-bottom: 1em;  
+          }
+
+           
+          .content blockquote {
+            padding: 0.5em 1em;
+            margin: 1em 0;
+            border-left: 3px solid #ccc;
+            color: #666;
+          }
+
+           
+          .content ul, .content ol {
+            font-size: 1.125rem;
+            margin-top: 0.5em;
+            margin-bottom: 1em;
+          }
+
+          .content li {
+            margin-bottom: 0.5em;
+          }
+          kbd {
+            background-color: #e0e0e0;  
+            border-radius: 4px;
+            padding: 4px 8px;
+            font-size: 0.9em;
+            color: #333;  
+            cursor: pointer;
+
+             
+            box-shadow: 0 2px 5px rgba(0, 140, 255, 0.2);
+
+             
+            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.¼);
+          }
+           
+          .content pre {
+            background-color: #f7f7f7;
+            padding: 8px;
+            margin-left: 0;
+            margin-right: 0;
+            white-space: pre-wrap;
+            overflow-x: auto;
+             
+             
+            margin-bottom: 1em;
+            border-radius: 3px;
+          }
+
+          .content code {
+            font-size: 0.9em;
+            border-radius: 3px;
+            white-space: pre;
+            overflow-x: auto;
+          }
+
+           
+          .content a {
+            text-decoration-skip: ink;
+            color: #007bff;  
+            text-decoration: none;
+          }
+
+          .content a:focus,.content a:hover {
+            text-decoration: none;  
+            color: #ca0c16;
+          }
+
+          .content a:visited {
+            color: #6795b5;  
+          }
+          .mt-5,
+          .text-muted {
+            text-align: center;  
+          }
+           
+          .post-date,
+          .post-update-date,
+          #busuanzi_container_page_pv {
+            display: inline-block;  
+            margin-right: 0.5em;  
+          }
+
+           
+          .content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);  
+            transition: box-shadow 0.3s ease-in-out;  
+          }
+          .content img:hover {
+            box-shadow: 0 4px 8px rgba(0, 140, 255, 0.2);  
+          }
+          #viewer{
+              width: 100%;
+              height: 730px;
+          }
+           
+          @media (max-width: 600px) {
+            .post-date,
+            .post-update-date,
+            #busuanzi_container_page_pv {
+              display: block;  
+              margin-bottom: 0.5em;  
+            }
+            .container{
+              padding-right: .64rem;
+              padding-left: .64rem;
+            }
+            .content {
+              padding: 16px .32rem 16px;
+            }
+            .content h1,
+            .content h2,
+            .content h3,
+            .content h4,
+            .content h5,
+            .content h6 {
+              margin: 15px 10px 5px -0.5rem;  
+              padding-left: 0.25rem;
+            }
+            .content p {
+              font-size: 1.25rem;  
+            }
+            #viewer{
+              width: 100%;
+              height: 500px;
+            }
+          }
+    </style>
+
+        <footer class="main-footer footer-type-1 text-xs">
             <div id="footer-tools" class="d-flex flex-column">
                 <a href="javascript:" id="go-to-up" class="btn rounded-circle go-up m-1" rel="go-top">
                     <i class="iconfont icon-to-up"></i>
@@ -672,7 +887,7 @@
 </div>
 
 
-    <div class="modal fade search-modal" id="search-modal">
+<div class="modal fade search-modal" id="search-modal">
     <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-body">
@@ -827,8 +1042,8 @@
     </div>
 </div>
 
-    
-    <script type='text/javascript' src='/assets/js/jquery.ui.touch-punch.min-0.2.2.js' id='jqueryui-touch-js'></script>
+
+<script type='text/javascript' src='/assets/js/jquery.ui.touch-punch.min-0.2.2.js' id='jqueryui-touch-js'></script>
 <script type='text/javascript' src='/assets/js/clipboard.min-5.6.2.js' id='clipboard-js'></script>
 <script type='text/javascript' src='https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/js/tooltip-extend.js' id='iplaycode-nav-js'></script>
 <script type='text/javascript' id='popper-js-extra'>
@@ -1070,3 +1285,4 @@ function switchNightMode(){
   
 </body>
 </html>
+
