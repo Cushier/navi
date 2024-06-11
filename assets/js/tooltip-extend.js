@@ -479,6 +479,11 @@ function setup_sidebar_menu()
 			$li.addClass('has-sub');
 			$a.on('click', function(ev)
 			{
+        var href = $(this).attr('href');  
+        if (href && href.startsWith('http://') || href.startsWith('https://')) {  
+            // 链接应该导航到URL，不阻止默认行为  
+            return;  
+        }  
 				ev.preventDefault();
 				if(toggle_others)
 				{
