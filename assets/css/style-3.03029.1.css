@@ -87,6 +87,15 @@ a img.aligncenter{display:block;margin-left:auto;margin-right:auto}
 .mini-sidebar .sidebar-menu .sidebar-more {
   display: none;
 }
+.sidebar-item .sidebar-more {
+  transform: scale(.8);
+}
+.sidebar-show>.sidebar-more {
+  transform: scale(.8) rotate(90deg)
+}
+.io-grey-mode .sidebar-menu .sidebar-more {
+  color: #282a2d
+}
 .sidebar-menu .sidebar-more:after {
   content: '';
   position: absolute;
