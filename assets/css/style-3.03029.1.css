@@ -69,7 +69,37 @@ a img.aligncenter{display:block;margin-left:auto;margin-right:auto}
 .sidebar-item.sidebar-show ul{display:block}
 .sidebar-item ul li{display:block}
 .sidebar-menu-inner ul li ul li a{margin-left:36px} 
-.sidebar-more{float:right;margin-right:24px;line-height:50px!important;transition:transform .3s}
+/* .sidebar-more{float:right;margin-right:24px;line-height:50px!important;transition:transform .3s} */
+.sidebar-more {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  right: 0;
+  padding: 0 16px;
+  line-height: 48px !important;
+  transition: transform .3s
+}
+.sidebar-menu .sidebar-more {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+.mini-sidebar .sidebar-menu .sidebar-more {
+  display: none;
+}
+.sidebar-menu .sidebar-more:after {
+  content: '';
+  position: absolute;
+  background: rgba(136,136,136,.1);
+  width: 40px;
+  height: 40px;
+  border-radius: 40px;
+  opacity: 0;
+  transition: .3s
+}
+.sidebar-menu .sidebar-more:hover::after {
+  opacity: 1;
+}
 .sidebar-item .label-Primary{float:right;margin-right:24px}
 a>i.sidebar-more{transform:scale(.8)}
 .sidebar-show>a>i.sidebar-more{transform:scale(.8) rotate(90deg)}

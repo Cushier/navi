@@ -365,6 +365,24 @@
             }
         }
     });
+    $('.sidebar-menu-inner i').on('click',function(){//.sidebar-menu-inner a //.has-sub a  
+
+      //console.log('--->>>'+$(this).find('span').text());
+      if (!$('.sidebar-nav').hasClass('mini-sidebar')) {//菜单栏没有最小化   
+          $(this).parent("li").siblings("li.sidebar-item").children('ul').slideUp(200);
+          if ($(this).next().css('display') == "none") { //展开
+              //展开未展开
+              // $('.sidebar-item').children('ul').slideUp(300);
+              $(this).next('ul').slideDown(200);
+              $(this).parent('li').addClass('sidebar-show').siblings('li').removeClass('sidebar-show');
+          }else{ //收缩
+              //收缩已展开
+              $(this).next('ul').slideUp(200);
+              //$('.sidebar-item.sidebar-show').removeClass('sidebar-show');
+              $(this).parent('li').removeClass('sidebar-show');
+          }
+      }
+  });
     //菜单栏最小化
     $('#mini-button').on('click',function(){
         trigger_lsm_mini(false);
