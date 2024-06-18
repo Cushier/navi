@@ -1152,7 +1152,7 @@ function toTarget(menuElement, usePadding, isMultiple) {
             });
         } else {
             slider.css({
-                left: hoverElement.position().left + parentWithScrollbar.scrollLeft() + hoverElement.outerWidth() / 4 + "px",
+                left: hoverElement.position().left + hoverElement.scrollLeft() + hoverElement.outerWidth() / 4 + "px",
                 width: hoverElement.outerWidth() / 2 + "px",
                 opacity: "1"
             });
@@ -1164,6 +1164,38 @@ function toTarget(menuElement, usePadding, isMultiple) {
     }
 }
 var ioadindex = 0;
+// function toTarget(menu, padding, isMult) {
+//   var slider =  menu.children(".anchor");
+//   var target = menu.children(".hover").first() ;
+//   if (target && 0 < target.length){
+//   }
+//   else{
+//       if(isMult)
+//           target = menu.find('.active').parent();
+//       else
+//           target = menu.find('.active');
+//   }
+//   if(0 < target.length){
+//       if(padding)
+//       slider.css({
+//           left: target.position().left + target.scrollLeft() + "px",
+//           width: target.outerWidth() + "px",
+//           opacity: "1"
+//       });
+//       else
+//       slider.css({
+//           left: target.position().left + target.scrollLeft() + (target.outerWidth()/4) + "px",
+//           width: target.outerWidth()/2 + "px",
+//           opacity: "1"
+//       });
+//   }
+//   else{
+//       slider.css({
+//           opacity: "0"
+//       })
+//   }
+// }
+// var ioadindex = 0;
 function loadingShow(parent = "body"){
     if($('.load-loading')[0]){
         ioadindex ++;
