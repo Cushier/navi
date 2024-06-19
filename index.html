@@ -678,7 +678,7 @@
                             
                               <div class="carousel-item ">
                                   <a class="overflowClip_1" 
-                                  href="#">功能更新：网址指南页面侧边栏、网址指南备用链接、全景多图浏览、全景图片浏览功能、文章列表样式升级、网址指南页面链接过渡</a>
+                                  href="#">功能更新：我的导航最近访问、网址指南页面侧边栏、网址指南备用链接、全景多图浏览、全景图片浏览功能、文章列表样式升级</a>
                               </div>
                           
                         </div>
@@ -696,7 +696,64 @@
 </div>
 
 
+
 <div id="content" class="content-site customize-site">
+
+  <div class="d-flex flex-fill customize-menu">
+    <div class='slider_menu mini_tab' sliderTab="sliderTab" >
+        <ul class="nav nav-pills tab-auto-scrollbar menu" role="tablist"> 
+            <li class="pagenumber nav-item">
+                <a class="nav-link active"  data-toggle="pill" href="#my-nav">我的导航</a>
+            </li><li class="pagenumber nav-item">
+                <a class="nav-link"  data-toggle="pill" href="#my-click">最近访问</a>
+            </li>
+        </ul>
+    </div> 
+    <div class="flex-fill"></div>
+    <a class='btn-edit text-xs' href="javascript:;">编辑</a>
+  </div>
+  <div id="cust-sites" class="tab-content mt-4">
+    <div id="my-nav" class="tab-pane active">                    
+        <div class="row io-mx-n2">
+            <div class="col-lg-12 customize_nothing">
+                <div class="nothing mb-4">没有数据！点右上角编辑添加网址</div>
+            </div>
+            <div class="url-card col-6  col-2a col-sm-2a col-md-2a col-lg-3a col-xl-5a col-xxl-6a  col-xxl-10a" id="add-site" style="display: none">
+                <a class="btn p-0 rounded mb-3" data-toggle="modal" data-target="#addSite" style="background: rgba(136, 136, 136, 0.1);width: 100%;text-align: center;border: 2px dashed rgba(136, 136, 136, 0.5);">
+                    <div class="text-lg"  style="padding:0.22rem 0.5rem;">
+                        +
+                    </div>
+                </a>
+            </div> 
+        </div> 
+    </div> 
+    <div id="my-click" class="tab-pane">            
+        <div class="row io-mx-n2 my-click-list">   
+            <div class="col-lg-12 io-px-2 customize_nothing_click">
+                <div class="nothing mb-4">没有数据！等待你的访问哦 ^_^</div>
+            </div>  
+        </div> 
+    </div>  
+  </div>
+  
+  <div class="modal fade" id="addSite">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">  
+        <div class="modal-body">
+            <div class="modal-title text-center text-lg mb-4">添加自定义网址</div>
+            <form class="add-link-form" action="javascript:;">
+                <input type="text" class="site-add-name form-control mb-2" placeholder="网站名称" required="required">
+                <input type="url" class="site-add-url form-control mb-2" value="https://" required="required">
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-danger btn-xs mr-3">添加</button>
+                    <button type="button" class="btn-close-fm btn btn-dark btn-xs" data-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>  
+    </div>
+  </div>
+  </div>
+  
     
         
 	    
@@ -714,7 +771,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://tophub.today/" target="_blank"  data-id="00" data-url="" class="card no-c  mb-4 site-00" data-toggle="tooltip" data-placement="bottom"  title="提供各站热榜聚合：微信、今日头条、百度、知乎...追踪全网热点、简单高效阅读、会员兑换码 0GWIL">
+                        <a href="https://tophub.today/" target="_blank"  data-id="00" data-url="https://tophub.today/" class="card no-c  mb-4 site-00" data-toggle="tooltip" data-placement="bottom"  title="提供各站热榜聚合：微信、今日头条、百度、知乎...追踪全网热点、简单高效阅读、会员兑换码 0GWIL">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -745,7 +802,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://www.bilibili.com/" target="_blank"  data-id="01" data-url="" class="card no-c  mb-4 site-01" data-toggle="tooltip" data-placement="bottom"  title="(゜-゜)つロ 干杯~-bilibili">
+                        <a href="https://www.bilibili.com/" target="_blank"  data-id="01" data-url="https://www.bilibili.com/" class="card no-c  mb-4 site-01" data-toggle="tooltip" data-placement="bottom"  title="(゜-゜)つロ 干杯~-bilibili">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -776,7 +833,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://yiyan.baidu.com/" target="_blank"  data-id="02" data-url="" class="card no-c  mb-4 site-02" data-toggle="tooltip" data-placement="bottom"  title="百度大模型技术的免费智能对话工具">
+                        <a href="https://yiyan.baidu.com/" target="_blank"  data-id="02" data-url="https://yiyan.baidu.com/" class="card no-c  mb-4 site-02" data-toggle="tooltip" data-placement="bottom"  title="百度大模型技术的免费智能对话工具">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -807,7 +864,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://www.deepl.com/" target="_blank"  data-id="03" data-url="" class="card no-c  mb-4 site-03" data-toggle="tooltip" data-placement="bottom"  title="全世界最准确的翻译">
+                        <a href="https://www.deepl.com/" target="_blank"  data-id="03" data-url="https://www.deepl.com/" class="card no-c  mb-4 site-03" data-toggle="tooltip" data-placement="bottom"  title="全世界最准确的翻译">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -838,7 +895,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://github.com/" target="_blank"  data-id="04" data-url="" class="card no-c  mb-4 site-04" data-toggle="tooltip" data-placement="bottom"  title="一个面向开源及私有软件项目的托管平台，因为只支持Git作为唯一的版本库格式进行托管，故名GitHub">
+                        <a href="https://github.com/" target="_blank"  data-id="04" data-url="https://github.com/" class="card no-c  mb-4 site-04" data-toggle="tooltip" data-placement="bottom"  title="一个面向开源及私有软件项目的托管平台，因为只支持Git作为唯一的版本库格式进行托管，故名GitHub">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -869,7 +926,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://filehelper.weixin.qq.com/" target="_blank"  data-id="05" data-url="" class="card no-c  mb-4 site-05" data-toggle="tooltip" data-placement="bottom"  title="使用文件传输助手，手机电脑轻松互传文件">
+                        <a href="https://filehelper.weixin.qq.com/" target="_blank"  data-id="05" data-url="https://filehelper.weixin.qq.com/" class="card no-c  mb-4 site-05" data-toggle="tooltip" data-placement="bottom"  title="使用文件传输助手，手机电脑轻松互传文件">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -900,7 +957,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://mail.qq.com/" target="_blank"  data-id="06" data-url="" class="card no-c  mb-4 site-06" data-toggle="tooltip" data-placement="bottom"  title="腾讯出品，必属精品">
+                        <a href="https://mail.qq.com/" target="_blank"  data-id="06" data-url="https://mail.qq.com/" class="card no-c  mb-4 site-06" data-toggle="tooltip" data-placement="bottom"  title="腾讯出品，必属精品">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -931,7 +988,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://mail.google.com/" target="_blank"  data-id="07" data-url="" class="card no-c  mb-4 site-07" data-toggle="tooltip" data-placement="bottom"  title="Google 电子邮件服务">
+                        <a href="https://mail.google.com/" target="_blank"  data-id="07" data-url="https://mail.google.com/" class="card no-c  mb-4 site-07" data-toggle="tooltip" data-placement="bottom"  title="Google 电子邮件服务">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -962,7 +1019,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://outlook.live.com/mail/" target="_blank"  data-id="08" data-url="" class="card no-c  mb-4 site-08" data-toggle="tooltip" data-placement="bottom"  title="Microsoft 电子邮件服务">
+                        <a href="https://outlook.live.com/mail/" target="_blank"  data-id="08" data-url="https://outlook.live.com/mail/" class="card no-c  mb-4 site-08" data-toggle="tooltip" data-placement="bottom"  title="Microsoft 电子邮件服务">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -993,7 +1050,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://microsoftedge.microsoft.com/" target="_blank"  data-id="09" data-url="" class="card no-c  mb-4 site-09" data-toggle="tooltip" data-placement="bottom"  title="获取 Microsoft Edge 扩展">
+                        <a href="https://microsoftedge.microsoft.com/" target="_blank"  data-id="09" data-url="https://microsoftedge.microsoft.com/" class="card no-c  mb-4 site-09" data-toggle="tooltip" data-placement="bottom"  title="获取 Microsoft Edge 扩展">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1024,7 +1081,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://chromewebstore.google.com/" target="_blank"  data-id="010" data-url="" class="card no-c  mb-4 site-010" data-toggle="tooltip" data-placement="bottom"  title="获取 Google Chrome 扩展">
+                        <a href="https://chromewebstore.google.com/" target="_blank"  data-id="010" data-url="https://chromewebstore.google.com/" class="card no-c  mb-4 site-010" data-toggle="tooltip" data-placement="bottom"  title="获取 Google Chrome 扩展">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1055,7 +1112,7 @@
                 <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a">
                     <div class="url-body default">
 			        
-                        <a href="https://www.crxsoso.com/" target="_blank"  data-id="011" data-url="" class="card no-c  mb-4 site-011" data-toggle="tooltip" data-placement="bottom"  title="一个牛X的扩展和应用商店">
+                        <a href="https://www.crxsoso.com/" target="_blank"  data-id="011" data-url="https://www.crxsoso.com/" class="card no-c  mb-4 site-011" data-toggle="tooltip" data-placement="bottom"  title="一个牛X的扩展和应用商店">
 			        
                             <div class="card-body url-content d-flex align-items-center"> 
                                 <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1084,7 +1141,7 @@
                 </div>
                 
             </div>
-            <br />
+            
             
         
     
@@ -1134,7 +1191,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.smartedu.cn/" target="_blank"  data-id="100" data-url="" class="card no-c  mb-4 site-100" data-toggle="tooltip" data-placement="bottom"  title="人人皆学，处处能学，时时可学">
+                                  <a href="https://www.smartedu.cn/" target="_blank"  data-id="100" data-url="https://www.smartedu.cn/" class="card no-c  mb-4 site-100" data-toggle="tooltip" data-placement="bottom"  title="人人皆学，处处能学，时时可学">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1163,7 +1220,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://le.ouchn.cn/" target="_blank"  data-id="101" data-url="" class="card no-c  mb-4 site-101" data-toggle="tooltip" data-placement="bottom"  title="国家开放大学为推进教育公平、减少“数字鸿沟”，在现有“一路一网一平台”基础上打造的全新学习平台，面向社会免费开放">
+                                  <a href="https://le.ouchn.cn/" target="_blank"  data-id="101" data-url="https://le.ouchn.cn/" class="card no-c  mb-4 site-101" data-toggle="tooltip" data-placement="bottom"  title="国家开放大学为推进教育公平、减少“数字鸿沟”，在现有“一路一网一平台”基础上打造的全新学习平台，面向社会免费开放">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1192,7 +1249,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.icourse163.org/" target="_blank"  data-id="102" data-url="" class="card no-c  mb-4 site-102" data-toggle="tooltip" data-placement="bottom"  title="教育部爱课程网携手网易云课堂打造的在线学习平台，汇集中国知名高校课程，与名师零距离">
+                                  <a href="https://www.icourse163.org/" target="_blank"  data-id="102" data-url="https://www.icourse163.org/" class="card no-c  mb-4 site-102" data-toggle="tooltip" data-placement="bottom"  title="教育部爱课程网携手网易云课堂打造的在线学习平台，汇集中国知名高校课程，与名师零距离">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1221,7 +1278,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.kepuchina.cn/" target="_blank"  data-id="103" data-url="" class="card no-c  mb-4 site-103" data-toggle="tooltip" data-placement="bottom"  title="科普中国网_让科技知识在网上和生活中流行">
+                                  <a href="https://www.kepuchina.cn/" target="_blank"  data-id="103" data-url="https://www.kepuchina.cn/" class="card no-c  mb-4 site-103" data-toggle="tooltip" data-placement="bottom"  title="科普中国网_让科技知识在网上和生活中流行">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1250,7 +1307,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.allhistory.com/" target="_blank"  data-id="104" data-url="" class="card no-c  mb-4 site-104" data-toggle="tooltip" data-placement="bottom"  title="全历史(Allhistory)以AI知识图谱为核心引擎，通过高度时空化、关联化数据的方式构造及展现数字人文内容，尤其是历史知识。让用户沉浸在纵横开阔、左图右史的（历史、人文、社科等）知识海洋中">
+                                  <a href="https://www.allhistory.com/" target="_blank"  data-id="104" data-url="https://www.allhistory.com/" class="card no-c  mb-4 site-104" data-toggle="tooltip" data-placement="bottom"  title="全历史(Allhistory)以AI知识图谱为核心引擎，通过高度时空化、关联化数据的方式构造及展现数字人文内容，尤其是历史知识。让用户沉浸在纵横开阔、左图右史的（历史、人文、社科等）知识海洋中">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1279,7 +1336,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.duolingo.cn/" target="_blank"  data-id="105" data-url="" class="card no-c  mb-4 site-105" data-toggle="tooltip" data-placement="bottom"  title="学习外语，寓教于乐，小口小口啃外语，科学又有趣！">
+                                  <a href="https://www.duolingo.cn/" target="_blank"  data-id="105" data-url="https://www.duolingo.cn/" class="card no-c  mb-4 site-105" data-toggle="tooltip" data-placement="bottom"  title="学习外语，寓教于乐，小口小口啃外语，科学又有趣！">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1315,7 +1372,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.biancheng.love/typinghome" target="_blank"  data-id="110" data-url="" class="card no-c  mb-4 site-110" data-toggle="tooltip" data-placement="bottom"  title="编程派-打字修炼场">
+                                  <a href="https://www.biancheng.love/typinghome" target="_blank"  data-id="110" data-url="https://www.biancheng.love/typinghome" class="card no-c  mb-4 site-110" data-toggle="tooltip" data-placement="bottom"  title="编程派-打字修炼场">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1344,7 +1401,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.biancheng.love/typingarena" target="_blank"  data-id="111" data-url="" class="card no-c  mb-4 site-111" data-toggle="tooltip" data-placement="bottom"  title="编程派-打字竞技场">
+                                  <a href="https://www.biancheng.love/typingarena" target="_blank"  data-id="111" data-url="https://www.biancheng.love/typingarena" class="card no-c  mb-4 site-111" data-toggle="tooltip" data-placement="bottom"  title="编程派-打字竞技场">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1373,7 +1430,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://zty.pe/" target="_blank"  data-id="112" data-url="" class="card no-c  mb-4 site-112" data-toggle="tooltip" data-placement="bottom"  title="单词打字飞机游戏">
+                                  <a href="https://zty.pe/" target="_blank"  data-id="112" data-url="https://zty.pe/" class="card no-c  mb-4 site-112" data-toggle="tooltip" data-placement="bottom"  title="单词打字飞机游戏">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1402,7 +1459,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://chiji.dazidazi.com/" target="_blank"  data-id="113" data-url="" class="card no-c  mb-4 site-113" data-toggle="tooltip" data-placement="bottom"  title="多人在线打字竞速吃鸡">
+                                  <a href="https://chiji.dazidazi.com/" target="_blank"  data-id="113" data-url="https://chiji.dazidazi.com/" class="card no-c  mb-4 site-113" data-toggle="tooltip" data-placement="bottom"  title="多人在线打字竞速吃鸡">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1431,7 +1488,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://qnkjxx.typingclub.com/" target="_blank"  data-id="114" data-url="" class="card no-c  mb-4 site-114" data-toggle="tooltip" data-placement="bottom"  title="青年科技职业学校打字修炼场地">
+                                  <a href="https://qnkjxx.typingclub.com/" target="_blank"  data-id="114" data-url="https://qnkjxx.typingclub.com/" class="card no-c  mb-4 site-114" data-toggle="tooltip" data-placement="bottom"  title="青年科技职业学校打字修炼场地">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1467,7 +1524,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="/school/qnkjxx/" target="_blank"  data-id="120" data-url="" class="card no-c  mb-4 site-120" data-toggle="tooltip" data-placement="bottom"  title="赣州青年科技学校2024年招生简章">
+                                  <a href="/school/qnkjxx/" target="_blank"  data-id="120" data-url="/school/qnkjxx/" class="card no-c  mb-4 site-120" data-toggle="tooltip" data-placement="bottom"  title="赣州青年科技学校2024年招生简章">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1491,7 +1548,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="/school/qnkjxx-jifang/" target="_blank"  data-id="121" data-url="" class="card no-c  mb-4 site-121" data-toggle="tooltip" data-placement="bottom"  title="赣州青年科技职业学校：机房管理">
+                                  <a href="/school/qnkjxx-jifang/" target="_blank"  data-id="121" data-url="/school/qnkjxx-jifang/" class="card no-c  mb-4 site-121" data-toggle="tooltip" data-placement="bottom"  title="赣州青年科技职业学校：机房管理">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1569,7 +1626,7 @@
             
         </div> 
         
-        <br />
+        
         
     
         
@@ -1628,7 +1685,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.neea.edu.cn/" target="_blank"  data-id="200" data-url="" class="card no-c  mb-4 site-200" data-toggle="tooltip" data-placement="bottom"  title="中国教育考试网">
+                                  <a href="https://www.neea.edu.cn/" target="_blank"  data-id="200" data-url="https://www.neea.edu.cn/" class="card no-c  mb-4 site-200" data-toggle="tooltip" data-placement="bottom"  title="中国教育考试网">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1657,7 +1714,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="http://www.jxeea.cn/" target="_blank"  data-id="201" data-url="" class="card no-c  mb-4 site-201" data-toggle="tooltip" data-placement="bottom"  title="江西省教育考试院">
+                                  <a href="http://www.jxeea.cn/" target="_blank"  data-id="201" data-url="http://www.jxeea.cn/" class="card no-c  mb-4 site-201" data-toggle="tooltip" data-placement="bottom"  title="江西省教育考试院">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1686,7 +1743,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="http://www.danzhaowang.com/" target="_blank"  data-id="202" data-url="" class="card no-c  mb-4 site-202" data-toggle="tooltip" data-placement="bottom"  title="全国高职分类考试、单独招生考试培训门户网站">
+                                  <a href="http://www.danzhaowang.com/" target="_blank"  data-id="202" data-url="http://www.danzhaowang.com/" class="card no-c  mb-4 site-202" data-toggle="tooltip" data-placement="bottom"  title="全国高职分类考试、单独招生考试培训门户网站">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1710,7 +1767,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://ntce.neea.edu.cn/" target="_blank"  data-id="203" data-url="" class="card no-c  mb-4 site-203" data-toggle="tooltip" data-placement="bottom"  title="中小学教师资格考试(NTCE) - 中国教育考试网">
+                                  <a href="https://ntce.neea.edu.cn/" target="_blank"  data-id="203" data-url="https://ntce.neea.edu.cn/" class="card no-c  mb-4 site-203" data-toggle="tooltip" data-placement="bottom"  title="中小学教师资格考试(NTCE) - 中国教育考试网">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1734,7 +1791,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://bm.cltt.org/" target="_blank"  data-id="204" data-url="" class="card no-c  mb-4 site-204" data-toggle="tooltip" data-placement="bottom"  title="国家普通话水平测试在线报名系统">
+                                  <a href="https://bm.cltt.org/" target="_blank"  data-id="204" data-url="https://bm.cltt.org/" class="card no-c  mb-4 site-204" data-toggle="tooltip" data-placement="bottom"  title="国家普通话水平测试在线报名系统">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1758,7 +1815,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://cet.neea.edu.cn/" target="_blank"  data-id="205" data-url="" class="card no-c  mb-4 site-205" data-toggle="tooltip" data-placement="bottom"  title="全国大学英语四、六级考试(CET) - 中国教育考试网">
+                                  <a href="https://cet.neea.edu.cn/" target="_blank"  data-id="205" data-url="https://cet.neea.edu.cn/" class="card no-c  mb-4 site-205" data-toggle="tooltip" data-placement="bottom"  title="全国大学英语四、六级考试(CET) - 中国教育考试网">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1782,7 +1839,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://ncre.neea.edu.cn/" target="_blank"  data-id="206" data-url="" class="card no-c  mb-4 site-206" data-toggle="tooltip" data-placement="bottom"  title="全国计算机等级考试(NCRE) - 中国教育考试网">
+                                  <a href="https://ncre.neea.edu.cn/" target="_blank"  data-id="206" data-url="https://ncre.neea.edu.cn/" class="card no-c  mb-4 site-206" data-toggle="tooltip" data-placement="bottom"  title="全国计算机等级考试(NCRE) - 中国教育考试网">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1813,7 +1870,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.cpta.com.cn/" target="_blank"  data-id="210" data-url="" class="card no-c  mb-4 site-210" data-toggle="tooltip" data-placement="bottom"  title="中国人事考试网">
+                                  <a href="https://www.cpta.com.cn/" target="_blank"  data-id="210" data-url="https://www.cpta.com.cn/" class="card no-c  mb-4 site-210" data-toggle="tooltip" data-placement="bottom"  title="中国人事考试网">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1842,7 +1899,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="http://www.jxpta.com/" target="_blank"  data-id="211" data-url="" class="card no-c  mb-4 site-211" data-toggle="tooltip" data-placement="bottom"  title="江西人事考试网">
+                                  <a href="http://www.jxpta.com/" target="_blank"  data-id="211" data-url="http://www.jxpta.com/" class="card no-c  mb-4 site-211" data-toggle="tooltip" data-placement="bottom"  title="江西人事考试网">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1878,7 +1935,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.ruankao.org.cn/" target="_blank"  data-id="220" data-url="" class="card no-c  mb-4 site-220" data-toggle="tooltip" data-placement="bottom"  title="全国计算机技术与软件专业技术初、中、高级资格（水平）考试">
+                                  <a href="https://www.ruankao.org.cn/" target="_blank"  data-id="220" data-url="https://www.ruankao.org.cn/" class="card no-c  mb-4 site-220" data-toggle="tooltip" data-placement="bottom"  title="全国计算机技术与软件专业技术初、中、高级资格（水平）考试">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1902,7 +1959,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="http://kzp.mof.gov.cn/" target="_blank"  data-id="221" data-url="" class="card no-c  mb-4 site-221" data-toggle="tooltip" data-placement="bottom"  title="全国会计专业技术初、中、高级资格考试">
+                                  <a href="http://kzp.mof.gov.cn/" target="_blank"  data-id="221" data-url="http://kzp.mof.gov.cn/" class="card no-c  mb-4 site-221" data-toggle="tooltip" data-placement="bottom"  title="全国会计专业技术初、中、高级资格考试">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1926,7 +1983,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://ksbm.ecctaa.cn/" target="_blank"  data-id="222" data-url="" class="card no-c  mb-4 site-222" data-toggle="tooltip" data-placement="bottom"  title="税务师考试报名入口">
+                                  <a href="https://ksbm.ecctaa.cn/" target="_blank"  data-id="222" data-url="https://ksbm.ecctaa.cn/" class="card no-c  mb-4 site-222" data-toggle="tooltip" data-placement="bottom"  title="税务师考试报名入口">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1950,7 +2007,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://cpaexam.cicpa.org.cn/" target="_blank"  data-id="223" data-url="" class="card no-c  mb-4 site-223" data-toggle="tooltip" data-placement="bottom"  title="注册会计师全国统一考试网上报名">
+                                  <a href="https://cpaexam.cicpa.org.cn/" target="_blank"  data-id="223" data-url="https://cpaexam.cicpa.org.cn/" class="card no-c  mb-4 site-223" data-toggle="tooltip" data-placement="bottom"  title="注册会计师全国统一考试网上报名">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -1981,7 +2038,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.vcsc.org.cn/" target="_blank"  data-id="230" data-url="" class="card no-c  mb-4 site-230" data-toggle="tooltip" data-placement="bottom"  title="全国职业院校技能大赛是教育部发起并牵头，联合国务院其他有关部门以及有关行业组织、人民团体、学术团体和地方共同举办的一项公益性、全国性职业院校师生综合技能竞赛活动">
+                                  <a href="https://www.vcsc.org.cn/" target="_blank"  data-id="230" data-url="https://www.vcsc.org.cn/" class="card no-c  mb-4 site-230" data-toggle="tooltip" data-placement="bottom"  title="全国职业院校技能大赛是教育部发起并牵头，联合国务院其他有关部门以及有关行业组织、人民团体、学术团体和地方共同举办的一项公益性、全国性职业院校师生综合技能竞赛活动">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2017,7 +2074,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.zhipin.com/" target="_blank"  data-id="240" data-url="" class="card no-c  mb-4 site-240" data-toggle="tooltip" data-placement="bottom"  title="找工作上BOSS直聘与Boss直接开聊、加快面试、即时反馈">
+                                  <a href="https://www.zhipin.com/" target="_blank"  data-id="240" data-url="https://www.zhipin.com/" class="card no-c  mb-4 site-240" data-toggle="tooltip" data-placement="bottom"  title="找工作上BOSS直聘与Boss直接开聊、加快面试、即时反馈">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2041,7 +2098,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.zhaopin.com/" target="_blank"  data-id="241" data-url="" class="card no-c  mb-4 site-241" data-toggle="tooltip" data-placement="bottom"  title="求职_找工作-智联招聘">
+                                  <a href="https://www.zhaopin.com/" target="_blank"  data-id="241" data-url="https://www.zhaopin.com/" class="card no-c  mb-4 site-241" data-toggle="tooltip" data-placement="bottom"  title="求职_找工作-智联招聘">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2065,7 +2122,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.51job.com/" target="_blank"  data-id="242" data-url="" class="card no-c  mb-4 site-242" data-toggle="tooltip" data-placement="bottom"  title="招聘网_人才网_找工作_求职_上前程无忧">
+                                  <a href="https://www.51job.com/" target="_blank"  data-id="242" data-url="https://www.51job.com/" class="card no-c  mb-4 site-242" data-toggle="tooltip" data-placement="bottom"  title="招聘网_人才网_找工作_求职_上前程无忧">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2089,7 +2146,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.797rs.com/" target="_blank"  data-id="243" data-url="" class="card no-c  mb-4 site-243" data-toggle="tooltip" data-placement="bottom"  title="赣州招聘，赣州人才招聘网，创办于2008年">
+                                  <a href="https://www.797rs.com/" target="_blank"  data-id="243" data-url="https://www.797rs.com/" class="card no-c  mb-4 site-243" data-toggle="tooltip" data-placement="bottom"  title="赣州招聘，赣州人才招聘网，创办于2008年">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2113,7 +2170,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.gz91.com/" target="_blank"  data-id="244" data-url="" class="card no-c  mb-4 site-244" data-toggle="tooltip" data-placement="bottom"  title="赣州招聘，赣州人才招聘网，创办于2003年">
+                                  <a href="https://www.gz91.com/" target="_blank"  data-id="244" data-url="https://www.gz91.com/" class="card no-c  mb-4 site-244" data-toggle="tooltip" data-placement="bottom"  title="赣州招聘，赣州人才招聘网，创办于2003年">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2139,7 +2196,7 @@
             
         </div> 
         
-        <br />
+        
         
     
         
@@ -2193,7 +2250,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://yiyan.baidu.com/" target="_blank"  data-id="300" data-url="" class="card no-c  mb-4 site-300" data-toggle="tooltip" data-placement="bottom"  title="百度大模型技术的免费智能对话工具">
+                                  <a href="https://yiyan.baidu.com/" target="_blank"  data-id="300" data-url="https://yiyan.baidu.com/" class="card no-c  mb-4 site-300" data-toggle="tooltip" data-placement="bottom"  title="百度大模型技术的免费智能对话工具">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2222,7 +2279,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://tongyi.aliyun.com/qianwen/" target="_blank"  data-id="301" data-url="" class="card no-c  mb-4 site-301" data-toggle="tooltip" data-placement="bottom"  title="阿里巴巴推出的免费AI聊天工具，基于通义大模型">
+                                  <a href="https://tongyi.aliyun.com/qianwen/" target="_blank"  data-id="301" data-url="https://tongyi.aliyun.com/qianwen/" class="card no-c  mb-4 site-301" data-toggle="tooltip" data-placement="bottom"  title="阿里巴巴推出的免费AI聊天工具，基于通义大模型">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2246,7 +2303,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://hailuoai.com/" target="_blank"  data-id="302" data-url="" class="card no-c  mb-4 site-302" data-toggle="tooltip" data-placement="bottom"  title="是 MiniMax 基于通用大模型为用户打造的AI伙伴，可以帮你分析财报、速读长文、创作文案、智能搜索等、拍照答疑等等，也支持语音通话。10倍速获取信息、10倍速解决问题。有问题，找海螺AI。">
+                                  <a href="https://hailuoai.com/" target="_blank"  data-id="302" data-url="https://hailuoai.com/" class="card no-c  mb-4 site-302" data-toggle="tooltip" data-placement="bottom"  title="是 MiniMax 基于通用大模型为用户打造的AI伙伴，可以帮你分析财报、速读长文、创作文案、智能搜索等、拍照答疑等等，也支持语音通话。10倍速获取信息、10倍速解决问题。有问题，找海螺AI。">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2275,7 +2332,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://chat.openai.com/" target="_blank"  data-id="303" data-url="" class="card no-c  mb-4 site-303" data-toggle="tooltip" data-placement="bottom"  title="OpenAI研发的一款聊天机器人程序">
+                                  <a href="https://chat.openai.com/" target="_blank"  data-id="303" data-url="https://chat.openai.com/" class="card no-c  mb-4 site-303" data-toggle="tooltip" data-placement="bottom"  title="OpenAI研发的一款聊天机器人程序">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2299,7 +2356,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://sharedchat.fun/" target="_blank"  data-id="304" data-url="" class="card no-c  mb-4 site-304" data-toggle="tooltip" data-placement="bottom"  title="本页面中包含一些免费的共享ChatGPT账号">
+                                  <a href="https://sharedchat.fun/" target="_blank"  data-id="304" data-url="https://sharedchat.fun/" class="card no-c  mb-4 site-304" data-toggle="tooltip" data-placement="bottom"  title="本页面中包含一些免费的共享ChatGPT账号">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2330,7 +2387,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://yige.baidu.com/" target="_blank"  data-id="310" data-url="" class="card no-c  mb-4 site-310" data-toggle="tooltip" data-placement="bottom"  title="文心一格，是基于文心大模型能力的AI艺术和创意辅助平台。在这里您可以生成不同风格、独一无二的创意画作，为设计提供灵感、为创作带来更多创意！">
+                                  <a href="https://yige.baidu.com/" target="_blank"  data-id="310" data-url="https://yige.baidu.com/" class="card no-c  mb-4 site-310" data-toggle="tooltip" data-placement="bottom"  title="文心一格，是基于文心大模型能力的AI艺术和创意辅助平台。在这里您可以生成不同风格、独一无二的创意画作，为设计提供灵感、为创作带来更多创意！">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2359,7 +2416,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://tongyi.aliyun.com/wanxiang/" target="_blank"  data-id="311" data-url="" class="card no-c  mb-4 site-311" data-toggle="tooltip" data-placement="bottom"  title="阿里巴巴推出的免费AI作画工具，基于通义大模型">
+                                  <a href="https://tongyi.aliyun.com/wanxiang/" target="_blank"  data-id="311" data-url="https://tongyi.aliyun.com/wanxiang/" class="card no-c  mb-4 site-311" data-toggle="tooltip" data-placement="bottom"  title="阿里巴巴推出的免费AI作画工具，基于通义大模型">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2383,7 +2440,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.remove.bg/zh" target="_blank"  data-id="312" data-url="" class="card no-c  mb-4 site-312" data-toggle="tooltip" data-placement="bottom"  title="强大的AI图片背景移除工具">
+                                  <a href="https://www.remove.bg/zh" target="_blank"  data-id="312" data-url="https://www.remove.bg/zh" class="card no-c  mb-4 site-312" data-toggle="tooltip" data-placement="bottom"  title="强大的AI图片背景移除工具">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2407,7 +2464,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.upscayl.org/" target="_blank"  data-id="313" data-url="" class="card no-c  mb-4 site-313" data-toggle="tooltip" data-placement="bottom"  title="AI图片无损放大器，模糊图片秒变高清">
+                                  <a href="https://www.upscayl.org/" target="_blank"  data-id="313" data-url="https://www.upscayl.org/" class="card no-c  mb-4 site-313" data-toggle="tooltip" data-placement="bottom"  title="AI图片无损放大器，模糊图片秒变高清">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2438,7 +2495,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://suno.com/" target="_blank"  data-id="320" data-url="" class="card no-c  mb-4 site-320" data-toggle="tooltip" data-placement="bottom"  title="无需乐器，只需想象，从简单的文本创作出美妙的音乐">
+                                  <a href="https://suno.com/" target="_blank"  data-id="320" data-url="https://suno.com/" class="card no-c  mb-4 site-320" data-toggle="tooltip" data-placement="bottom"  title="无需乐器，只需想象，从简单的文本创作出美妙的音乐">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2469,7 +2526,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://tongyi.aliyun.com/lingma/" target="_blank"  data-id="330" data-url="" class="card no-c  mb-4 site-330" data-toggle="tooltip" data-placement="bottom"  title="阿里巴巴推出的免费AI编程工具，基于通义大模型">
+                                  <a href="https://tongyi.aliyun.com/lingma/" target="_blank"  data-id="330" data-url="https://tongyi.aliyun.com/lingma/" class="card no-c  mb-4 site-330" data-toggle="tooltip" data-placement="bottom"  title="阿里巴巴推出的免费AI编程工具，基于通义大模型">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2495,7 +2552,7 @@
             
         </div> 
         
-        <br />
+        
         
     
         
@@ -2534,7 +2591,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://pf.bigpixel.cn/zh-CN.html" target="_blank"  data-id="400" data-url="" class="card no-c  mb-4 site-400" data-toggle="tooltip" data-placement="bottom"  title="千亿像素看中国，千亿像素看世界">
+                                  <a href="https://pf.bigpixel.cn/zh-CN.html" target="_blank"  data-id="400" data-url="https://pf.bigpixel.cn/zh-CN.html" class="card no-c  mb-4 site-400" data-toggle="tooltip" data-placement="bottom"  title="千亿像素看中国，千亿像素看世界">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2558,7 +2615,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.chnmuseum.cn/Portals/0/web/vr/" target="_blank"  data-id="401" data-url="" class="card no-c  mb-4 site-401" data-toggle="tooltip" data-placement="bottom"  title="360°体验游览中国国家博物馆">
+                                  <a href="https://www.chnmuseum.cn/Portals/0/web/vr/" target="_blank"  data-id="401" data-url="https://www.chnmuseum.cn/Portals/0/web/vr/" class="card no-c  mb-4 site-401" data-toggle="tooltip" data-placement="bottom"  title="360°体验游览中国国家博物馆">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2582,7 +2639,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://pano.dpm.org.cn/" target="_blank"  data-id="402" data-url="" class="card no-c  mb-4 site-402" data-toggle="tooltip" data-placement="bottom"  title="超详细的故宫全景地图，其三维场景模型依据清代紫禁城史料所制">
+                                  <a href="https://pano.dpm.org.cn/" target="_blank"  data-id="402" data-url="https://pano.dpm.org.cn/" class="card no-c  mb-4 site-402" data-toggle="tooltip" data-placement="bottom"  title="超详细的故宫全景地图，其三维场景模型依据清代紫禁城史料所制">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2606,7 +2663,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://world.ipanda.com/live.html" target="_blank"  data-id="403" data-url="" class="card no-c  mb-4 site-403" data-toggle="tooltip" data-placement="bottom"  title="央视网iPanda熊猫频道，通过熊猫向世界传播和平、友爱理念，提升国家形象">
+                                  <a href="https://world.ipanda.com/live.html" target="_blank"  data-id="403" data-url="https://world.ipanda.com/live.html" class="card no-c  mb-4 site-403" data-toggle="tooltip" data-placement="bottom"  title="央视网iPanda熊猫频道，通过熊猫向世界传播和平、友爱理念，提升国家形象">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2632,7 +2689,7 @@
             
         </div> 
         
-        <br />
+        
         
     
         
@@ -2691,7 +2748,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.ghxi.com/" target="_blank"  data-id="500" data-url="" class="card no-c  mb-4 site-500" data-toggle="tooltip" data-placement="bottom"  title="果核剥壳 - 还原软件的本质">
+                                  <a href="https://www.ghxi.com/" target="_blank"  data-id="500" data-url="https://www.ghxi.com/" class="card no-c  mb-4 site-500" data-toggle="tooltip" data-placement="bottom"  title="果核剥壳 - 还原软件的本质">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2715,7 +2772,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.52pojie.cn/" target="_blank"  data-id="501" data-url="" class="card no-c  mb-4 site-501" data-toggle="tooltip" data-placement="bottom"  title="一个致力于软件安全与病毒分析以及PC软件安全领域、移动安全领域技术交流的社区">
+                                  <a href="https://www.52pojie.cn/" target="_blank"  data-id="501" data-url="https://www.52pojie.cn/" class="card no-c  mb-4 site-501" data-toggle="tooltip" data-placement="bottom"  title="一个致力于软件安全与病毒分析以及PC软件安全领域、移动安全领域技术交流的社区">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2739,7 +2796,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://alternativeto.net/" target="_blank"  data-id="502" data-url="" class="card no-c  mb-4 site-502" data-toggle="tooltip" data-placement="bottom"  title="可为您推荐您已熟知的应用程序的替代品，让您找到 Windows、Mac、Linux、iPhone、iPad、Android、Android 平板电脑、网络应用程序、在线、Windows 平板电脑等的应用程序和软件">
+                                  <a href="https://alternativeto.net/" target="_blank"  data-id="502" data-url="https://alternativeto.net/" class="card no-c  mb-4 site-502" data-toggle="tooltip" data-placement="bottom"  title="可为您推荐您已熟知的应用程序的替代品，让您找到 Windows、Mac、Linux、iPhone、iPad、Android、Android 平板电脑、网络应用程序、在线、Windows 平板电脑等的应用程序和软件">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2775,7 +2832,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://pixabay.com/zh/" target="_blank"  data-id="510" data-url="" class="card no-c  mb-4 site-510" data-toggle="tooltip" data-placement="bottom"  title="拥有超过百万张免费正版优质图片、视频和音频素材，让你轻松应对各种设计场景">
+                                  <a href="https://pixabay.com/zh/" target="_blank"  data-id="510" data-url="https://pixabay.com/zh/" class="card no-c  mb-4 site-510" data-toggle="tooltip" data-placement="bottom"  title="拥有超过百万张免费正版优质图片、视频和音频素材，让你轻松应对各种设计场景">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2799,7 +2856,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://community-cn.eagle.cool/" target="_blank"  data-id="511" data-url="" class="card no-c  mb-4 site-511" data-toggle="tooltip" data-placement="bottom"  title="Eagle 资源社区是一个丰富的设计资源共享平台，提供上千种设计师爱用的精选 UI、平面、插画、游戏、室内素材资源免费下载，包含好用的设计网站整理、必备工具推荐等，一起与世界各地的设计师学习、共享、共创更好的生态圈！">
+                                  <a href="https://community-cn.eagle.cool/" target="_blank"  data-id="511" data-url="https://community-cn.eagle.cool/" class="card no-c  mb-4 site-511" data-toggle="tooltip" data-placement="bottom"  title="Eagle 资源社区是一个丰富的设计资源共享平台，提供上千种设计师爱用的精选 UI、平面、插画、游戏、室内素材资源免费下载，包含好用的设计网站整理、必备工具推荐等，一起与世界各地的设计师学习、共享、共创更好的生态圈！">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2830,7 +2887,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.1ppt.com/" target="_blank"  data-id="520" data-url="" class="card no-c  mb-4 site-520" data-toggle="tooltip" data-placement="bottom"  title="PPT模板_PPT模版免费下载_免费PPT模板下载 -【第一PPT】">
+                                  <a href="https://www.1ppt.com/" target="_blank"  data-id="520" data-url="https://www.1ppt.com/" class="card no-c  mb-4 site-520" data-toggle="tooltip" data-placement="bottom"  title="PPT模板_PPT模版免费下载_免费PPT模板下载 -【第一PPT】">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2854,7 +2911,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="http://www.pptbz.com/" target="_blank"  data-id="521" data-url="" class="card no-c  mb-4 site-521" data-toggle="tooltip" data-placement="bottom"  title="PPT模板下载_免费PPT模板下载_PPT宝藏">
+                                  <a href="http://www.pptbz.com/" target="_blank"  data-id="521" data-url="http://www.pptbz.com/" class="card no-c  mb-4 site-521" data-toggle="tooltip" data-placement="bottom"  title="PPT模板下载_免费PPT模板下载_PPT宝藏">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2878,7 +2935,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.ypppt.com/" target="_blank"  data-id="522" data-url="" class="card no-c  mb-4 site-522" data-toggle="tooltip" data-placement="bottom"  title="PPT模板免费下载_精美免费PPT模板下载 -【优品PPT】">
+                                  <a href="https://www.ypppt.com/" target="_blank"  data-id="522" data-url="https://www.ypppt.com/" class="card no-c  mb-4 site-522" data-toggle="tooltip" data-placement="bottom"  title="PPT模板免费下载_精美免费PPT模板下载 -【优品PPT】">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2902,7 +2959,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.2ppt.com/" target="_blank"  data-id="523" data-url="" class="card no-c  mb-4 site-523" data-toggle="tooltip" data-placement="bottom"  title="PPT模板_PPT模板免费下载_免费PPT模板下载 - 【爱PPT】">
+                                  <a href="https://www.2ppt.com/" target="_blank"  data-id="523" data-url="https://www.2ppt.com/" class="card no-c  mb-4 site-523" data-toggle="tooltip" data-placement="bottom"  title="PPT模板_PPT模板免费下载_免费PPT模板下载 - 【爱PPT】">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2926,7 +2983,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.51pptmoban.com/" target="_blank"  data-id="524" data-url="" class="card no-c  mb-4 site-524" data-toggle="tooltip" data-placement="bottom"  title="提供幻灯片演示模板及素材免费下载，包括原创PPT模板，PPTer分享的优质模板，PPT背景图片，PPT图表，PPT素材，PPT特效动画等各类PPT模板免费下载，以及部分免费PPT教程">
+                                  <a href="https://www.51pptmoban.com/" target="_blank"  data-id="524" data-url="https://www.51pptmoban.com/" class="card no-c  mb-4 site-524" data-toggle="tooltip" data-placement="bottom"  title="提供幻灯片演示模板及素材免费下载，包括原创PPT模板，PPTer分享的优质模板，PPT背景图片，PPT图表，PPT素材，PPT特效动画等各类PPT模板免费下载，以及部分免费PPT教程">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2957,7 +3014,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://pngimg.com/" target="_blank"  data-id="530" data-url="" class="card no-c  mb-4 site-530" data-toggle="tooltip" data-placement="bottom"  title="无需注册免费下载高质量透明背景图片，专为工作中需要免费 PNG 图像的所有网页和平面设计师而设计">
+                                  <a href="https://pngimg.com/" target="_blank"  data-id="530" data-url="https://pngimg.com/" class="card no-c  mb-4 site-530" data-toggle="tooltip" data-placement="bottom"  title="无需注册免费下载高质量透明背景图片，专为工作中需要免费 PNG 图像的所有网页和平面设计师而设计">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -2993,7 +3050,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.iconfont.cn/" target="_blank"  data-id="540" data-url="" class="card no-c  mb-4 site-540" data-toggle="tooltip" data-placement="bottom"  title="阿里巴巴矢量图标库">
+                                  <a href="https://www.iconfont.cn/" target="_blank"  data-id="540" data-url="https://www.iconfont.cn/" class="card no-c  mb-4 site-540" data-toggle="tooltip" data-placement="bottom"  title="阿里巴巴矢量图标库">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3017,7 +3074,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://fontawesome.com/" target="_blank"  data-id="541" data-url="" class="card no-c  mb-4 site-541" data-toggle="tooltip" data-placement="bottom"  title="一个非常强大且灵活的图标字体库，适用于各种web设计和开发场景">
+                                  <a href="https://fontawesome.com/" target="_blank"  data-id="541" data-url="https://fontawesome.com/" class="card no-c  mb-4 site-541" data-toggle="tooltip" data-placement="bottom"  title="一个非常强大且灵活的图标字体库，适用于各种web设计和开发场景">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3043,7 +3100,7 @@
             
         </div> 
         
-        <br />
+        
         
     
         
@@ -3092,7 +3149,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://tools.pdf24.org/" target="_blank"  data-id="600" data-url="" class="card no-c  mb-4 site-600" data-toggle="tooltip" data-placement="bottom"  title="免费且易于使用的在线PDF工具">
+                                  <a href="https://tools.pdf24.org/" target="_blank"  data-id="600" data-url="https://tools.pdf24.org/" class="card no-c  mb-4 site-600" data-toggle="tooltip" data-placement="bottom"  title="免费且易于使用的在线PDF工具">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3121,7 +3178,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.photopea.com/#8887" target="_blank"  data-id="601" data-url="" class="card no-c  mb-4 site-601" data-toggle="tooltip" data-placement="bottom"  title="免费专业的在线PS图片处理工具，免下载、免安装，直接在浏览器打开就可随时随地用它修正、调整和美化您的图片">
+                                  <a href="https://www.photopea.com/#8887" target="_blank"  data-id="601" data-url="https://www.photopea.com/#8887" class="card no-c  mb-4 site-601" data-toggle="tooltip" data-placement="bottom"  title="免费专业的在线PS图片处理工具，免下载、免安装，直接在浏览器打开就可随时随地用它修正、调整和美化您的图片">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3145,7 +3202,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://zhouql.vip/bilibili/" target="_blank"  data-id="602" data-url="" class="card no-c  mb-4 site-602" data-toggle="tooltip" data-placement="bottom"  title="免费在线B站视频解析提取工具，可一键解析单视频，合集，分集，封面，xml弹幕，ass弹幕，视频下载链接，助您轻松将bilibili视频下载到本地电脑或手机相册">
+                                  <a href="https://zhouql.vip/bilibili/" target="_blank"  data-id="602" data-url="https://zhouql.vip/bilibili/" class="card no-c  mb-4 site-602" data-toggle="tooltip" data-placement="bottom"  title="免费在线B站视频解析提取工具，可一键解析单视频，合集，分集，封面，xml弹幕，ass弹幕，视频下载链接，助您轻松将bilibili视频下载到本地电脑或手机相册">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3176,7 +3233,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.speedtest.net/" target="_blank"  data-id="610" data-url="" class="card no-c  mb-4 site-610" data-toggle="tooltip" data-placement="bottom"  title="全球网络速度测试">
+                                  <a href="https://www.speedtest.net/" target="_blank"  data-id="610" data-url="https://www.speedtest.net/" class="card no-c  mb-4 site-610" data-toggle="tooltip" data-placement="bottom"  title="全球网络速度测试">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3200,7 +3257,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.test-ipv6.com/" target="_blank"  data-id="611" data-url="" class="card no-c  mb-4 site-611" data-toggle="tooltip" data-placement="bottom"  title="测试你的浏览器和网络是否支持 IPv6，并显示你当前的 IPv4 和 IPv6 地址">
+                                  <a href="https://www.test-ipv6.com/" target="_blank"  data-id="611" data-url="https://www.test-ipv6.com/" class="card no-c  mb-4 site-611" data-toggle="tooltip" data-placement="bottom"  title="测试你的浏览器和网络是否支持 IPv6，并显示你当前的 IPv4 和 IPv6 地址">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3224,7 +3281,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.openp2p.cn/" target="_blank"  data-id="612" data-url="" class="card no-c  mb-4 site-612" data-toggle="tooltip" data-placement="bottom"  title="一个开源、免费、轻量级的P2P共享网络，特别适合远程访问内网（内网穿透）">
+                                  <a href="https://www.openp2p.cn/" target="_blank"  data-id="612" data-url="https://www.openp2p.cn/" class="card no-c  mb-4 site-612" data-toggle="tooltip" data-placement="bottom"  title="一个开源、免费、轻量级的P2P共享网络，特别适合远程访问内网（内网穿透）">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3248,7 +3305,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://i.cpolar.com/m/4Fek" target="_blank"  data-id="613" data-url="" class="card no-c  mb-4 site-613" data-toggle="tooltip" data-placement="bottom"  title="安全的内网穿透工具 | 无需公网ip | 远程访问 | 搭建网站">
+                                  <a href="https://i.cpolar.com/m/4Fek" target="_blank"  data-id="613" data-url="https://i.cpolar.com/m/4Fek" class="card no-c  mb-4 site-613" data-toggle="tooltip" data-placement="bottom"  title="安全的内网穿透工具 | 无需公网ip | 远程访问 | 搭建网站">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3279,7 +3336,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://support.microsoft.com/zh-cn/windows/windows-%E7%9A%84%E9%94%AE%E7%9B%98%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F-dcc61a57-8ff0-cffe-9796-cb9706c75eec" target="_blank"  data-id="620" data-url="" class="card no-c  mb-4 site-620" data-toggle="tooltip" data-placement="bottom"  title="Windows官方键盘快捷键大全">
+                                  <a href="https://support.microsoft.com/zh-cn/windows/windows-%E7%9A%84%E9%94%AE%E7%9B%98%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F-dcc61a57-8ff0-cffe-9796-cb9706c75eec" target="_blank"  data-id="620" data-url="https://support.microsoft.com/zh-cn/windows/windows-%E7%9A%84%E9%94%AE%E7%9B%98%E5%BF%AB%E6%8D%B7%E6%96%B9%E5%BC%8F-dcc61a57-8ff0-cffe-9796-cb9706c75eec" class="card no-c  mb-4 site-620" data-toggle="tooltip" data-placement="bottom"  title="Windows官方键盘快捷键大全">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3303,7 +3360,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://zj.zol.com.cn/" target="_blank"  data-id="621" data-url="" class="card no-c  mb-4 site-621" data-toggle="tooltip" data-placement="bottom"  title="中关村在线模拟装机">
+                                  <a href="https://zj.zol.com.cn/" target="_blank"  data-id="621" data-url="https://zj.zol.com.cn/" class="card no-c  mb-4 site-621" data-toggle="tooltip" data-placement="bottom"  title="中关村在线模拟装机">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3327,7 +3384,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://diy.jd.com/" target="_blank"  data-id="622" data-url="" class="card no-c  mb-4 site-622" data-toggle="tooltip" data-placement="bottom"  title="京东在线模拟装机">
+                                  <a href="https://diy.jd.com/" target="_blank"  data-id="622" data-url="https://diy.jd.com/" class="card no-c  mb-4 site-622" data-toggle="tooltip" data-placement="bottom"  title="京东在线模拟装机">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3351,7 +3408,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://cli.im/" target="_blank"  data-id="623" data-url="" class="card no-c  mb-4 site-623" data-toggle="tooltip" data-placement="bottom"  title="草料二维码在线生成器">
+                                  <a href="https://cli.im/" target="_blank"  data-id="623" data-url="https://cli.im/" class="card no-c  mb-4 site-623" data-toggle="tooltip" data-placement="bottom"  title="草料二维码在线生成器">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3375,7 +3432,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://mindows.cn/" target="_blank"  data-id="624" data-url="" class="card no-c  mb-4 site-624" data-toggle="tooltip" data-placement="bottom"  title="给你的Android刷上Windows，一款永久免费的刷机工具">
+                                  <a href="https://mindows.cn/" target="_blank"  data-id="624" data-url="https://mindows.cn/" class="card no-c  mb-4 site-624" data-toggle="tooltip" data-placement="bottom"  title="给你的Android刷上Windows，一款永久免费的刷机工具">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3399,7 +3456,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://guanjia.qq.com/product/zmzl/" target="_blank"  data-id="625" data-url="" class="card no-c  mb-4 site-625" data-toggle="tooltip" data-placement="bottom"  title="腾讯出品，必属精品">
+                                  <a href="https://guanjia.qq.com/product/zmzl/" target="_blank"  data-id="625" data-url="https://guanjia.qq.com/product/zmzl/" class="card no-c  mb-4 site-625" data-toggle="tooltip" data-placement="bottom"  title="腾讯出品，必属精品">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3423,7 +3480,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.bypass.cn/" target="_blank"  data-id="626" data-url="" class="card no-c  mb-4 site-626" data-toggle="tooltip" data-placement="bottom"  title="软件完全免费，全程自动抢票自动抢候补，自动识别验证码，多线程秒单、稳定捡漏，支持多天、多车次、多席别、多乘客等功能">
+                                  <a href="https://www.bypass.cn/" target="_blank"  data-id="626" data-url="https://www.bypass.cn/" class="card no-c  mb-4 site-626" data-toggle="tooltip" data-placement="bottom"  title="软件完全免费，全程自动抢票自动抢候补，自动识别验证码，多线程秒单、稳定捡漏，支持多天、多车次、多席别、多乘客等功能">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3447,7 +3504,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://tinypng.com/" target="_blank"  data-id="627" data-url="" class="card no-c  mb-4 site-627" data-toggle="tooltip" data-placement="bottom"  title="使用智能压缩技术将您的WebP，PNG and JPEG图片的文件大小降低">
+                                  <a href="https://tinypng.com/" target="_blank"  data-id="627" data-url="https://tinypng.com/" class="card no-c  mb-4 site-627" data-toggle="tooltip" data-placement="bottom"  title="使用智能压缩技术将您的WebP，PNG and JPEG图片的文件大小降低">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3471,7 +3528,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://molunerfinn.com/PicGo/" target="_blank"  data-id="628" data-url="" class="card no-c  mb-4 site-628" data-toggle="tooltip" data-placement="bottom"  title="一个用于快速上传图片并获取图片 URL 链接的工具">
+                                  <a href="https://molunerfinn.com/PicGo/" target="_blank"  data-id="628" data-url="https://molunerfinn.com/PicGo/" class="card no-c  mb-4 site-628" data-toggle="tooltip" data-placement="bottom"  title="一个用于快速上传图片并获取图片 URL 链接的工具">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3495,7 +3552,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://eagle.cool/" target="_blank"  data-id="629" data-url="" class="card no-c  mb-4 site-629" data-toggle="tooltip" data-placement="bottom"  title="Eagle 可以轻松收集及整理设计项目的“案例、灵感、截图、图片、视频、音频、情绪板”等各种素材，激发更多创意灵感，让工作变得更有效率！">
+                                  <a href="https://eagle.cool/" target="_blank"  data-id="629" data-url="https://eagle.cool/" class="card no-c  mb-4 site-629" data-toggle="tooltip" data-placement="bottom"  title="Eagle 可以轻松收集及整理设计项目的“案例、灵感、截图、图片、视频、音频、情绪板”等各种素材，激发更多创意灵感，让工作变得更有效率！">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3521,7 +3578,7 @@
             
         </div> 
         
-        <br />
+        
         
     
         
@@ -3565,7 +3622,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://github.com/" target="_blank"  data-id="700" data-url="" class="card no-c  mb-4 site-700" data-toggle="tooltip" data-placement="bottom"  title="一个面向开源及私有软件项目的托管平台，因为只支持Git作为唯一的版本库格式进行托管，故名GitHub">
+                                  <a href="https://github.com/" target="_blank"  data-id="700" data-url="https://github.com/" class="card no-c  mb-4 site-700" data-toggle="tooltip" data-placement="bottom"  title="一个面向开源及私有软件项目的托管平台，因为只支持Git作为唯一的版本库格式进行托管，故名GitHub">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3594,7 +3651,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://gitee.com/" target="_blank"  data-id="701" data-url="" class="card no-c  mb-4 site-701" data-toggle="tooltip" data-placement="bottom"  title="开源中国于2013年推出的基于Git的代码托管平台，提供中国本土化的代码托管服务">
+                                  <a href="https://gitee.com/" target="_blank"  data-id="701" data-url="https://gitee.com/" class="card no-c  mb-4 site-701" data-toggle="tooltip" data-placement="bottom"  title="开源中国于2013年推出的基于Git的代码托管平台，提供中国本土化的代码托管服务">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3618,7 +3675,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://git-scm.com/" target="_blank"  data-id="702" data-url="" class="card no-c  mb-4 site-702" data-toggle="tooltip" data-placement="bottom"  title="一个开源的分布式版本控制系统，可以有效、高速地处理从很小到非常大的项目版本管理">
+                                  <a href="https://git-scm.com/" target="_blank"  data-id="702" data-url="https://git-scm.com/" class="card no-c  mb-4 site-702" data-toggle="tooltip" data-placement="bottom"  title="一个开源的分布式版本控制系统，可以有效、高速地处理从很小到非常大的项目版本管理">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3642,7 +3699,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://vercel.com/" target="_blank"  data-id="703" data-url="" class="card no-c  mb-4 site-703" data-toggle="tooltip" data-placement="bottom"  title="一个专注于前端开发的云平台，主要用于构建、部署和扩展无服务器应用程序和静态网站">
+                                  <a href="https://vercel.com/" target="_blank"  data-id="703" data-url="https://vercel.com/" class="card no-c  mb-4 site-703" data-toggle="tooltip" data-placement="bottom"  title="一个专注于前端开发的云平台，主要用于构建、部署和扩展无服务器应用程序和静态网站">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3673,7 +3730,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.w3school.com.cn/" target="_blank"  data-id="710" data-url="" class="card no-c  mb-4 site-710" data-toggle="tooltip" data-placement="bottom"  title="因特网上最大的、完全免费的、非盈利性的 WEB 开发者资源，一直在升级和更新，是 W3C 中国社区成员，致力于推广 W3C 标准技术">
+                                  <a href="https://www.w3school.com.cn/" target="_blank"  data-id="710" data-url="https://www.w3school.com.cn/" class="card no-c  mb-4 site-710" data-toggle="tooltip" data-placement="bottom"  title="因特网上最大的、完全免费的、非盈利性的 WEB 开发者资源，一直在升级和更新，是 W3C 中国社区成员，致力于推广 W3C 标准技术">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3697,7 +3754,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.runoob.com/" target="_blank"  data-id="711" data-url="" class="card no-c  mb-4 site-711" data-toggle="tooltip" data-placement="bottom"  title="提供了编程的基础技术教程，介绍了HTML、CSS、Javascript、Python，Java，Ruby，C，PHP，MySQL等各种编程语言的基础知识">
+                                  <a href="https://www.runoob.com/" target="_blank"  data-id="711" data-url="https://www.runoob.com/" class="card no-c  mb-4 site-711" data-toggle="tooltip" data-placement="bottom"  title="提供了编程的基础技术教程，介绍了HTML、CSS、Javascript、Python，Java，Ruby，C，PHP，MySQL等各种编程语言的基础知识">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3721,7 +3778,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.cloudflare-cn.com/" target="_blank"  data-id="712" data-url="" class="card no-c  mb-4 site-712" data-toggle="tooltip" data-placement="bottom"  title="提供包括CDN、优化工具、安全、分析以及应用等服务">
+                                  <a href="https://www.cloudflare-cn.com/" target="_blank"  data-id="712" data-url="https://www.cloudflare-cn.com/" class="card no-c  mb-4 site-712" data-toggle="tooltip" data-placement="bottom"  title="提供包括CDN、优化工具、安全、分析以及应用等服务">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3745,7 +3802,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.staticfile.net/" target="_blank"  data-id="713" data-url="" class="card no-c  mb-4 site-713" data-toggle="tooltip" data-placement="bottom"  title="收录优秀的开源库，并为之提供免费、快速、开放的 CDN 服务">
+                                  <a href="https://www.staticfile.net/" target="_blank"  data-id="713" data-url="https://www.staticfile.net/" class="card no-c  mb-4 site-713" data-toggle="tooltip" data-placement="bottom"  title="收录优秀的开源库，并为之提供免费、快速、开放的 CDN 服务">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3771,7 +3828,7 @@
             
         </div> 
         
-        <br />
+        
         
     
         
@@ -3820,7 +3877,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://gaze.run/" target="_blank"  data-id="800" data-url="" class="card no-c  mb-4 site-800" data-toggle="tooltip" data-placement="bottom"  title="热门剧、热门番剧、冷门电影免费在线观看">
+                                  <a href="https://gaze.run/" target="_blank"  data-id="800" data-url="https://gaze.run/" class="card no-c  mb-4 site-800" data-toggle="tooltip" data-placement="bottom"  title="热门剧、热门番剧、冷门电影免费在线观看">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3856,7 +3913,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://music.163.com/" target="_blank"  data-id="810" data-url="" class="card no-c  mb-4 site-810" data-toggle="tooltip" data-placement="bottom"  title="网易云音乐是一款专注于发现与分享的音乐产品，依托专业音乐人、DJ、好友推荐及社交功能，为用户打造全新的音乐生活">
+                                  <a href="https://music.163.com/" target="_blank"  data-id="810" data-url="https://music.163.com/" class="card no-c  mb-4 site-810" data-toggle="tooltip" data-placement="bottom"  title="网易云音乐是一款专注于发现与分享的音乐产品，依托专业音乐人、DJ、好友推荐及社交功能，为用户打造全新的音乐生活">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3880,7 +3937,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://nichijou.cn/" target="_blank"  data-id="811" data-url="" class="card no-c  mb-4 site-811" data-toggle="tooltip" data-placement="bottom"  title="一个以《日常》主题的音乐聊天室，无需登录，免费使用">
+                                  <a href="https://nichijou.cn/" target="_blank"  data-id="811" data-url="https://nichijou.cn/" class="card no-c  mb-4 site-811" data-toggle="tooltip" data-placement="bottom"  title="一个以《日常》主题的音乐聊天室，无需登录，免费使用">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3916,7 +3973,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://enazo.cn/" target="_blank"  data-id="820" data-url="" class="card no-c  mb-4 site-820" data-toggle="tooltip" data-placement="bottom"  title="在线多人你画我猜，支持断线重连、无限撤销、压感笔刷、智能提示、智能参考、画廊投稿、导出视频">
+                                  <a href="https://enazo.cn/" target="_blank"  data-id="820" data-url="https://enazo.cn/" class="card no-c  mb-4 site-820" data-toggle="tooltip" data-placement="bottom"  title="在线多人你画我猜，支持断线重连、无限撤销、压感笔刷、智能提示、智能参考、画廊投稿、导出视频">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -3942,7 +3999,7 @@
             
         </div> 
         
-        <br />
+        
         
     
         
@@ -4012,7 +4069,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://kzurl14.cn/7xD3ds" target="_blank"  data-id="901" data-url="" class="card no-c  mb-4 site-901" data-toggle="tooltip" data-placement="bottom"  title="(永久有效)实测获得：什么都有，每日上新，先付后返再提现，全购物平台商品链接复制后自动识别内部优惠券 → 新用户别忘了首页新人免单，已用5年">
+                                  <a href="https://kzurl14.cn/7xD3ds" target="_blank"  data-id="901" data-url="https://kzurl14.cn/7xD3ds" class="card no-c  mb-4 site-901" data-toggle="tooltip" data-placement="bottom"  title="(永久有效)实测获得：什么都有，每日上新，先付后返再提现，全购物平台商品链接复制后自动识别内部优惠券 → 新用户别忘了首页新人免单，已用5年">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -4036,7 +4093,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="http://a.ayuq.cc/TGE68OZ" target="_blank"  data-id="902" data-url="" class="card no-c  mb-4 site-902" data-toggle="tooltip" data-placement="bottom"  title="(永久有效)实测获得：助力真实返现 → 可做任务返现或发布任务悬赏，已用3年">
+                                  <a href="http://a.ayuq.cc/TGE68OZ" target="_blank"  data-id="902" data-url="http://a.ayuq.cc/TGE68OZ" class="card no-c  mb-4 site-902" data-toggle="tooltip" data-placement="bottom"  title="(永久有效)实测获得：助力真实返现 → 可做任务返现或发布任务悬赏，已用3年">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -4067,7 +4124,7 @@
                         <div class="url-card io-px-2 col-6 col-2a col-sm-2a col-md-2a col-lg-3a col-sm-6 col-md-4 col-xl-5a col-xxl-6a   ">
                             <div class="url-body default ">  
                                 
-                                  <a href="https://www.hi2future.com/" target="_blank"  data-id="910" data-url="" class="card no-c  mb-4 site-910" data-toggle="tooltip" data-placement="bottom"  title="这封信，写给未来的自己，问问当初的梦想是否还在坚持；这封信，写给未来的爱人，让他/她看到你十年不变的爱恋">
+                                  <a href="https://www.hi2future.com/" target="_blank"  data-id="910" data-url="https://www.hi2future.com/" class="card no-c  mb-4 site-910" data-toggle="tooltip" data-placement="bottom"  title="这封信，写给未来的自己，问问当初的梦想是否还在坚持；这封信，写给未来的爱人，让他/她看到你十年不变的爱恋">
                                 
                                     <div class="card-body url-content d-flex align-items-center"> 
                                         <div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">
@@ -4093,7 +4150,7 @@
             
         </div> 
         
-        <br />
+        
         
                             
 

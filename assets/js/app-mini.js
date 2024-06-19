@@ -18,10 +18,10 @@
             additionalMarginBottom: 20
         });
         // 初始化游客自定义数据
-        /*if(theme.isCustomize == '1'){
+        if(theme.isCustomize == '1'){
             intoSites(false);
             intoSites(true);
-        }*/
+        }
     });
     $(".panel-body.single img").each(function(i) {
         if (!this.parentNode.href) {
@@ -542,14 +542,14 @@
             $('.url-card .remove-site,.add-custom-site').hide();
             $('.url-card .remove-cm-site').hide();
             $('.customize-sites').removeClass('edit');
-            ioSortable();
+            //ioSortable();
             $('.customize-menu .btn-edit').html("编辑");
         }else{
             $('.url-card .remove-site,#add-site').show();
             $('.url-card .remove-site,.add-custom-site').show();
             $('.url-card .remove-cm-site').show();
             $('.customize-sites').addClass('edit');
-            ioSortable();
+            //ioSortable();
             $('.customize-menu .btn-edit').html("确定");
         }
         isEdit = !isEdit;
@@ -583,7 +583,7 @@
                 '<div class="card-body" style="padding:0.4rem 0.5rem;">'+
                 '<div class="url-content d-flex align-items-center">'+
                     '<div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">'+
-                        '<img src="' + theme.icourl + url_f + theme.icopng + '">'+
+                        '<img src="https://api.iowen.cn/favicon/' + url_f + '.png">'+
                     '</div>'+
                     '<div class="url-info flex-fill">'+
                         '<div class="text-sm overflowClip_1">'+
