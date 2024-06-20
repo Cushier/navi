@@ -123,12 +123,17 @@ body{margin:0;padding:0}body{height:100%}#loading{-webkit-box-pack:center;-ms-fl
   
             // 获取目标网站的URL  
             const targetUrl = getQueryParam('url');  
+            const safe = getQueryParam('safe');
   
             // 检查是否获取到了有效的URL  
             if (targetUrl) {  
                 // 延迟跳转，例如2秒后  
                 setTimeout(() => {  
+                  if(safe=="true"){
+                    window.location.href = targetUrl;  
+                  }else{
                     window.location.href = targetUrl+"?ref=www.qnkjxx.top";  
+                  }
                 }, 1000); // 2000毫秒 = 2秒  
             } else {  
                 // 如果没有获取到有效的URL，可以跳转到默认页面或显示错误消息  
