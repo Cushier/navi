@@ -583,7 +583,7 @@
                 '<div class="card-body" style="padding:0.4rem 0.5rem;">'+
                 '<div class="url-content d-flex align-items-center">'+
                     '<div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">'+
-                        '<img src="https://cooperative-bronze-mammal.faviconkit.com/' + url_f + '/60">'+
+                        '<img src="https://icon.horse/icon/' + url_f + '">'+
                     '</div>'+
                     '<div class="url-info flex-fill">'+
                         '<div class="text-sm overflowClip_1">'+
