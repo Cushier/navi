@@ -259,6 +259,315 @@
     </div>
 
 
+<style>
+   
+   
+  .section-feature {
+      background-color: rgba(255, 255, 255, 0.025);  
+      backdrop-filter: blur(1px);  
+      padding: 2rem;
+      border-radius: 8px;
+      margin-bottom: 1.25rem;
+      overflow: hidden;  
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
+      transform: translateY(-2px);  
+      transition: transform 0.3s ease;  
+  }
+  .section-feature .title-style {
+    margin-top: 0 !important;  
+  }
+  .title-style {
+      font-size: 2.25rem;  
+      margin-bottom: 1rem;  
+      font-weight: bold;  
+      text-shadow: 0.5px 0.5px 0.5px rgba(255, 255, 255, 0.5);   
+  }
+
+   
+  .meta-info {
+      font-size: 0.9rem;  
+      color: #6c757d;  
+      line-height: 1.5;  
+      text-shadow: 0.25px 0.25px 0.25px rgba(255, 255, 255, 0.5);  
+  }
+   
+  .btn-link {
+    color: #007bff;  
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .btn-link:hover {
+    text-decoration: underline;
+  }
+
+
+  .toc-container {
+    background-color: #f2f2f2;
+    border-radius: .5em;  
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
+    margin-bottom: 1em;  
+  }
+
+
+  body.io-black-mode .toc-container {
+    background-color: rgba(48, 48, 48, 0.9);  
+  }
+
+  .toc {
+    font-size: 0.9rem;
+    padding: 0.5em 0.75em;
+  }
+
+  .toc ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    margin-left: 2em;  
+  }
+
+  .toc ul ul {
+    margin-top: 0.⅓em;  
+    margin-bottom: 0.⅓em;
+    margin-left: 2em;  
+  }
+
+  .toc ul li {
+    margin-bottom: 0.25em;
+  }
+
+  .toc ul li a {
+    text-decoration-skip: ink;
+    text-decoration: none;
+    color: #007bff;
+  }
+
+  .toc ul li a:focus,.toc ul li a:hover {
+    text-decoration: none;
+    color: #ca0c16;  
+  }
+
+   
+  .toc ul li a.active,
+  .toc ul li a:focus-visible {
+    color: #007bff;
+    font-weight: bold;
+  }
+  body.io-black-mode .toc ul li a.active,
+  body.io-black-mode .toc ul li a:focus-visible {
+    color: #007bff;  
+  }
+
+   
+
+  body.io-black-mode .content {
+    background-color: #212529;  
+     
+  }
+
+  .content {
+      font-size: 1.25rem;
+      font-family: 'PingFang SC','Microsoft YaHei','SimHei','Arial','SimSun'; 
+      line-height: 1.6;  
+      background-color: #f5f5f5;  
+      box-shadow: inset 0 0 ¼em rgba(0, 0, 0, 0.05);  
+      padding: 1.25rem;  
+      background-image: linear-gradient(
+        to bottom,
+        rgba(255, 255, 255, 0.¾) 25%,  
+        rgba(255, 255, 255, 0.1) 75%  
+      ), radial-gradient(
+        circle at top left,
+        rgba(255, 255, 255, 0.1) 15%,  
+        transparent 20%
+      );
+      background-size: ⅔em ⅔em, 1em 1em;  
+      background-blend-mode: normal, multiply;  
+      border-radius: 8px;
+  }
+  .content h1,
+  .content h2,
+  .content h3,
+  .content h4,
+  .content h5,
+  .content h6 {
+    margin: 15px 10px 5px -1.438rem;  
+    border-color: #007bff;
+    border-left: 3px solid #007bff;
+    padding-left: 1.25rem;
+  }
+   
+  .content h1 {
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 32px;
+    margin-bottom: 1.75rem;  
+  }
+
+  .content h2 {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 30px;
+    margin-bottom: 1.5rem;  
+  }
+
+  .content h3 {
+    font-size: 18px;
+    font-weight: 600;
+    line-height: 28px;
+    margin-bottom: 1.25rem;  
+  }
+
+  .content h4 {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 26px;
+    margin-bottom: 1rem;  
+  }
+
+  .content h5 {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    margin-bottom: 0.75rem;  
+  }
+
+  .content h6 {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 24px;
+    margin-bottom: 0.5rem;  
+  }
+
+   
+  .content p {
+    font-size: 1rem;  
+    line-height: 1.6;  
+    letter-spacing: -0.01em;  
+    margin-bottom: 1em;  
+  }
+
+   
+  .content blockquote {
+    padding: 0.5em 1em;
+    margin: 1em 0;
+    border-left: 3px solid #ccc;
+    color: #666;
+  }
+
+   
+  .content ul, .content ol {
+    font-size: 1rem;
+    margin-top: 0.5em;
+    margin-bottom: 1em;
+  }
+
+  .content li {
+    margin-bottom: 0.5em;
+  }
+  kbd {
+    background-color: #e0e0e0;  
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 0.9em;
+    color: #333;  
+    cursor: pointer;
+
+     
+    box-shadow: 0 2px 5px rgba(0, 140, 255, 0.2);
+
+     
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.¼);
+  }
+   
+  .content pre {
+    background-color: #f7f7f7;
+    padding: 8px;
+    margin-left: 0;
+    margin-right: 0;
+    white-space: pre-wrap;
+    overflow-x: auto;
+     
+     
+    margin-bottom: 1em;
+    border-radius: 3px;
+  }
+
+  .content code {
+    font-size: 0.9em;
+    border-radius: 3px;
+    white-space: pre;
+    overflow-x: auto;
+  }
+
+   
+  .content a {
+    text-decoration-skip: ink;
+    color: #007bff;  
+    text-decoration: none;
+  }
+
+  .content a:focus,.content a:hover {
+    text-decoration: none;  
+    color: #ca0c16;
+  }
+
+  .content a:visited {
+    color: #6795b5;  
+  }
+  .mt-5,
+  .text-muted {
+    text-align: center;  
+  }
+   
+  .post-date,
+  .post-update-date,
+  #busuanzi_container_page_pv {
+    display: inline-block;  
+    margin-right: 0.5em;  
+  }
+
+   
+  .content img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);  
+    transition: box-shadow 0.3s ease-in-out;  
+  }
+  .content img:hover {
+    box-shadow: 0 4px 8px rgba(0, 140, 255, 0.2);  
+  }
+   
+  @media (max-width: 600px) {
+    .post-date,
+    .post-update-date,
+    #busuanzi_container_page_pv {
+      display: block;  
+      margin-bottom: 0.5em;  
+    }
+    .container{
+      padding-right: .64rem;
+      padding-left: .64rem;
+    }
+    .content {
+      padding: 16px .32rem 16px;
+    }
+    .content h1,
+    .content h2,
+    .content h3,
+    .content h4,
+    .content h5,
+    .content h6 {
+      margin: 15px 10px 5px -0.5rem;  
+      padding-left: 0.25rem;
+    }
+     
+  }
+</style>
+
 <body class="page-body boxed-container">
     <main role="main" class="flex-shrink-0">
     <div class="container">
@@ -446,314 +755,6 @@
     
     
     </script>
-    <style>
-           
-           
-          .section-feature {
-              background-color: rgba(255, 255, 255, 0.025);  
-              backdrop-filter: blur(1px);  
-              padding: 2rem;
-              border-radius: 8px;
-              margin-bottom: 1.25rem;
-              overflow: hidden;  
-              box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);  
-              transform: translateY(-2px);  
-              transition: transform 0.3s ease;  
-          }
-          .section-feature .title-style {
-            margin-top: 0 !important;  
-          }
-          .title-style {
-              font-size: 2.25rem;  
-              margin-bottom: 1rem;  
-              font-weight: bold;  
-              text-shadow: 0.5px 0.5px 0.5px rgba(255, 255, 255, 0.5);   
-          }
-
-           
-          .meta-info {
-              font-size: 0.9rem;  
-              color: #6c757d;  
-              line-height: 1.5;  
-              text-shadow: 0.25px 0.25px 0.25px rgba(255, 255, 255, 0.5);  
-          }
-           
-          .btn-link {
-            color: #007bff;  
-            text-decoration: none;
-            cursor: pointer;
-          }
-
-          .btn-link:hover {
-            text-decoration: underline;
-          }
-
-
-          .toc-container {
-            background-color: #f2f2f2;
-            border-radius: .5em;  
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);  
-            margin-bottom: 1em;  
-          }
-
-
-          body.io-black-mode .toc-container {
-            background-color: rgba(48, 48, 48, 0.9);  
-          }
-
-          .toc {
-            font-size: 0.9rem;
-            padding: 0.5em 0.75em;
-          }
-
-          .toc ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            margin-left: 2em;  
-          }
-
-          .toc ul ul {
-            margin-top: 0.⅓em;  
-            margin-bottom: 0.⅓em;
-            margin-left: 2em;  
-          }
-
-          .toc ul li {
-            margin-bottom: 0.25em;
-          }
-
-          .toc ul li a {
-            text-decoration-skip: ink;
-            text-decoration: none;
-            color: #007bff;
-          }
-
-          .toc ul li a:focus,.toc ul li a:hover {
-            text-decoration: none;
-            color: #ca0c16;  
-          }
-
-           
-          .toc ul li a.active,
-          .toc ul li a:focus-visible {
-            color: #007bff;
-            font-weight: bold;
-          }
-          body.io-black-mode .toc ul li a.active,
-          body.io-black-mode .toc ul li a:focus-visible {
-            color: #007bff;  
-          }
-
-           
-
-          body.io-black-mode .content {
-            background-color: #212529;  
-             
-          }
-
-          .content {
-              font-size: 1.25rem;
-              font-family: 'PingFang SC','Microsoft YaHei','SimHei','Arial','SimSun'; 
-              line-height: 1.6;  
-              background-color: #f5f5f5;  
-              box-shadow: inset 0 0 ¼em rgba(0, 0, 0, 0.05);  
-              padding: 1.25rem;  
-              background-image: linear-gradient(
-                to bottom,
-                rgba(255, 255, 255, 0.¾) 25%,  
-                rgba(255, 255, 255, 0.1) 75%  
-              ), radial-gradient(
-                circle at top left,
-                rgba(255, 255, 255, 0.1) 15%,  
-                transparent 20%
-              );
-              background-size: ⅔em ⅔em, 1em 1em;  
-              background-blend-mode: normal, multiply;  
-              border-radius: 8px;
-          }
-          .content h1,
-          .content h2,
-          .content h3,
-          .content h4,
-          .content h5,
-          .content h6 {
-            margin: 15px 10px 5px -1.438rem;  
-            border-color: #007bff;
-            border-left: 3px solid #007bff;
-            padding-left: 1.25rem;
-          }
-           
-          .content h1 {
-            font-size: 22px;
-            font-weight: 700;
-            line-height: 32px;
-            margin-bottom: 1.75rem;  
-          }
-
-          .content h2 {
-            font-size: 20px;
-            font-weight: 600;
-            line-height: 30px;
-            margin-bottom: 1.5rem;  
-          }
-
-          .content h3 {
-            font-size: 18px;
-            font-weight: 600;
-            line-height: 28px;
-            margin-bottom: 1.25rem;  
-          }
-
-          .content h4 {
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 26px;
-            margin-bottom: 1rem;  
-          }
-
-          .content h5 {
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 24px;
-            margin-bottom: 0.75rem;  
-          }
-
-          .content h6 {
-            font-size: 16px;
-            font-weight: 600;
-            line-height: 24px;
-            margin-bottom: 0.5rem;  
-          }
-
-           
-          .content p {
-            font-size: 1rem;  
-            line-height: 1.6;  
-            letter-spacing: -0.01em;  
-            margin-bottom: 1em;  
-          }
-
-           
-          .content blockquote {
-            padding: 0.5em 1em;
-            margin: 1em 0;
-            border-left: 3px solid #ccc;
-            color: #666;
-          }
-
-           
-          .content ul, .content ol {
-            font-size: 1rem;
-            margin-top: 0.5em;
-            margin-bottom: 1em;
-          }
-
-          .content li {
-            margin-bottom: 0.5em;
-          }
-          kbd {
-            background-color: #e0e0e0;  
-            border-radius: 4px;
-            padding: 4px 8px;
-            font-size: 0.9em;
-            color: #333;  
-            cursor: pointer;
-
-             
-            box-shadow: 0 2px 5px rgba(0, 140, 255, 0.2);
-
-             
-            text-shadow: 0 1px 1px rgba(255, 255, 255, 0.¼);
-          }
-           
-          .content pre {
-            background-color: #f7f7f7;
-            padding: 8px;
-            margin-left: 0;
-            margin-right: 0;
-            white-space: pre-wrap;
-            overflow-x: auto;
-             
-             
-            margin-bottom: 1em;
-            border-radius: 3px;
-          }
-
-          .content code {
-            font-size: 0.9em;
-            border-radius: 3px;
-            white-space: pre;
-            overflow-x: auto;
-          }
-
-           
-          .content a {
-            text-decoration-skip: ink;
-            color: #007bff;  
-            text-decoration: none;
-          }
-
-          .content a:focus,.content a:hover {
-            text-decoration: none;  
-            color: #ca0c16;
-          }
-
-          .content a:visited {
-            color: #6795b5;  
-          }
-          .mt-5,
-          .text-muted {
-            text-align: center;  
-          }
-           
-          .post-date,
-          .post-update-date,
-          #busuanzi_container_page_pv {
-            display: inline-block;  
-            margin-right: 0.5em;  
-          }
-
-           
-          .content img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);  
-            transition: box-shadow 0.3s ease-in-out;  
-          }
-          .content img:hover {
-            box-shadow: 0 4px 8px rgba(0, 140, 255, 0.2);  
-          }
-           
-          @media (max-width: 600px) {
-            .post-date,
-            .post-update-date,
-            #busuanzi_container_page_pv {
-              display: block;  
-              margin-bottom: 0.5em;  
-            }
-            .container{
-              padding-right: .64rem;
-              padding-left: .64rem;
-            }
-            .content {
-              padding: 16px .32rem 16px;
-            }
-            .content h1,
-            .content h2,
-            .content h3,
-            .content h4,
-            .content h5,
-            .content h6 {
-              margin: 15px 10px 5px -0.5rem;  
-              padding-left: 0.25rem;
-            }
-             
-          }
-    </style>
 
         <footer class="main-footer footer-type-1 text-xs">
             <div id="footer-tools" class="d-flex flex-column">
