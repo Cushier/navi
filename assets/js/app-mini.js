@@ -572,18 +572,22 @@
         if(!isLive) $('.customize_nothing').remove();
         else $('.customize_nothing_click').remove(); 
         var url_f,matches = site.url.match(/^(?:https?:\/\/)?((?:[-A-Za-z0-9]+\.)+[A-Za-z]{2,6})/);
-        if (!matches || matches.length < 2) url_f=site.url; 
+        if (!matches || matches.length < 2){
+          url_f=site.url; 
+          url_f_fm = "https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/default.webp"
+        } 
         else {
             url_f=matches[0];
             if(theme.urlformat == '1')
                 url_f = matches[1];
+            url_f_fm = "https://icon.horse/icon/"+url_f
         } 
         var newSite = $('<div class="url-card  col-6 '+theme.classColumns+' col-xxl-10a">'+
             '<div class="url-body mini"><a href="'+site.url+'" target="_blank" class="card new-site mb-3 site-'+site.id+'" data-id="'+site.id+'" data-url="'+site.url+'" data-toggle="tooltip" data-placement="bottom" title="'+site.name+'" rel="external nofollow">'+
                 '<div class="card-body" style="padding:0.4rem 0.5rem;">'+
                 '<div class="url-content d-flex align-items-center">'+
                     '<div class="url-img rounded-circle mr-2 d-flex align-items-center justify-content-center">'+
-                        '<img src="https://icon.horse/icon/' + url_f + '">'+
+                        '<img src="' + url_f_fm + '">'+
                     '</div>'+
                     '<div class="url-info flex-fill">'+
                         '<div class="text-sm overflowClip_1">'+
