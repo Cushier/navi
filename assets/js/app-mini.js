@@ -580,7 +580,7 @@
             url_f=matches[0];
             if(theme.urlformat == '1')
                 url_f = matches[1];
-            url_f_fm = "https://icon.horse/icon/"+url_f
+            url_f_fm = "https://t2.gstatic.cn/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&size=48&url="+url_f
         } 
         if(isLive) url_f_fm = site.ico
         var newSite = $('<div class="url-card  col-6 '+theme.classColumns+' col-xxl-10a">'+
