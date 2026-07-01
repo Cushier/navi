@@ -1,0 +1,49 @@
+{
+  "name": "@photo-sphere-viewer/equirectangular-tiles-adapter",
+  "version": "5.14.3",
+  "description": "Photo Sphere Viewer adapter to display tiled panoramas.",
+  "homepage": "https://photo-sphere-viewer.js.org/guide/adapters/equirectangular-tiles.html",
+  "license": "MIT",
+  "main": "index.cjs",
+  "types": "index.d.ts",
+  "dependencies": {},
+  "module": "index.module.js",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./index.d.mts",
+        "default": "./index.module.js"
+      },
+      "require": {
+        "types": "./index.d.ts",
+        "default": "./index.cjs"
+      }
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mistic100/Photo-Sphere-Viewer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mistic100/Photo-Sphere-Viewer/issues"
+  },
+  "author": {
+    "name": "Damien 'Mistic' Sorel",
+    "email": "contact@git.strangeplanet.fr",
+    "homepage": "https://strangeplanet.fr"
+  },
+  "funding": "https://github.com/sponsors/mistic100",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public",
+    "provenance": true
+  },
+  "keywords": [
+    "photosphere",
+    "panorama",
+    "threejs"
+  ],
+  "peerDependencies": {
+    "@photo-sphere-viewer/core": "5.14.3"
+  }
+}
