@@ -1,5 +1,5 @@
-import { PanoData, PanoDataProvider, EquirectangularAdapterConfig, AbstractAdapter, AdapterConstructor, Viewer, PanoramaPosition, Position, TextureData } from '@photo-sphere-viewer/core';
-import { Texture, Group } from 'three';
+import { PanoData, PanoDataProvider, EquirectangularAdapterConfig, AbstractAdapter, Viewer, PanoramaPosition, Position, TextureData } from '@photo-sphere-viewer/core';
+import { Texture, Mesh, SphereGeometry, MeshBasicMaterial } from 'three';
 
 /**
  * Configuration of a tiled panorama
@@ -32,9 +32,9 @@ type EquirectangularTilesPanorama = {
 };
 type EquirectangularTileLevel = {
     /**
-     * @deprecated Not used anymore
+     * Lower and upper zoom levels (0-100)
      */
-    zoomRange?: never;
+    zoomRange: [number, number];
     /**
      * complete panorama width (height is always width/2)
      */
@@ -69,7 +69,7 @@ type EquirectangularMultiTilesPanorama = {
      */
     tileUrl: (col: number, row: number, level: number) => string | null;
 };
-type EquirectangularTilesAdapterConfig = Omit<EquirectangularAdapterConfig, 'interpolateBackground' | 'blur' | 'shader'> & {
+type EquirectangularTilesAdapterConfig = Omit<EquirectangularAdapterConfig, 'interpolateBackground' | 'blur'> & {
     /**
      * shows a warning sign on tiles that cannot be loaded
      * @default true
@@ -86,15 +86,13 @@ type EquirectangularTilesAdapterConfig = Omit<EquirectangularAdapterConfig, 'int
      */
     antialias?: boolean;
 };
-type EquirectangularTilesPanoData = PanoData & {
-    baseData: PanoData;
-};
 
-type EquirectangularTilesTextureData = TextureData<Texture, EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama, EquirectangularTilesPanoData>;
+type EquirectangularMesh = Mesh<SphereGeometry, MeshBasicMaterial[]>;
+type EquirectangularTexture = TextureData<Texture, EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama, PanoData>;
 /**
  * Adapter for tiled panoramas
  */
-declare class EquirectangularTilesAdapter extends AbstractAdapter<EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama, EquirectangularTilesPanoData, Texture, Group> {
+declare class EquirectangularTilesAdapter extends AbstractAdapter<EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama, Texture, PanoData> {
     static readonly id = "equirectangular-tiles";
     static readonly VERSION: string;
     static readonly supportsDownload = false;
@@ -102,24 +100,24 @@ declare class EquirectangularTilesAdapter extends AbstractAdapter<Equirectangula
     private readonly NB_GROUPS;
     private readonly config;
     private readonly state;
+    private adapter;
     private readonly queue;
-    static withConfig(config: EquirectangularTilesAdapterConfig): [AdapterConstructor, any];
     constructor(viewer: Viewer, config: EquirectangularTilesAdapterConfig);
     init(): void;
     destroy(): void;
     supportsTransition(panorama: EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama): boolean;
     supportsPreload(panorama: EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama): boolean;
-    textureCoordsToSphericalCoords(point: PanoramaPosition, data: EquirectangularTilesPanoData): Position;
-    sphericalCoordsToTextureCoords(position: Position, data: EquirectangularTilesPanoData): PanoramaPosition;
-    loadTexture(panorama: EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama, loader?: boolean): Promise<EquirectangularTilesTextureData>;
-    createMesh(panoData: EquirectangularTilesPanoData): Group;
+    textureCoordsToSphericalCoords(point: PanoramaPosition, data: PanoData): Position;
+    sphericalCoordsToTextureCoords(position: Position, data: PanoData): PanoramaPosition;
+    loadTexture(panorama: EquirectangularTilesPanorama | EquirectangularMultiTilesPanorama, loader?: boolean): Promise<EquirectangularTexture>;
+    createMesh(scale?: number): EquirectangularMesh;
     /**
      * Applies the base texture and starts the loading of tiles
      */
-    setTexture(group: Group, textureData: EquirectangularTilesTextureData, transition: boolean): void;
-    setTextureOpacity(group: Group, opacity: number): void;
-    disposeTexture({ texture }: EquirectangularTilesTextureData): void;
-    disposeMesh(group: Group): void;
+    setTexture(mesh: EquirectangularMesh, textureData: EquirectangularTexture, transition: boolean): void;
+    private __setTexture;
+    setTextureOpacity(mesh: EquirectangularMesh, opacity: number): void;
+    disposeTexture(textureData: TextureData<Texture>): void;
     /**
      * Compute visible tiles and load them
      */
@@ -136,11 +134,10 @@ declare class EquirectangularTilesAdapter extends AbstractAdapter<Equirectangula
      * Applies a new texture to the faces
      */
     private __swapMaterial;
-    private __switchMesh;
     /**
      * Clears loading queue, dispose all materials
      */
     private __cleanup;
 }
 
-export { type EquirectangularMultiTilesPanorama, type EquirectangularTileLevel, EquirectangularTilesAdapter, type EquirectangularTilesAdapterConfig, type EquirectangularTilesPanoData, type EquirectangularTilesPanorama };
+export { type EquirectangularMultiTilesPanorama, type EquirectangularTileLevel, EquirectangularTilesAdapter, type EquirectangularTilesAdapterConfig, type EquirectangularTilesPanorama };

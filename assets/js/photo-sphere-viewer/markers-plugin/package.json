@@ -1,0 +1,33 @@
+{
+  "name": "@photo-sphere-viewer/markers-plugin",
+  "version": "5.7.4",
+  "description": "Photo Sphere Viewer plugin to display various markers/hotspots on the viewer.",
+  "keywords": [
+    "photosphere",
+    "panorama",
+    "threejs",
+    "video",
+    "svg",
+    "polygon",
+    "green-screen"
+  ],
+  "homepage": "https://photo-sphere-viewer.js.org/plugins/markers",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/mistic100/Photo-Sphere-Viewer.git"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Damien 'Mistic' Sorel",
+    "email": "contact@git.strangeplanet.fr",
+    "homepage": "https://www.strangeplanet.fr"
+  },
+  "main": "index.cjs",
+  "module": "index.module.js",
+  "types": "index.d.ts",
+  "style": "index.css",
+  "sass": "index.scss",
+  "peerDependencies": {
+    "@photo-sphere-viewer/core": "5.7.4"
+  }
+}

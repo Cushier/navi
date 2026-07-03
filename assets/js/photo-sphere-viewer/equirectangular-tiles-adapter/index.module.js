@@ -1,12 +1,12 @@
 /*!
- * Photo Sphere Viewer / Equirectangular Tiles Adapter 5.14.3
- * @copyright 2015-2026 Damien "Mistic" Sorel
+ * PhotoSphereViewer.EquirectangularTilesAdapter 5.7.4
+ * @copyright 2024 Damien "Mistic" Sorel
  * @licence MIT (https://opensource.org/licenses/MIT)
  */
 
 // src/EquirectangularTilesAdapter.ts
-import { AbstractAdapter, CONSTANTS, EquirectangularAdapter, events, utils as utils3 } from "@photo-sphere-viewer/core";
-import { Group, Mesh, MeshBasicMaterial as MeshBasicMaterial2, SphereGeometry, Vector3 } from "three";
+import { AbstractAdapter, CONSTANTS, EquirectangularAdapter, PSVError as PSVError3, events, utils as utils2 } from "@photo-sphere-viewer/core";
+import { MathUtils as MathUtils2, Mesh, MeshBasicMaterial as MeshBasicMaterial2, SphereGeometry, Vector3 } from "three";
 
 // ../shared/Queue.ts
 var Task = class {
@@ -35,7 +35,7 @@ var Task = class {
   }
 };
 var Queue = class {
-  constructor(concurency = 8) {
+  constructor(concurency = 4) {
     this.concurency = concurency;
     this.runningTasks = {};
     this.tasks = {};
@@ -82,10 +82,29 @@ var Queue = class {
 };
 
 // ../shared/tiles-utils.ts
-import { utils } from "@photo-sphere-viewer/core";
+import { PSVError, utils } from "@photo-sphere-viewer/core";
 import { LineSegments, MeshBasicMaterial, WireframeGeometry } from "three";
+function checkTilesLevels(levels) {
+  let previous = 0;
+  levels.forEach((level, i) => {
+    if (!level.zoomRange || level.zoomRange.length !== 2) {
+      throw new PSVError(`Tiles level ${i} is missing "zoomRange" property`);
+    }
+    if (level.zoomRange[0] >= level.zoomRange[1] || level.zoomRange[0] !== previous || i === 0 && level.zoomRange[0] !== 0 || i === levels.length - 1 && level.zoomRange[1] !== 100) {
+      throw new PSVError(`Tiles levels' "zoomRange" are not orderer or are not covering the whole 0-100 range`);
+    }
+    previous = level.zoomRange[1];
+  });
+}
+function getTileIndexByZoomLevel(levels, zoomLevel) {
+  return levels.findIndex((level) => {
+    return zoomLevel >= level.zoomRange[0] && zoomLevel <= level.zoomRange[1];
+  });
+}
 function buildErrorMaterial() {
-  const canvas = new OffscreenCanvas(512, 512);
+  const canvas = document.createElement("canvas");
+  canvas.width = 512;
+  canvas.height = 512;
   const ctx = canvas.getContext("2d");
   ctx.fillStyle = "#333";
   ctx.fillRect(0, 0, canvas.width, canvas.height);
@@ -100,7 +119,6 @@ function createWireFrame(geometry) {
   const wireframe = new WireframeGeometry(geometry);
   const line = new LineSegments(wireframe);
   line.material.depthTest = false;
-  line.material.depthWrite = false;
   line.material.opacity = 0.25;
   line.material.transparent = true;
   return line;
@@ -127,7 +145,7 @@ function buildDebugTexture(image, level, id) {
 }
 
 // src/utils.ts
-import { PSVError, utils as utils2 } from "@photo-sphere-viewer/core";
+import { PSVError as PSVError2 } from "@photo-sphere-viewer/core";
 import { MathUtils } from "three";
 function isMultiTiles(panorama) {
   return !!panorama.levels;
@@ -142,25 +160,17 @@ function computeTileConfig(tile, level, data) {
     facesByRow: data.SPHERE_HORIZONTAL_SEGMENTS / tile.rows
   };
 }
-function getTileConfig(panorama, hFov, vFov, viewerSize, data) {
+function getTileConfig(panorama, zoomLevel, data) {
   let tile;
   let level;
   if (!isMultiTiles(panorama)) {
     level = 0;
-    tile = { ...panorama };
+    tile = {
+      ...panorama,
+      zoomRange: [0, 100]
+    };
   } else {
-    if (viewerSize) {
-      level = panorama.levels.findIndex((pLevel) => {
-        const hResolution = pLevel.width / 360 * hFov;
-        const vResolution = pLevel.width / 2 / 180 * vFov;
-        return hResolution >= viewerSize.width && vResolution >= viewerSize.height;
-      });
-      if (level === -1) {
-        level = panorama.levels.length - 1;
-      }
-    } else {
-      level = 0;
-    }
+    level = getTileIndexByZoomLevel(panorama.levels, zoomLevel);
     tile = panorama.levels[level];
   }
   return computeTileConfig(tile, level, data);
@@ -174,66 +184,61 @@ function getTileConfigByIndex(panorama, level, data) {
 }
 function checkPanoramaConfig(panorama, data) {
   if (typeof panorama !== "object" || !panorama.tileUrl) {
-    throw new PSVError("Invalid panorama configuration, are you using the right adapter?");
+    throw new PSVError2("Invalid panorama configuration, are you using the right adapter?");
   }
   if (isMultiTiles(panorama)) {
-    panorama.levels.forEach((level) => {
-      checkTile(level, data);
-      if ("zoomRange" in level) {
-        utils2.logWarn('EquirectangularTilesAdapter: "zoomRange" property is deprecated and must be removed');
-      }
-    });
-    panorama.levels.sort((a, b) => a.width - b.width);
+    panorama.levels.forEach((level) => checkTile(level, data));
+    checkTilesLevels(panorama.levels);
   } else {
     checkTile(panorama, data);
   }
 }
 function checkTile(tile, data) {
   if (!tile.width || !tile.cols || !tile.rows) {
-    throw new PSVError("Invalid panorama configuration, are you using the right adapter?");
+    throw new PSVError2("Invalid panorama configuration, are you using the right adapter?");
   }
   if (tile.cols > data.SPHERE_SEGMENTS) {
-    throw new PSVError(`Panorama cols must not be greater than ${data.SPHERE_SEGMENTS}.`);
+    throw new PSVError2(`Panorama cols must not be greater than ${data.SPHERE_SEGMENTS}.`);
   }
   if (tile.rows > data.SPHERE_HORIZONTAL_SEGMENTS) {
-    throw new PSVError(`Panorama rows must not be greater than ${data.SPHERE_HORIZONTAL_SEGMENTS}.`);
+    throw new PSVError2(`Panorama rows must not be greater than ${data.SPHERE_HORIZONTAL_SEGMENTS}.`);
   }
   if (!MathUtils.isPowerOfTwo(tile.cols) || !MathUtils.isPowerOfTwo(tile.rows)) {
-    throw new PSVError("Panorama cols and rows must be powers of 2.");
+    throw new PSVError2("Panorama cols and rows must be powers of 2.");
   }
-}
-function getCacheKey(panorama, firstTile) {
-  for (let i = 0; i < firstTile.cols; i++) {
-    const url = panorama.tileUrl(i, firstTile.rows / 2, firstTile.level);
-    if (url) {
-      return url;
-    }
-  }
-  return panorama.tileUrl.toString();
 }
 
 // src/EquirectangularTilesAdapter.ts
 var NB_VERTICES_BY_FACE = 6;
 var NB_VERTICES_BY_SMALL_FACE = 3;
 var ATTR_UV = "uv";
+var ATTR_ORIGINAL_UV = "originaluv";
 var ATTR_POSITION = "position";
 var ERROR_LEVEL = -1;
 function tileId(tile) {
   return `${tile.col}x${tile.row}/${tile.config.level}`;
 }
-function meshes(group) {
-  return group.children;
-}
-var getConfig = utils3.getConfigParser({
-  resolution: 64,
-  showErrorTile: true,
-  baseBlur: true,
-  antialias: true,
-  debug: false,
-  useXmpData: false
-});
+var getConfig = utils2.getConfigParser(
+  {
+    backgroundColor: "#000",
+    resolution: 64,
+    showErrorTile: true,
+    baseBlur: true,
+    antialias: true,
+    debug: false,
+    useXmpData: false
+  },
+  {
+    resolution: (resolution) => {
+      if (!resolution || !MathUtils2.isPowerOfTwo(resolution)) {
+        throw new PSVError3("EquirectangularTilesAdapter resolution must be power of two");
+      }
+      return resolution;
+    }
+  }
+);
 var vertexPosition = new Vector3();
-var _EquirectangularTilesAdapter = class _EquirectangularTilesAdapter extends AbstractAdapter {
+var EquirectangularTilesAdapter = class extends AbstractAdapter {
   constructor(viewer, config) {
     super(viewer);
     this.state = {
@@ -247,38 +252,28 @@ var _EquirectangularTilesAdapter = class _EquirectangularTilesAdapter extends Ab
     };
     this.queue = new Queue();
     this.config = getConfig(config);
-    this.adapter = new EquirectangularAdapter(this.viewer, {
-      shader: false,
-      resolution: this.config.resolution,
-      blur: this.config.baseBlur
-    });
     this.SPHERE_SEGMENTS = this.config.resolution;
     this.SPHERE_HORIZONTAL_SEGMENTS = this.SPHERE_SEGMENTS / 2;
     this.NB_VERTICES = 2 * this.SPHERE_SEGMENTS * NB_VERTICES_BY_SMALL_FACE + (this.SPHERE_HORIZONTAL_SEGMENTS - 2) * this.SPHERE_SEGMENTS * NB_VERTICES_BY_FACE;
     this.NB_GROUPS = this.SPHERE_SEGMENTS * this.SPHERE_HORIZONTAL_SEGMENTS;
     if (this.viewer.config.requestHeaders) {
-      utils3.logWarn(
+      utils2.logWarn(
         'EquirectangularTilesAdapter fallbacks to file loader because "requestHeaders" where provided. Consider removing "requestHeaders" if you experience performances issues.'
       );
     }
   }
-  static withConfig(config) {
-    return [_EquirectangularTilesAdapter, config];
-  }
   init() {
     super.init();
-    this.viewer.addEventListener(events.TransitionDoneEvent.type, this);
     this.viewer.addEventListener(events.PositionUpdatedEvent.type, this);
     this.viewer.addEventListener(events.ZoomUpdatedEvent.type, this);
   }
   destroy() {
-    this.viewer.removeEventListener(events.TransitionDoneEvent.type, this);
-    this.viewer.removeEventListener(events.PositionUpdatedEvent.type, this);
-    this.viewer.removeEventListener(events.ZoomUpdatedEvent.type, this);
+    this.viewer.addEventListener(events.PositionUpdatedEvent.type, this);
+    this.viewer.addEventListener(events.ZoomUpdatedEvent.type, this);
     this.__cleanup();
     this.state.errorMaterial?.map?.dispose();
     this.state.errorMaterial?.dispose();
-    this.adapter.destroy();
+    this.adapter?.destroy();
     delete this.adapter;
     delete this.state.geom;
     delete this.state.errorMaterial;
@@ -288,17 +283,8 @@ var _EquirectangularTilesAdapter = class _EquirectangularTilesAdapter extends Ab
    * @internal
    */
   handleEvent(e) {
-    switch (e.type) {
-      case events.PositionUpdatedEvent.type:
-      case events.ZoomUpdatedEvent.type:
-        this.__refresh();
-        break;
-      case events.TransitionDoneEvent.type:
-        this.state.inTransition = false;
-        if (e.completed) {
-          this.__switchMesh(this.viewer.renderer.mesh);
-        }
-        break;
+    if (e instanceof events.PositionUpdatedEvent || e instanceof events.ZoomUpdatedEvent) {
+      this.__refresh();
     }
   }
   supportsTransition(panorama) {
@@ -308,14 +294,18 @@ var _EquirectangularTilesAdapter = class _EquirectangularTilesAdapter extends Ab
     return !!panorama.baseUrl;
   }
   textureCoordsToSphericalCoords(point, data) {
-    return this.adapter.textureCoordsToSphericalCoords(point, data);
+    return this.getAdapter().textureCoordsToSphericalCoords(point, data);
   }
   sphericalCoordsToTextureCoords(position, data) {
-    return this.adapter.sphericalCoordsToTextureCoords(position, data);
+    return this.getAdapter().sphericalCoordsToTextureCoords(position, data);
   }
-  async loadTexture(panorama, loader = true) {
-    checkPanoramaConfig(panorama, this);
-    const firstTile = getTileConfig(panorama, 0, 0, null, this);
+  loadTexture(panorama, loader = true) {
+    try {
+      checkPanoramaConfig(panorama, this);
+    } catch (e) {
+      return Promise.reject(e);
+    }
+    const firstTile = getTileConfig(panorama, 0, this);
     const panoData = {
       isEquirectangular: true,
       fullWidth: firstTile.width,
@@ -329,32 +319,24 @@ var _EquirectangularTilesAdapter = class _EquirectangularTilesAdapter extends Ab
       poseRoll: 0
     };
     if (panorama.baseUrl) {
-      const textureData = await this.adapter.loadTexture(panorama.baseUrl, loader, panorama.basePanoData, true);
-      return {
+      return this.getAdapter().loadTexture(panorama.baseUrl, loader, panorama.basePanoData, false).then((textureData) => ({
         panorama,
-        panoData: {
-          ...panoData,
-          baseData: textureData.panoData
-        },
+        panoData,
         cacheKey: textureData.cacheKey,
         texture: textureData.texture
-      };
+      }));
     } else {
-      return {
+      return Promise.resolve({
         panorama,
-        panoData: {
-          ...panoData,
-          baseData: null
-        },
-        cacheKey: getCacheKey(panorama, firstTile),
+        panoData,
+        cacheKey: panorama.tileUrl(0, 0, 0),
         texture: null
-      };
+      });
     }
   }
-  createMesh(panoData) {
-    const baseMesh = this.adapter.createMesh(panoData.baseData ?? panoData);
+  createMesh(scale = 1) {
     const geometry = new SphereGeometry(
-      CONSTANTS.SPHERE_RADIUS,
+      CONSTANTS.SPHERE_RADIUS * scale,
       this.SPHERE_SEGMENTS,
       this.SPHERE_HORIZONTAL_SEGMENTS,
       -Math.PI / 2
@@ -371,59 +353,48 @@ var _EquirectangularTilesAdapter = class _EquirectangularTilesAdapter extends Ab
     for (; i < this.NB_VERTICES; i += NB_VERTICES_BY_SMALL_FACE) {
       geometry.addGroup(i, NB_VERTICES_BY_SMALL_FACE, k++);
     }
-    const materials = [];
-    const material = new MeshBasicMaterial2({
-      opacity: 0,
-      transparent: true,
-      depthTest: false,
-      depthWrite: false
-    });
-    for (let g = 0; g < this.NB_GROUPS; g++) {
-      materials.push(material);
-    }
-    const tilesMesh = new Mesh(geometry, materials);
-    tilesMesh.renderOrder = 1;
-    const group = new Group();
-    group.add(baseMesh);
-    group.add(tilesMesh);
-    return group;
+    geometry.setAttribute(ATTR_ORIGINAL_UV, geometry.getAttribute(ATTR_UV).clone());
+    return new Mesh(geometry, []);
   }
   /**
    * Applies the base texture and starts the loading of tiles
    */
-  setTexture(group, textureData, transition) {
-    const [baseMesh] = meshes(group);
-    if (textureData.texture) {
-      this.adapter.setTexture(baseMesh, {
-        panorama: textureData.panorama.baseUrl,
-        texture: textureData.texture,
-        panoData: textureData.panoData.baseData
-      });
-    } else {
-      baseMesh.visible = false;
-    }
+  setTexture(mesh, textureData, transition) {
+    const { texture } = textureData;
     if (transition) {
       this.state.inTransition = true;
+      this.__setTexture(mesh, texture);
+      return;
+    }
+    this.__cleanup();
+    this.__setTexture(mesh, texture);
+    this.state.materials = mesh.material;
+    this.state.geom = mesh.geometry;
+    this.state.geom.setAttribute(ATTR_UV, this.state.geom.getAttribute(ATTR_ORIGINAL_UV).clone());
+    if (this.config.debug) {
+      const wireframe = createWireFrame(this.state.geom);
+      this.viewer.renderer.addObject(wireframe);
+      this.viewer.renderer.setSphereCorrection(this.viewer.config.sphereCorrection, wireframe);
+    }
+    setTimeout(() => this.__refresh());
+  }
+  __setTexture(mesh, texture) {
+    let material;
+    if (texture) {
+      material = new MeshBasicMaterial2({ map: texture });
     } else {
-      this.__switchMesh(group);
+      material = new MeshBasicMaterial2({ color: this.config.backgroundColor });
+    }
+    for (let i = 0; i < this.NB_GROUPS; i++) {
+      mesh.material.push(material);
     }
   }
-  setTextureOpacity(group, opacity) {
-    const [baseMesh] = meshes(group);
-    this.adapter.setTextureOpacity(baseMesh, opacity);
+  setTextureOpacity(mesh, opacity) {
+    mesh.material[0].opacity = opacity;
+    mesh.material[0].transparent = opacity < 1;
   }
-  disposeTexture({ texture }) {
-    texture?.dispose();
-  }
-  disposeMesh(group) {
-    const [baseMesh, tilesMesh] = meshes(group);
-    baseMesh.geometry.dispose();
-    baseMesh.material.dispose();
-    tilesMesh.geometry.dispose();
-    tilesMesh.material.forEach((m) => {
-      m.map?.dispose();
-      m.dispose();
-    });
+  disposeTexture(textureData) {
+    textureData.texture?.dispose();
   }
   /**
    * Compute visible tiles and load them
@@ -433,7 +404,8 @@ var _EquirectangularTilesAdapter = class _EquirectangularTilesAdapter extends Ab
       return;
     }
     const panorama = this.viewer.config.panorama;
-    const tileConfig = getTileConfig(panorama, this.viewer.state.hFov, this.viewer.state.vFov, this.viewer.state.size, this);
+    const zoomLevel = this.viewer.getZoomLevel();
+    const tileConfig = getTileConfig(panorama, zoomLevel, this);
     const verticesPosition = this.state.geom.getAttribute(ATTR_POSITION);
     const tilesToLoad = {};
     for (let i = 0; i < this.NB_VERTICES; i += 1) {
@@ -510,12 +482,12 @@ var _EquirectangularTilesAdapter = class _EquirectangularTilesAdapter extends Ab
           image = buildDebugTexture(image, tile.config.level, tileId(tile));
         }
         const mipmaps = this.config.antialias && tile.config.level > 0;
-        const material = new MeshBasicMaterial2({ map: utils3.createTexture(image, mipmaps) });
+        const material = new MeshBasicMaterial2({ map: utils2.createTexture(image, mipmaps) });
         this.__swapMaterial(tile, material, false);
         this.viewer.needsUpdate();
       }
     }).catch((err) => {
-      if (!utils3.isAbortError(err) && !task.isCancelled() && this.config.showErrorTile) {
+      if (!utils2.isAbortError(err) && !task.isCancelled() && this.config.showErrorTile) {
         if (!this.state.errorMaterial) {
           this.state.errorMaterial = buildErrorMaterial();
         }
@@ -576,18 +548,6 @@ var _EquirectangularTilesAdapter = class _EquirectangularTilesAdapter extends Ab
     }
     uvs.needsUpdate = true;
   }
-  __switchMesh(group) {
-    const [, tilesMesh] = meshes(group);
-    this.__cleanup();
-    this.state.materials = tilesMesh.material;
-    this.state.geom = tilesMesh.geometry;
-    if (this.config.debug) {
-      const wireframe = createWireFrame(this.state.geom);
-      this.viewer.renderer.addObject(wireframe);
-      this.viewer.renderer.setSphereCorrection(this.viewer.config.sphereCorrection, wireframe);
-    }
-    setTimeout(() => this.__refresh());
-  }
   /**
    * Clears loading queue, dispose all materials
    */
@@ -595,14 +555,30 @@ var _EquirectangularTilesAdapter = class _EquirectangularTilesAdapter extends Ab
     this.queue.clear();
     this.state.tiles = {};
     this.state.faces = {};
-    this.state.materials = [];
     this.state.inTransition = false;
+    this.state.materials.forEach((mat) => {
+      mat?.map?.dispose();
+      mat?.dispose();
+    });
+    this.state.materials.length = 0;
+  }
+  /**
+   * @internal
+   */
+  getAdapter() {
+    if (!this.adapter) {
+      this.adapter = new EquirectangularAdapter(this.viewer, {
+        backgroundColor: this.config.backgroundColor,
+        interpolateBackground: false,
+        blur: this.config.baseBlur
+      });
+    }
+    return this.adapter;
   }
 };
-_EquirectangularTilesAdapter.id = "equirectangular-tiles";
-_EquirectangularTilesAdapter.VERSION = "5.14.3";
-_EquirectangularTilesAdapter.supportsDownload = false;
-var EquirectangularTilesAdapter = _EquirectangularTilesAdapter;
+EquirectangularTilesAdapter.id = "equirectangular-tiles";
+EquirectangularTilesAdapter.VERSION = "5.7.4";
+EquirectangularTilesAdapter.supportsDownload = false;
 export {
   EquirectangularTilesAdapter
 };

@@ -38,15 +38,15 @@
         type="text/css" media="all" />
     <link rel="stylesheet" id="fortawesome-css" href="https://cdn.staticfile.org/font-awesome/6.5.1/css/all.min.css" type="text/css" />
     <link rel="stylesheet"href="/assets/js/photo-sphere-viewer/core/index.min.css"/>
-    
     <link rel="stylesheet" href="/assets/js/photo-sphere-viewer/gallery-plugin/index.css">
+    <link rel="stylesheet" href="/assets/js/photo-sphere-viewer/markers-plugin/index.css">
     <script type="text/javascript" src="https://cdn.staticfile.org/jquery/3.6.0/jquery.min.js" id="jquery-js"></script>
     <script type="text/javascript" src="/assets/js/content-search.js"  id="content-search-js"></script>
     <script src="https://cdn.staticfile.org/three.js/0.160.0/three.min.js"></script>
     <script src="/assets/js/photo-sphere-viewer/core/index.min.js"></script>
-    
-    
+    <script src="/assets/js/photo-sphere-viewer/equirectangular-tiles-adapter/equirectangular-tiles.min.js"></script>
     <script src="/assets/js/photo-sphere-viewer/gallery-plugin/index.js"></script>
+    <script src="/assets/js/photo-sphere-viewer/markers-plugin/index.js"></script>
     
     <script>
         
@@ -680,7 +680,7 @@
 <p>左侧为全校招生专业总表，按职教高考类别划分教育体育、电子信息、财经商贸、装备制造、医药卫生、文化艺术、公安司法、食品农林、土木建筑、新闻传播十大类，包含幼儿保育、计算机UI、护理、新能源汽车、电子商务、动漫设计等热门专业，标注各专业学制、核心课程、可报考本科/大专院校。 右侧公示统一收费标准，区分不同专业减免后学费，同时完整列明住宿费、书本费、体检费等代收费用；下方详细解读国家助学政策，包含农村户籍免学费、连片特困地区助学金、雨露计划补助、高考升学补贴、困难学生帮扶等多项福利，减轻家庭就学经济压力。</p>
 <h1 id="学校360全景参观">学校360°全景参观</h1>
 <p>不用到校，手机拖动画面即可完整浏览校园前广场、足球场、羽毛球场、标准教室、计算机实训机房、学生宿舍六大实景区域，直观了解校园食宿、教学环境。
-如需线下实地走访校园，可联系黄老师预约接待：<a href="tel:18720072818" target="_blank">18720072818</a>（微信同号）</p>
+如需线下实地走访校园，可联系黄老师预约接待：<a href="tel:18720072818" target="_blank">18720072818</a>（微信同号）
 <p><div id="viewer"></div></p>
 <script>
   const viewer = new PhotoSphereViewer.Viewer({
@@ -715,27 +715,58 @@
               },
               {
                   id: '4',
+                  name: '篮球场',
+                  thumbnail: '/assets/images/360/lanqiuchangs.jpg',
+                  panorama: '/assets/images/360/lanqiuchang.jpg',
+              },
+              {
+                  id: '5',
                   name: '教室',
                   thumbnail: '/assets/images/360/jiaoshis.jpg',
                   panorama: '/assets/images/360/jiaoshi.jpg',
               },
               {
-                  id: '5',
+                  id: '6',
                   name: '机房',
                   thumbnail: '/assets/images/360/jifangs.jpg',
                   panorama: '/assets/images/360/jifang.jpg',
               },
               {
-                  id: '6',
-                  name: '宿舍',
-                  thumbnail: '/assets/images/360/sushes.jpg',
-                  panorama: '/assets/images/360/sushe.jpg',
+                  id: '7',
+                  name: '新能源汽车实训室',
+                  thumbnail: '/assets/images/360/xinnengyuanqicheshixunshis.jpg',
+                  panorama: '/assets/images/360/xinnengyuanqicheshixunshi.jpg',
               },
+              {
+                  id: '8',
+                  name: '美容美体实训室',
+                  thumbnail: '/assets/images/360/meirongmeitishixunshis.jpg',
+                  panorama: '/assets/images/360/meirongmeitishixunshi.jpg',
+              },
+              {
+                  id: '9',
+                  name: '食堂',
+                  thumbnail: '/assets/images/360/shitangs.jpg',
+                  panorama: '/assets/images/360/shitang.jpg',
+              },              
+              {
+                  id: '10',
+                  name: '宿舍1',
+                  thumbnail: '/assets/images/360/sushe1s.jpg',
+                  panorama: '/assets/images/360/sushe1.jpg',
+              },
+              {
+                  id: '11',
+                  name: '宿舍2',
+                  thumbnail: '/assets/images/360/sushe2s.jpg',
+                  panorama: '/assets/images/360/sushe2.jpg',
+              }
           ],
       }],
     ],
   });
 </script>
+</p>
 <h1 id="报名预约指南">报名预约指南</h1>
 <ol>
 <li>招生对象：赣州应届、往届初中毕业生</li>
