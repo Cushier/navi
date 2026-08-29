@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="青年科技学习导航" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>青年科技学习导航</title>
     <link rel="icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico">
     <!-- jQuery -->
@@ -52,7 +52,7 @@
     </div>
     <!-- 背景图片 -->
     <div class="bg-all">
-        <img id="bg" onerror="this.classList.add('error');"></img>
+        <img id="bg" onerror="this.onerror=null; this.src='./img/background' + (Math.floor(Math.random()*10)+1) + '.webp';"></img>
         <div class="cover"></div>
     </div>
     <!-- 主体内容 -->
@@ -90,10 +90,10 @@
                     <div id="keywords" style="display: none;"></div>
                     <div class="search-engine" style="display: none;">
                         <div class="search-engine-list">
-                            <div class="se-li">
-                                <a class="se-li-text" data-url="https://www.baidu.com/s" data-name="wd"
-                                    data-icon="iconfont icon-baidu">
-                                    <i id="icon-sou-list" class="iconfont icon-sousuo"></i>
+                            <div class="se-li" data-url="https://www.baidu.com/s" data-name="wd"
+                                data-icon="iconfont icon-baidu">
+                                <a class="se-li-text">
+                                    <i id="icon-sou-list" class="iconfont icon-baidu"></i>
                                     <span>百度</span>
                                 </a>
                             </div>
@@ -112,7 +112,7 @@
                                 </a>
                             </div>
                             <div class="se-li" data-url="https://www.sogou.com/web" data-name="query"
-                                data-icon="iconfont icon-bing">
+                                data-icon="iconfont icon-sougousousuo">
                                 <a class="se-li-text">
                                     <i id="icon-sou-list" class="iconfont icon-sougousousuo"></i>
                                     <span>搜狗</span>
@@ -355,12 +355,14 @@
                                                 <div class="quick_list_div_num">1</div>
                                                 <div class="quick_list_div_name">哔哩哔哩</div>
                                                 <div class="quick_list_div_button">
-                                                    <div class="edit_quick" value="1">
-                                                        <span class="iconfont iconbook-edit"></span>
-                                                    </div>
-                                                    <div class="delete_quick" value="1">
-                                                        <span class="iconfont icondelete"></span>
-                                                    </div>
+                                                    <button class="edit_quick" value="1"
+                                                        style="border-radius: 8px 0px 0px 8px;">
+                                                        <span class="iconfont icon-xiugai"></span>
+                                                    </button>
+                                                    <button class="delete_quick" value="1"
+                                                        style="border-radius: 0px 8px 8px 0px;">
+                                                        <span class="iconfont icon-delete"></span>
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div class="quick_list_div">
@@ -369,11 +371,11 @@
                                                 <div class="quick_list_div_button">
                                                     <button class="edit_quick" value="2"
                                                         style="border-radius: 8px 0px 0px 8px;">
-                                                        <span class="iconfont iconbook-edit"></span>
+                                                        <span class="iconfont icon-xiugai"></span>
                                                     </button>
                                                     <button class="delete_quick" value="2"
                                                         style="border-radius: 0px 8px 8px 0px;">
-                                                        <span class="iconfont icondelete"></span>
+                                                        <span class="iconfont icon-delete"></span>
                                                     </button>
                                                 </div>
                                             </div>
@@ -528,7 +530,6 @@
     <script type="text/javascript" src="./js/js.cookie.js"></script>
 <!-- aplayer -->
  <div id="aplayer" class="aplayer" data-order="random" data-id="9874829261" data-server="netease" data-type="playlist" data-fixed="true" data-autoplay="false" data-volume="0.8"></div>
- <script src="https://cdn.staticfile.org/jquery/3.2.1/jquery.min.js"></script>
  <script src="https://cdn.staticfile.org/aplayer/1.10.1/APlayer.min.js"></script>
  <script src="https://cdn.staticfile.org/meting/1.2.0/Meting.min.js"></script>
  <!-- end_aplayer -->
@@ -537,7 +538,6 @@
  <script src="https://cdn.staticfile.org/layer/3.5.1/layer.min.js"></script>
 <script src="./js/v3.js"></script>
 
-</section>
 </body>
 
 </html>

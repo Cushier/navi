@@ -727,6 +727,8 @@
     </div> 
     <div class="flex-fill"></div>
     <a class='btn-edit text-xs' href="javascript:;">编辑</a>
+    <a class='btn-nav-bak text-xs' href="javascript:;" id="myNavExport" data-logo="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/default.png" style="display:none;color:#ddd;line-height:24px;background:#515c6b;padding:0 10px;margin:5px 0 5px 6px;border-radius:50px;white-space:nowrap;cursor:pointer" title="把当前“我的导航”数据导出为 JSON 备份">导出</a>
+    <a class='btn-nav-bak text-xs' href="javascript:;" id="myNavImport" style="display:none;color:#ddd;line-height:24px;background:#515c6b;padding:0 10px;margin:5px 0 5px 6px;border-radius:50px;white-space:nowrap;cursor:pointer" title="从 JSON 备份导入“我的导航”数据">导入</a>
   </div>
   <div id="cust-sites" class="tab-content mt-4">
     <div id="my-nav" class="tab-pane active">                    
@@ -6172,6 +6174,7 @@ var theme = {"ajaxurl":"","addico":"https:\/\/nav.baidu.cn\/wp-content\/themes\/
 
 <script type='text/javascript' src='/assets/js/app-mini.js.obfuscated.js' id='appmini-js'></script>
 
+<script type='text/javascript' src='/assets/js/my-nav-backup.js' id='mynav-backup-js'></script>
 <script type="text/javascript">
     $(document).ready(function(){
         var siteWelcome = $('#loading');

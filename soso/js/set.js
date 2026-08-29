@@ -234,13 +234,20 @@ function setBgImgInit() {
             $('#bg').attr('src', pictures[rd]) //随机默认壁纸
             break;
         case "2":
-            $('#bg').attr('src', 'https://api.dujin.org/bing/1920.php') //必应每日
+            fetch('https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN')
+                .then(function (r) { return r.json(); })
+                .then(function (data) {
+                    $('#bg').attr('src', 'https://cn.bing.com' + data.images[0].url);
+                })
+                .catch(function () {
+                    $('#bg').attr('src', './img/background' + (Math.floor(Math.random() * 10) + 1) + '.webp');
+                });
             break;
         case "3":
-            $('#bg').attr('src', 'https://api.ixiaowai.cn/gqapi/gqapi.php') //随机风景
+            $('#bg').attr('src', 'https://picsum.photos/1920/1080') //随机风景
             break;
         case "4":
-            $('#bg').attr('src', 'https://api.ixiaowai.cn/api/api.php') //随机二次元
+            $('#bg').attr('src', 'https://www.dmoe.cc/random.php') //随机二次元
             break;
         case "5":
             $('#bg').attr('src', bg_img["path"]) //自定义
@@ -278,10 +285,6 @@ function keywordReminder() {
                     $('#keywords').append(`<div class="keyword" data-id="${i + 1}"><i class='iconfont icon-sousuo'></i>${val}</div>`);
                 });
                 $("#keywords").attr("data-length", data.s["length"]);
-                $(".keyword").click(function () {
-                    $(".wd").val($(this).text());
-                    $("#search-submit").click();
-                });
             },
             error: function () {
                 $("#keywords").empty().show();
@@ -580,17 +583,6 @@ $(document).ready(function () {
         $(".search-engine").slideUp(160);
     });
 
-    // 搜索引擎列表点击
-    $(".search-engine-list").on("click", ".se-li", function () {
-        var url = $(this).attr('data-url');
-        var name = $(this).attr('data-name');
-        var icon = $(this).attr('data-icon');
-        $(".search").attr("action", url);
-        $(".wd").attr("name", name);
-        $("#icon-se").attr("class", icon);
-        $(".search-engine").slideUp(160);
-    });
-
     // 搜索框点击事件
     $(document).on('click', '.sou', function () {
         focusWd();
@@ -629,7 +621,7 @@ $(document).ready(function () {
     });
 
     // 点击自动提示的搜索建议
-    $("#keywords").on("click", ".wd", function () {
+    $("#keywords").on("click", ".keyword", function () {
         var wd = $(this).text();
         $(".wd").val(wd);
         $(".search").submit();
@@ -677,7 +669,7 @@ $(document).ready(function () {
     });
 
     // 快捷方式添加按钮点击
-    $("#set-quick").click(function () {
+    $(document).on('click', '#set-quick', function () {
         openSet();
 
         // 设置内容加载
@@ -692,14 +684,14 @@ $(document).ready(function () {
     // 修改默认搜索引擎
     $(".se_list_table").on("click", ".set_se_default", function () {
         var name = $(this).val();
-        Cookies.set('se_default', name, {
-            expires: 36500
-        });
         iziToast.show({
             timeout: 8000,
             message: '是否设置为默认搜索引擎？',
             buttons: [
                 ['<button>确认</button>', function (instance, toast) {
+                    Cookies.set('se_default', name, {
+                        expires: 36500
+                    });
                     setSeInit();
                     instance.hide({
                         transitionOut: 'flipOutX',
@@ -927,7 +919,7 @@ $(document).ready(function () {
         if (quick_list[key]) {
             iziToast.show({
                 timeout: 8000,
-                message: '快捷方式 " + key + " 已有数据，是否覆盖？',
+                message: '快捷方式 ' + key + ' 已有数据，是否覆盖？',
                 buttons: [
                     ['<button>确认</button>', function (instance, toast) {
                         quick_list[key] = {
@@ -1079,7 +1071,7 @@ $(document).ready(function () {
         }
 
         if (type === "2") {
-            $('#wallpaper_text').html("显示必应每日一图，每天更新，刷新页面以生效 | API @ 缙哥哥");
+            $('#wallpaper_text').html("显示必应每日一图，每天更新，刷新页面以生效 | API @ Bing 官方");
             setBgImg(bg_img);
             iziToast.show({
                 message: '壁纸设置成功，刷新生效',
@@ -1087,7 +1079,7 @@ $(document).ready(function () {
         }
 
         if (type === "3") {
-            $('#wallpaper_text').html("显示随机风景图，每次刷新后更换，刷新页面以生效 | API @ 小歪");
+            $('#wallpaper_text').html("显示随机风景图，每次刷新后更换，刷新页面以生效 | API @ Picsum");
             setBgImg(bg_img);
             iziToast.show({
                 message: '壁纸设置成功，刷新生效',
@@ -1095,7 +1087,7 @@ $(document).ready(function () {
         }
 
         if (type === "4") {
-            $('#wallpaper_text').html("显示随机二次元图，每次刷新后更换，刷新页面以生效 | API @ 小歪");
+            $('#wallpaper_text').html("显示随机二次元图，每次刷新后更换，刷新页面以生效 | API @ dmoe.cc");
             setBgImg(bg_img);
             iziToast.show({
                 message: '壁纸设置成功，刷新生效',

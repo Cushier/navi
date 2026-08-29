@@ -103,59 +103,55 @@ function isCurrentTimeAfter(targetTime) {
 }  
 // 获取经纬度
 async function main() {
-  try {
-    if (!navigator.geolocation) {
-      throw new Error("Geolocation is not supported by this browser.");
-    }
+  // 和风天气 key
+  var WEATHER_KEY = 'c1a71b432b774096b6df1985dd390f88';
+  // 定位失败时的兜底城市：赣州 LocationID
+  var DEFAULT_CITY = '101240701';
 
-    const position = await new Promise((resolve, reject) => {
-      navigator.geolocation.getCurrentPosition(resolve, reject);
+  // 获取定位（拒绝/不支持/超时返回 null）
+  function getLocation() {
+    return new Promise(function (resolve) {
+      if (!navigator.geolocation) {
+        resolve(null);
+        return;
+      }
+      navigator.geolocation.getCurrentPosition(
+        function (position) {
+          resolve(position.coords.longitude + ',' + position.coords.latitude);
+        },
+        function () {
+          resolve(null);
+        },
+        { timeout: 5000, maximumAge: 600000 }
+      );
     });
-
-    const { latitude, longitude } = position.coords;
-    // 在此处执行依赖坐标值的后续操作，如地图渲染、数据发送等
-    var Longitude = longitude;
-    var Latitude = latitude;
-    // console.log(Longitude,Latitude);
-    //获取天气
-    //每日限量 100 次
-    //请前往 https://www.tianqiapi.com/index/doc?version=v6 申请（免费）
-    fetch('https://devapi.qweather.com/v7/weather/3d?location='+Longitude+','+Latitude+'&key=c1a71b432b774096b6df1985dd390f88')
-        .then(response => response.json())
-        .then(data => {
-            //$('#wea_text').html(data.wea + '&nbsp;' + data.tem_night + '℃' + '&nbsp;~&nbsp;' + data.tem_day + '℃')
-            if (isCurrentTimeAfter(data.daily[0].sunset)) {  
-                // console.log("当前时间超过了 " + data.daily[0].sunset); 
-                $('#wea_text').text(data.daily[0].textNight)
-                $('#windDir').text(data.daily[0].windDirNight) 
-            } else {  
-                // console.log("当前时间还未到 " + data.daily[0].sunset); 
-                $('#wea_text').text(data.daily[0].textDay)
-                $('#windDir').text(data.daily[0].windDirDay) 
-            }
-            $('#wea').attr('href',data.fxLink)
-            $('#tem1').text(data.daily[0].tempMax)
-            $('#tem2').text(data.daily[0].tempMin)
-        })
-        .catch(console.error)
-
-    // ...
-  } catch (error) {
-    switch (error.code) {
-      case error.PERMISSION_DENIED:
-        console.log("User denied the request for Geolocation.");
-        break;
-      case error.POSITION_UNAVAILABLE:
-        console.log("Location information is unavailable.");
-        break;
-      case error.TIMEOUT:
-        console.log("The request to get user location timed out.");
-        break;
-      case error.UNKNOWN_ERROR:
-        console.log("An unknown error occurred.");
-        break;
-    }
   }
+
+  // 定位成功用经纬度，失败用赣州兜底
+  var location = await getLocation() || DEFAULT_CITY;
+
+  //获取天气
+  fetch('https://devapi.qweather.com/v7/weather/3d?location=' + location + '&key=' + WEATHER_KEY)
+      .then(response => response.json())
+      .then(data => {
+          if (data.code !== '200') {
+              console.error('天气接口返回错误: ' + data.code);
+              return;
+          }
+          if (isCurrentTimeAfter(data.daily[0].sunset)) {  
+              // console.log("当前时间超过了 " + data.daily[0].sunset); 
+              $('#wea_text').text(data.daily[0].textNight)
+              $('#windDir').text(data.daily[0].windDirNight) 
+          } else {  
+              // console.log("当前时间还未到 " + data.daily[0].sunset); 
+              $('#wea_text').text(data.daily[0].textDay)
+              $('#windDir').text(data.daily[0].windDirDay) 
+          }
+          $('#wea').attr('href',data.fxLink)
+          $('#tem1').text(data.daily[0].tempMax)
+          $('#tem2').text(data.daily[0].tempMin)
+      })
+      .catch(console.error)
 }
 
 main();
@@ -206,7 +202,7 @@ $(window).keydown(function (e) {
 
 //点击搜索按钮
 $(".sou-button").click(function () {
-    if ($("body").attr("class") === "onsearch") {
+    if ($("body").hasClass("onsearch")) {
         if ($(".wd").val() != "") {
             $("#search-submit").click();
         }
