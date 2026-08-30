@@ -59,8 +59,9 @@ self.addEventListener('fetch', (event) => {
         }
         // 缓存没命中，请求网络
         return fetch(event.request).then((response) => {
-          // 网络成功，存入缓存（只缓存成功的响应）
-          if (response.status === 200) {
+          // 网络成功，存入缓存
+          // 同源资源只缓存 200；跨域资源可能是 opaque（status=0）也缓存
+          if (response.status === 200 || response.type === 'opaque') {
             cache.put(event.request, response.clone());
           }
           return response;
