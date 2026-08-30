@@ -868,7 +868,7 @@
     function getSmartTipsGoogle(value,parents) {
         $.ajax({
             type: "GET",
-            url: "//suggestqueries.google.com/complete/search?client=firefox&callback=iowenHot",
+            url: "//suggestqueries.google.com/complete/search?client=firefox",
             async: true,
             data: { q: value },
             dataType: "jsonp",
@@ -887,7 +887,7 @@
                             list.slideUp(200);
                         });
                     };
-                    list.slideDown(200);
+                    list.hide().slideDown(200);
                 } else {
                     list.slideUp(200)
                 }
@@ -900,7 +900,7 @@
     function getSmartTipsBaidu(value,parents) {
         $.ajax({
             type: "GET",
-            url: "//sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?cb=iowenHot",
+            url: "//sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su",
             async: true,
             data: { wd: value },
             dataType: "jsonp",
@@ -919,7 +919,7 @@
                             list.slideUp(200);
                         });
                     };
-                    list.slideDown(200);
+                    list.hide().slideDown(200);
                 } else {
                     list.slideUp(200)
                 }

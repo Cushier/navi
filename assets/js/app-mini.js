@@ -845,11 +845,19 @@
         $('.hide-type-list input:radio[name="type"]:checked').parents(".search-group").addClass("s-current"); 
         $('.hide-type-list input:radio[name="type2"]:checked').parents(".search-group").addClass("s-current");
 
-        $(".super-search-fm").attr("action",$('.hide-type-list input:radio:checked').val());
-        $(".search-key").attr("placeholder",$('.hide-type-list input:radio:checked').data("placeholder")); 
-        if(window.localStorage.getItem("searchlist")=='type-zhannei'){
-            $(".search-key").attr("zhannei","true"); 
-        }
+        // 分别处理每个搜索框（首页和模态框），根据各自选中状态设置
+        $('.s-search').each(function() {
+            var $search = $(this);
+            var $checked = $search.find('input:radio:checked');
+            var checkedId = $checked.attr('id');
+            $search.find(".super-search-fm").attr("action", $checked.val());
+            $search.find(".search-key").attr("placeholder", $checked.data("placeholder"));
+            if(checkedId == 'type-zhannei' || checkedId == 'm_type-zhannei'){
+                $search.find(".search-key").attr("zhannei","true"); 
+            } else {
+                $search.find(".search-key").attr("zhannei","");
+            }
+        });
     }
     $(document).on('click', '.s-type-list label', function(event) {
         //event.preventDefault();
@@ -875,19 +883,27 @@
         parent.find(".search-key").select();
         parent.find(".search-key").focus();
     });
-    $(document).on("submit", ".super-search-fm", function() {
-        var key = encodeURIComponent($(this).find(".search-key").val())
+    $(document).on("submit", ".super-search-fm", function(e) {
+        e.preventDefault();
+        var $form = $(this);
+        var key = encodeURIComponent($form.find(".search-key").val())
         if(key == "")
             return false;
-        else{
-            window.open( $(this).attr("action") + key);
+        // 直接判断选中radio的value，不依赖id和zhannei属性
+        var checkedValue = $form.parents('.s-search').find('input:radio:checked').val();
+        if(checkedValue == 'zhannei'){
+            if(typeof zhanneiFilterPage === 'function'){
+                zhanneiFilterPage(decodeURIComponent(key));
+            }
             return false;
         }
+        window.open( $form.attr("action") + key);
+        return false;
     });
     function getSmartTipsGoogle(value,parents) {
         $.ajax({
             type: "GET",
-            url: "//suggestqueries.google.com/complete/search?client=firefox&callback=iowenHot",
+            url: "//suggestqueries.google.com/complete/search?client=firefox",
             async: true,
             data: { q: value },
             dataType: "jsonp",
@@ -906,9 +922,9 @@
                             list.slideUp(200);
                         });
                     };
-                    list.slideDown(200);
+                    list.hide().slideDown(200).children('ul').show();
                 } else {
-                    list.slideUp(200)
+                    list.slideUp(200);
                 }
             },
             error: function(res) {
@@ -919,7 +935,7 @@
     function getSmartTipsBaidu(value,parents) {
         $.ajax({
             type: "GET",
-            url: "//sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su?cb=iowenHot",
+            url: "//sp0.baidu.com/5a1Fazu8AA54nxGko9WTAnF6hhy/su",
             async: true,
             data: { wd: value },
             dataType: "jsonp",
@@ -938,9 +954,9 @@
                             list.slideUp(200);
                         });
                     };
-                    list.slideDown(200);
+                    list.hide().slideDown(200).children('ul').show();
                 } else {
-                    list.slideUp(200)
+                    list.slideUp(200);
                 }
             },
             error: function(res) {
@@ -958,7 +974,7 @@
     });
     $(document).on("focus", ".smart-tips.search-key", function() {
         isZhannei = $(this).attr('zhannei')!=''?true:false;
-        parent = $(this).parents('#search');
+        parent = $(this).closest('.s-search');
         if ($(this).val() && !isZhannei) {
             switch(theme.hotWords) {
                 case "baidu": 
@@ -973,7 +989,7 @@
     });
     $(document).on("keyup", ".smart-tips.search-key", function(e) {
         isZhannei = $(this).attr('zhannei')!=''?true:false;
-        parent = $(this).parents('#search');
+        parent = $(this).closest('.s-search');
         if ($(this).val()) {
             if (e.keyCode == 38 || e.keyCode == 40 || isZhannei) {
                 return
