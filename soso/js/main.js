@@ -1,5 +1,211 @@
 //加载完成后执行
 window.addEventListener('load', function () {
+    //音乐播放器：支持自定义歌单 + 网易云官方外链 + 自动播放记忆
+    (function () {
+        var KEY = 'music_state';
+        var CUSTOM_KEY = 'custom_playlist_id';
+        var DEFAULT_PLAYLIST_ID = '9874829261';
+        var currentPlayer = null;
+        var autoPlayHandler = null;
+        var isSwitching = false; // 切换歌单标志位，切换期间禁止任何播放
+
+        function getState() { try { return JSON.parse(Cookies.get(KEY)) || {}; } catch (e) { return {}; } }
+        function saveState(s) { Cookies.set(KEY, JSON.stringify(s), { expires: 36500 }); }
+
+        // 从输入中提取歌单 ID（支持数字ID或歌单链接）
+        function extractPlaylistId(input) {
+            if (/^\d+$/.test(input)) return input;
+            var match = input.match(/[?&]id=(\d+)/);
+            if (match) return match[1];
+            match = input.match(/playlist\/(\d+)/);
+            if (match) return match[1];
+            return null;
+        }
+
+        // 移除旧的自动播放监听器（切换歌单时调用，避免旧播放器也触发播放）
+        function removeAutoPlayHandler() {
+            if (autoPlayHandler) {
+                document.removeEventListener('click', autoPlayHandler);
+                document.removeEventListener('keydown', autoPlayHandler);
+                autoPlayHandler = null;
+            }
+        }
+
+        // 初始化播放器
+        function initPlayer(playlistId) {
+            console.log('[播放器] 正在加载歌单 ' + playlistId + '...');
+            isSwitching = true; // 开始切换歌单，禁止任何播放
+
+            // 先移除旧的自动播放监听器，避免切换歌单后旧播放器也触发播放
+            removeAutoPlayHandler();
+
+            // 先暂停并销毁旧播放器
+            if (currentPlayer) {
+                try {
+                    currentPlayer.pause();
+                    if (currentPlayer.audio) {
+                        currentPlayer.audio.pause();
+                        currentPlayer.audio.src = '';
+                        currentPlayer.audio.load();
+                    }
+                    // 不调用 destroy()，它可能异步重新触发播放；直接移除 DOM 和 audio 更彻底
+                } catch (e) {}
+                currentPlayer = null;
+            }
+            // 移除旧播放器的 .aplayer DOM（fixed 模式下 DOM 可能直接挂在 body 上，不在 container 里）
+            // 注意：跳过 id="aplayer" 的容器本身，否则新播放器创建时找不到容器
+            var aplayerEls = document.querySelectorAll('.aplayer');
+            for (var ai = 0; ai < aplayerEls.length; ai++) {
+                if (aplayerEls[ai].id === 'aplayer') continue;
+                if (aplayerEls[ai].parentNode) {
+                    aplayerEls[ai].parentNode.removeChild(aplayerEls[ai]);
+                }
+            }
+            // 移除页面上所有 audio 元素（彻底停止旧播放器的声音）
+            var allAudios = document.querySelectorAll('audio');
+            for (var aj = 0; aj < allAudios.length; aj++) {
+                try {
+                    allAudios[aj].pause();
+                    allAudios[aj].src = '';
+                    if (allAudios[aj].parentNode) {
+                        allAudios[aj].parentNode.removeChild(allAudios[aj]);
+                    }
+                } catch (e) {}
+            }
+            // 清空容器
+            var container = document.getElementById('aplayer');
+            if (container) container.innerHTML = '';
+
+            // 获取歌单列表，替换播放地址为网易云官方外链
+            fetch('https://api.i-meto.com/meting/api?server=netease&type=playlist&id=' + playlistId)
+                .then(function (res) { return res.json(); })
+                .then(function (list) {
+                    var audios = list.map(function (song) {
+                        var url = song.url;
+                        var match = url && url.match(/id=(\d+)/);
+                        if (match) {
+                            url = 'http://music.163.com/song/media/outer/url?id=' + match[1] + '.mp3';
+                        }
+                        return {
+                            name: song.title,
+                            artist: song.author,
+                            url: url,
+                            cover: song.pic,
+                            lrc: song.lrc
+                        };
+                    });
+
+                    // 创建 APlayer
+                    var player = new APlayer({
+                        container: document.getElementById('aplayer'),
+                        fixed: true,
+                        autoplay: false,
+                        volume: 0.8,
+                        order: 'random',
+                        lrcType: 1,
+                        audio: audios
+                    });
+                    if (player.audio) player.audio.referrerPolicy = 'no-referrer';
+                    currentPlayer = player;
+                    isSwitching = false; // 切换完成，允许播放
+
+                    console.log('[播放器] 已加载 ' + audios.length + ' 首歌');
+
+                    var state = getState();
+                    var autoplay = state.autoplay !== false;
+
+                    // 跳转到上次播放的歌曲
+                    if (state.index !== undefined && state.index >= 0 && state.index < player.list.audios.length) {
+                        player.list.switch(state.index);
+                    }
+
+                    // 监听事件保存状态
+                    player.on('play', function () {
+                        if (isSwitching) { player.pause(); return; } // 切换期间禁止播放
+                        var idx = player.list.index;
+                        var s = getState();
+                        s.index = idx;
+                        s.autoplay = true;
+                        saveState(s);
+
+                        // 修正列表选中状态（自定义入口占用了顶部一个位置，导致APlayer索引偏移1位）
+                        setTimeout(function() {
+                            var list = document.querySelector('.aplayer-list ol') || document.querySelector('.aplayer-list ul');
+                            if (!list) return;
+                            var hasCustomEntry = list.querySelector('.custom-playlist-entry') !== null;
+                            if (!hasCustomEntry) return;
+                            var items = list.querySelectorAll('li');
+                            for (var ci = 0; ci < items.length; ci++) {
+                                items[ci].classList.remove('aplayer-list-light');
+                            }
+                            var targetIdx = idx + 1;
+                            if (items[targetIdx]) {
+                                items[targetIdx].classList.add('aplayer-list-light');
+                            }
+                        }, 50);
+                    });
+                    player.on('pause', function () {
+                        var s = getState(); s.autoplay = false; saveState(s);
+                    });
+
+                    // 第一次交互后自动播放（只播放最新的播放器，避免切换歌单后旧播放器也播放）
+                    if (autoplay) {
+                        autoPlayHandler = function () {
+                            if (currentPlayer === player) {
+                                player.play();
+                            }
+                            removeAutoPlayHandler();
+                        };
+                        document.addEventListener('click', autoPlayHandler);
+                        document.addEventListener('keydown', autoPlayHandler);
+                    }
+                })
+                .catch(function (err) {
+                    console.error('[播放器] 歌单加载失败:', err);
+                    alert('歌单加载失败，请检查歌单ID是否正确（歌单需要是公开的）');
+                });
+        }
+
+        // 注入自定义歌单入口到播放器列表顶部（持续检查，APlayer 列表会动态重渲染）
+        function injectCustomEntry() {
+            var list = document.querySelector('.aplayer-list ol') || document.querySelector('.aplayer-list ul') || document.querySelector('.aplayer-list-lrc');
+            if (!list) return;
+            if (list.querySelector('.custom-playlist-entry')) return;
+
+            var entry = document.createElement('li');
+            entry.className = 'aplayer-list-item custom-playlist-entry';
+            entry.innerHTML = '<span class="aplayer-list-index">🎵</span><span class="aplayer-list-title">自定义歌单（点击输入）</span><span class="aplayer-list-author">设置</span>';
+            entry.style.cssText = 'cursor:pointer;color:#2980b9;';
+            entry.onclick = function() {
+                var customId = Cookies.get(CUSTOM_KEY) || '';
+                var input = prompt('请输入网易云歌单ID或链接：\n（留空则恢复默认歌单）\n\n获取方式：打开网易云歌单，复制链接，链接里 id= 后面的数字就是歌单ID', customId);
+                if (input === null) return;
+                input = input.trim();
+                if (input === '') {
+                    Cookies.remove(CUSTOM_KEY);
+                    initPlayer(DEFAULT_PLAYLIST_ID);
+                    return;
+                }
+                var id = extractPlaylistId(input);
+                if (id) {
+                    Cookies.set(CUSTOM_KEY, id, { expires: 36500 });
+                    initPlayer(id);
+                } else {
+                    alert('无法识别歌单ID，请输入数字ID或歌单链接');
+                }
+            };
+
+            list.insertBefore(entry, list.firstChild);
+        }
+        // 持续检查并注入（每500ms检查一次，确保 APlayer 重渲染后入口仍存在）
+        setInterval(injectCustomEntry, 500);
+
+        // 页面加载时初始化播放器（优先用用户自定义歌单）
+        var customId = Cookies.get(CUSTOM_KEY);
+        var playlistId = customId || DEFAULT_PLAYLIST_ID;
+        initPlayer(playlistId);
+    })();
+
     //载入动画
     $('#loading-box').attr('class', 'loaded');
     $('#bg').css("cssText", "transform: scale(1);filter: blur(0px);transition: ease 1.5s;");
