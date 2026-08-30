@@ -271,6 +271,71 @@ function zhanneiInjectCSS() {
         .search-smart-tips {
             display: none;
         }
+        /* 夜间模式下搜索建议下拉框文字颜色 */
+        .io-black-mode .zhannei-title {
+            color: #fff !important;
+        }
+        .io-black-mode .zhannei-desc {
+            color: #ccc !important;
+        }
+        .io-black-mode .zhannei-noresult {
+            color: #ccc !important;
+        }
+        /* 搜索建议下拉列表样式，和卡片效果一致 */
+        .zhannei-result {
+            display: flex;
+            align-items: center;
+            padding: 16px 12px;
+            min-height: 56px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .zhannei-result:last-child {
+            border-bottom: none;
+        }
+        .zhannei-result:hover {
+            background-color: #f5f5f5;
+        }
+        /* 夜间模式下拉列表样式 */
+        .io-black-mode .search-smart-tips ul {
+            background-color: #2a2a2a !important;
+        }
+        .io-black-mode .zhannei-result {
+            background-color: #2a2a2a !important;
+            border-bottom-color: #444 !important;
+        }
+        .io-black-mode .zhannei-result:hover {
+            background-color: #3a3a3a !important;
+        }
+        .zhannei-logo {
+            width: 32px;
+            height: 32px;
+            margin-right: 10px;
+            border-radius: 4px;
+            flex-shrink: 0;
+        }
+        .zhannei-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .zhannei-title {
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.4;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .zhannei-desc {
+            font-size: 12px;
+            line-height: 1.4;
+            color: #6c757d;
+            margin: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
     `;
     $('<style>').text(css).appendTo('head');
 }
