@@ -1252,42 +1252,13 @@ function switchNightMode(){
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
         navigator.serviceWorker.register('\/service-worker.js')
-            .then(function(reg) {
+            .then(function() {
                 console.log('PWA Service Worker 注册成功');
-                
-                reg.addEventListener('updatefound', function() {
-                    var newWorker = reg.installing;
-                    newWorker.addEventListener('statechange', function() {
-                        
-                        if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                            showUpdateNotice();
-                        }
-                    });
-                });
             })
             .catch(function(err) {
                 console.log('PWA Service Worker 注册失败:', err);
             });
     });
-
-    
-    function showUpdateNotice() {
-        
-        if (document.getElementById('pwa-update-notice')) return;
-
-        var notice = document.createElement('div');
-        notice.id = 'pwa-update-notice';
-        notice.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:linear-gradient(90deg,#4a90d9,#357abd);color:#fff;padding:12px 20px;display:flex;align-items:center;justify-content:center;gap:15px;box-shadow:0 2px 10px rgba(0,0,0,0.2);font-size:14px;';
-        notice.innerHTML = '<span>发现新版本，点击刷新立即体验</span><button id="pwa-update-btn" style="background:#fff;color:#4a90d9;border:none;padding:6px 16px;border-radius:4px;cursor:pointer;font-size:13px;font-weight:bold;">立即刷新</button><button id="pwa-update-close" style="background:transparent;color:#fff;border:none;cursor:pointer;font-size:18px;opacity:0.8;">&times;</button>';
-        document.body.appendChild(notice);
-
-        document.getElementById('pwa-update-btn').addEventListener('click', function() {
-            window.location.reload();
-        });
-        document.getElementById('pwa-update-close').addEventListener('click', function() {
-            notice.remove();
-        });
-    }
 }
 </script>
   

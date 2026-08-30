@@ -1,7 +1,8 @@
 // 青年科技学习导航 PWA Service Worker
-// 缓存策略：缓存优先（有缓存直接用，不请求网络，省流量；缓存没有才请求并缓存）
+// 缓存策略：Stale-While-Revalidate（后台静默更新）
+// 先用缓存显示（秒开），后台偷偷更新缓存，用户下次打开就是最新内容
 
-const CACHE_NAME = 'qnkjxx-nav-v3';
+const CACHE_NAME = 'qnkjxx-nav-v4';
 
 // 需要缓存的第三方域名（静态资源CDN、图片OSS）
 const CACHE_DOMAINS = [
@@ -39,7 +40,7 @@ function shouldCache(url) {
   return false;
 }
 
-// 缓存优先策略
+// Stale-While-Revalidate 策略
 self.addEventListener('fetch', (event) => {
   // 只处理 GET 请求
   if (event.request.method !== 'GET') return;
@@ -53,26 +54,22 @@ self.addEventListener('fetch', (event) => {
     caches.open(CACHE_NAME).then((cache) => {
       // 先从缓存里找
       return cache.match(event.request).then((cached) => {
-        if (cached) {
-          // 缓存命中，直接返回缓存，不请求网络（省流量）
-          return cached;
-        }
-        // 缓存没命中，请求网络
-        return fetch(event.request).then((response) => {
-          // 网络成功，存入缓存
-          // 同源资源只缓存 200；跨域资源可能是 opaque（status=0）也缓存
-          if (response.status === 200 || response.type === 'opaque') {
-            cache.put(event.request, response.clone());
-          }
-          return response;
-        }).catch(() => {
-          // 网络失败，返回离线提示
-          return new Response('网络连接失败，请检查网络后重试', {
-            status: 503,
-            statusText: 'Service Unavailable',
-            headers: { 'Content-Type': 'text/plain; charset=utf-8' }
+        // 后台发起网络请求，更新缓存（不管有没有缓存都更新）
+        const networkUpdate = fetch(event.request)
+          .then((response) => {
+            // 网络成功，更新缓存（同源200，跨域opaque都缓存）
+            if (response.status === 200 || response.type === 'opaque') {
+              cache.put(event.request, response.clone());
+            }
+            return response;
+          })
+          .catch(() => {
+            // 网络失败，不处理，用缓存
           });
-        });
+
+        // 如果有缓存，直接返回缓存（用户立即看到内容）
+        // 如果没有缓存，等待网络请求
+        return cached || networkUpdate;
       });
     })
   );
