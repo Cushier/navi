@@ -9,6 +9,7 @@
     <meta name="theme-color" content="#f9f9f9" />
     <title>PngImg | 网站指南 - 青年科技学习导航</title>
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
+    <link rel="manifest" href="/manifest.json" />
     <meta name="keywords" content="青年科技学习导航" />
     
     <meta name="baidu-site-verification" content="codeva-XCsdGwH7oc" />
@@ -1126,6 +1127,20 @@ function switchNightMode(){
 
 
 
+
+<script>
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+        navigator.serviceWorker.register('\/service-worker.js')
+            .then(function(reg) {
+                console.log('PWA Service Worker 注册成功');
+            })
+            .catch(function(err) {
+                console.log('PWA Service Worker 注册失败:', err);
+            });
+    });
+}
+</script>
   
 </body>
 </html>
