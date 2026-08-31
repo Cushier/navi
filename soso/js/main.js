@@ -1,4 +1,4 @@
-//加载完成后执行
+﻿//加载完成后执行
 window.addEventListener('load', function () {
     //音乐播放器：支持自定义歌单 + 网易云官方外链 + 自动播放记忆
     (function () {
@@ -84,7 +84,7 @@ window.addEventListener('load', function () {
                         var url = song.url;
                         var match = url && url.match(/id=(\d+)/);
                         if (match) {
-                            url = 'http://music.163.com/song/media/outer/url?id=' + match[1] + '.mp3';
+                            url = 'https://music.163.com/song/media/outer/url?id=' + match[1] + '.mp3';
                         }
                         return {
                             name: song.title,
