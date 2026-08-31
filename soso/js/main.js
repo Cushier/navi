@@ -5,6 +5,44 @@ window.addEventListener('load', function () {
         var KEY = 'music_state';
         var CUSTOM_KEY = 'custom_playlist_id';
         var DEFAULT_PLAYLIST_ID = '9874829261';
+
+        // 歌单解析API列表（按稳定性排列，逐个尝试，失败自动切换下一个）
+        var METING_APIS = [
+            'https://api.i-meto.com/meting/api?server=netease&type=playlist&id=',
+            'https://api.injahow.cn/meting/?type=playlist&id=',
+            'https://meting.jmstrand.cn/?type=playlist&id=',
+            'https://api.qijieya.cn/meting/?type=playlist&id='
+        ];
+
+        // 带超时的fetch（避免某个解析源卡住太久）
+        function fetchWithTimeout(url, timeout) {
+            return Promise.race([
+                fetch(url),
+                new Promise(function (_, reject) {
+                    setTimeout(function () { reject(new Error('请求超时')); }, timeout);
+                })
+            ]);
+        }
+
+        // 多源加载歌单：按顺序尝试，成功返回歌单数组，全部失败则reject
+        function loadPlaylist(playlistId, idx) {
+            idx = idx || 0;
+            if (idx >= METING_APIS.length) {
+                return Promise.reject(new Error('所有解析源均失败'));
+            }
+            var apiUrl = METING_APIS[idx] + playlistId;
+            console.log('[播放器] 尝试解析源 ' + (idx + 1) + '/' + METING_APIS.length);
+            return fetchWithTimeout(apiUrl, 12000)
+                .then(function (res) { return res.json(); })
+                .then(function (list) {
+                    if (!list || !list.length) throw new Error('歌单为空');
+                    return list;
+                })
+                .catch(function (err) {
+                    console.warn('[播放器] 解析源 ' + (idx + 1) + ' 失败，切换下一个:', err);
+                    return loadPlaylist(playlistId, idx + 1);
+                });
+        }
         var currentPlayer = null;
         var autoPlayHandler = null;
         var isSwitching = false; // 切换歌单标志位，切换期间禁止任何播放
@@ -77,8 +115,7 @@ window.addEventListener('load', function () {
             if (container) container.innerHTML = '';
 
             // 获取歌单列表，替换播放地址为网易云官方外链
-            fetch('https://api.i-meto.com/meting/api?server=netease&type=playlist&id=' + playlistId)
-                .then(function (res) { return res.json(); })
+            loadPlaylist(playlistId)
                 .then(function (list) {
                     var audios = list.map(function (song) {
                         var url = song.url;
@@ -87,11 +124,11 @@ window.addEventListener('load', function () {
                             url = 'https://music.163.com/song/media/outer/url?id=' + match[1] + '.mp3';
                         }
                         return {
-                            name: song.title,
-                            artist: song.author,
+                            name: song.title || song.name || '未知歌曲',
+                            artist: song.author || song.artist || '未知歌手',
                             url: url,
-                            cover: song.pic,
-                            lrc: song.lrc
+                            cover: song.pic || song.cover || '',
+                            lrc: song.lrc || ''
                         };
                     });
 
