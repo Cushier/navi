@@ -480,6 +480,12 @@ function openBox() {
         "filter": "blur(10px)",
         "transition": "ease 0.3s",
     });
+    //返回首页按钮同步模糊
+    $('#btn-home').css({
+        "filter": "blur(6px)",
+        "opacity": "0.5",
+        "transition": "ease 0.3s",
+    });
 }
 
 // 书签关闭
@@ -496,6 +502,12 @@ function closeBox() {
     $('#bg').css({
         "transform": 'scale(1)',
         "filter": "blur(0px)",
+        "transition": "ease 0.3s",
+    });
+    //返回首页按钮恢复清晰
+    $('#btn-home').css({
+        "filter": "blur(0px)",
+        "opacity": "1",
         "transition": "ease 0.3s",
     });
 }

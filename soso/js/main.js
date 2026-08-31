@@ -32,7 +32,7 @@ window.addEventListener('load', function () {
             }
             var apiUrl = METING_APIS[idx] + playlistId;
             console.log('[播放器] 尝试解析源 ' + (idx + 1) + '/' + METING_APIS.length);
-            return fetchWithTimeout(apiUrl, 12000)
+            return fetchWithTimeout(apiUrl, 6000)
                 .then(function (res) { return res.json(); })
                 .then(function (list) {
                     if (!list || !list.length) throw new Error('歌单为空');
@@ -83,8 +83,6 @@ window.addEventListener('load', function () {
                     currentPlayer.pause();
                     if (currentPlayer.audio) {
                         currentPlayer.audio.pause();
-                        currentPlayer.audio.src = '';
-                        currentPlayer.audio.load();
                     }
                     // 不调用 destroy()，它可能异步重新触发播放；直接移除 DOM 和 audio 更彻底
                 } catch (e) {}
@@ -114,11 +112,12 @@ window.addEventListener('load', function () {
             var container = document.getElementById('aplayer');
             if (container) container.innerHTML = '';
 
-            // 获取歌单列表，替换播放地址为网易云官方外链
+            // 获取歌单列表：立即构建播放器（播放器先出），歌词后台异步填充（lrc字段是URL，需再请求获取文本）
             loadPlaylist(playlistId)
                 .then(function (list) {
+                    // 1. 立即构建 audios（歌词先留空，不阻塞播放器创建）
                     var audios = list.map(function (song) {
-                        var url = song.url;
+                        var url = song.url || '';
                         var match = url && url.match(/id=(\d+)/);
                         if (match) {
                             url = 'https://music.163.com/song/media/outer/url?id=' + match[1] + '.mp3';
@@ -128,10 +127,9 @@ window.addEventListener('load', function () {
                             artist: song.author || song.artist || '未知歌手',
                             url: url,
                             cover: song.pic || song.cover || '',
-                            lrc: song.lrc || ''
+                            lrc: ''
                         };
                     });
-
                     // 创建 APlayer
                     var player = new APlayer({
                         container: document.getElementById('aplayer'),
@@ -147,6 +145,44 @@ window.addEventListener('load', function () {
                     isSwitching = false; // 切换完成，允许播放
 
                     console.log('[播放器] 已加载 ' + audios.length + ' 首歌');
+
+                    // 3. 按需拉取歌词：切到哪首拉哪首，不占网络，音频切换秒开
+                    var rawList = list; // 原始歌单（含 lrc URL）
+                    function loadLrcByIndex(idx) {
+                        if (!rawList[idx]) return;
+                        var audio = player.list.audios[idx];
+                        if (!audio || audio.lrc) return; // 已有歌词则跳过
+                        var lrc = rawList[idx].lrc || '';
+                        if (!/^https?:\/\//.test(lrc)) {
+                            audio.lrc = lrc || '';
+                            if (player.lrc && player.lrc.parsed) {
+                                player.lrc.parsed[idx] = null;
+                            }
+                            try { player.lrc.switch(idx); } catch (e) {}
+                            return;
+                        }
+                        fetchWithTimeout(lrc, 3000)
+                            .then(function (res) { return res.text(); })
+                            .then(function (text) {
+                                if (player.list.audios[idx]) {
+                                    player.list.audios[idx].lrc = text || '';
+                                }
+                                // 清除歌词缓存，强制重新解析（否则一直显示 Not available）
+                                if (player.lrc && player.lrc.parsed) {
+                                    player.lrc.parsed[idx] = null;
+                                }
+                                try { player.lrc.switch(idx); } catch (e) {}
+                            })
+                            .catch(function () {});
+                    }
+                    // 切换歌曲时按需加载歌词（注意：listswitch 回调参数是 {index:N} 对象）
+                    player.on('listswitch', function (data) {
+                        loadLrcByIndex(data && data.index);
+                    });
+                    // 首次加载当前歌曲歌词（恢复上次歌曲时 listswitch 已触发，这里兜底 index 0）
+                    setTimeout(function () {
+                        loadLrcByIndex(player.list.index);
+                    }, 100);
 
                     var state = getState();
                     var autoplay = state.autoplay !== false;
@@ -189,7 +225,8 @@ window.addEventListener('load', function () {
                     if (autoplay) {
                         autoPlayHandler = function () {
                             if (currentPlayer === player) {
-                                player.play();
+                                var p = player.play();
+                                if (p && p.catch) p.catch(function () {});
                             }
                             removeAutoPlayHandler();
                         };

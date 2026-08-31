@@ -594,6 +594,43 @@ img.error {
     white-space: nowrap;
 }
 
+/*返回导航首页按钮*/
+#btn-home {
+    width: 44px;
+    height: 44px;
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    z-index: 2000000;
+    cursor: pointer;
+    transition: 0.3s;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--main-text-color);
+    text-decoration: none;
+}
+
+#btn-home:hover {
+    cursor: pointer;
+    background: var(--main-background-color);
+    border-radius: 8px;
+}
+
+#btn-home:active {
+    transform: scale(0.90);
+}
+
+#btn-home i {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    font-size: 1.75rem;
+    transition: 0.3s;
+}
+
 /*设置区域统一样式*/
 #menu {
     width: 44px;

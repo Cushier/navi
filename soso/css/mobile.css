@@ -55,6 +55,11 @@
         font-size: 1.45rem;
     }
 
+    /*返回首页按钮*/
+    #btn-home i {
+        font-size: 1.45rem;
+    }
+
     /*书签*/
     .quick,
     .quicks {
