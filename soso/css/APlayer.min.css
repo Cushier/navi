@@ -736,3 +736,543 @@
 }
 
 /*# sourceMappingURL=APlayer.min.css.map*/
+
+
+/* ===== 主页版美化：播放器毛玻璃半透明（追加覆盖，可安全删除此段还原） ===== */
+.aplayer-fixed .aplayer-body {
+    background: rgba(12, 12, 12, 0.5) !important;
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    backdrop-filter: blur(20px) saturate(140%);
+    border-radius: 14px 14px 0 0;
+    box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.25);
+}
+.aplayer-fixed.aplayer-narrow .aplayer-body {
+    background: rgba(12, 12, 12, 0.35) !important;
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+    border-radius: 0 14px 14px 0;
+    box-shadow: none;
+}
+.aplayer-fixed .aplayer-miniswitcher {
+    background: rgba(36, 34, 34, 0.45);
+}
+.aplayer-fixed .aplayer-list {
+    background: rgba(10, 10, 10, 0.55) !important;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border-radius: 14px 14px 0 0;
+}
+.aplayer-fixed .aplayer-pic {
+    border-radius: 14px 0 0 0;
+}
+
+
+/* ===== 主页版美化v2：播放器悬浮圆角卡片（追加覆盖，可安全删除还原） ===== */
+/* 容器：脱离屏幕边缘，悬浮左下角 */
+.aplayer-fixed {
+    bottom: 22px !important;
+    left: 22px !important;
+    right: auto !important;
+    border-radius: 18px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
+}
+/* 主体：跟随容器，四角圆角毛玻璃 */
+.aplayer-fixed .aplayer-body {
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    background: rgba(12, 12, 12, 0.55) !important;
+    -webkit-backdrop-filter: blur(24px) saturate(150%);
+    backdrop-filter: blur(24px) saturate(150%);
+    border-radius: 18px !important;
+    box-shadow: none;
+}
+/* 封面图左侧圆角 */
+.aplayer-fixed .aplayer-pic {
+    border-radius: 18px 0 0 18px !important;
+}
+/* 收起切换条圆角 */
+.aplayer-fixed .aplayer-miniswitcher {
+    background: rgba(36, 34, 34, 0.45);
+    border-radius: 0 18px 18px 0;
+}
+/* 歌单列表：同卡片毛玻璃 */
+.aplayer-fixed .aplayer-list {
+    border-radius: 18px !important;
+    margin-bottom: 0 !important;
+    background: rgba(10, 10, 10, 0.6) !important;
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+}
+/* 收起状态：原地悬浮小圆角方块 */
+.aplayer-fixed.aplayer-narrow .aplayer-body {
+    width: 66px !important;
+    left: 0 !important;
+    border-radius: 18px !important;
+    background: rgba(12, 12, 12, 0.4) !important;
+    -webkit-backdrop-filter: blur(16px);
+    backdrop-filter: blur(16px);
+}
+.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+    left: 0 !important;
+}
+.aplayer-fixed.aplayer-narrow .aplayer-pic {
+    border-radius: 18px !important;
+}
+
+
+/* ===== 主页版美化v3：收起态=音符圆点（追加覆盖，可安全删除还原） ===== */
+/* 收起态：56px 半透明毛玻璃圆点，hover 不移动（消除抖动） */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    left: 0 !important;
+    width: 56px !important;
+    height: 56px !important;
+    border-radius: 50% !important;
+    background: rgba(12, 12, 12, 0.35) !important;
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    padding-right: 0 !important;
+}
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+    left: 0 !important;
+}
+/* 收起态隐藏封面图 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-pic {
+    opacity: 0 !important;
+}
+/* 收起态隐藏信息区 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-info {
+    display: none !important;
+}
+/* 收起态中央显示音符图标 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body::after {
+    content: '♪';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 26px;
+    line-height: 1;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    pointer-events: none;
+    z-index: 2;
+}
+/* miniswitcher 覆盖整个圆点作为展开入口 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-miniswitcher {
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    border-radius: 50% !important;
+    background: transparent !important;
+    z-index: 3;
+}
+/* 收起态隐藏 miniswitcher 里的箭头图标 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-miniswitcher .aplayer-icon {
+    display: none !important;
+}
+
+
+/* ===== 主页版美化v4：去掉容器黑色大投影（修复左下角黑块，可安全删除还原） ===== */
+.aplayer-fixed {
+    box-shadow: none !important;
+}
+.aplayer-fixed .aplayer-body {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.18) !important;
+}
+
+
+/* ===== 主页版美化v5：容器默认深色背景改为透明（修复黑块根源，可安全删除还原） ===== */
+.aplayer-fixed {
+    background: transparent !important;
+}
+
+
+/* ===== 主页版美化v6：容器初始化前也透明（修复刷新瞬间黑块，可安全删除还原） ===== */
+.aplayer {
+    background: transparent !important;
+}
+
+
+/* ===== 主页版美化v7：展开播放器去掉顶部黑线（可安全删除还原） ===== */
+.aplayer.aplayer-fixed .aplayer-info {
+    border-top: none !important;
+}
+
+
+/* ===== 主页版美化v8：去掉播放列表黑色边框（可安全删除还原） ===== */
+.aplayer.aplayer-fixed .aplayer-list {
+    border: none !important;
+}
+/* 列表内部顶部用浅色细分隔线，替代原黑色边框 */
+.aplayer.aplayer-fixed .aplayer-list ol {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+
+/* ===== 主页版美化v9：恢复伸缩效果（默认隐藏，hover滑出），手机端缩小（可安全删除还原） ===== */
+/* 桌面端：默认圆点藏在屏幕外左侧 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    left: -66px !important;
+    transition: left 0.3s ease !important;
+}
+/* hover 左下角容器热区时，圆点滑出（用容器hover而非bodyhover，避免抖动） */
+.aplayer.aplayer-fixed.aplayer-narrow:hover .aplayer-body {
+    left: 0 !important;
+}
+/* 覆盖v3的body hover规则，避免body自身hover触发伸缩抖动 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+    left: -66px !important;
+}
+
+/* 手机端：显示较小的半透明圆点（44px），不占地方 */
+@media (max-width: 768px) {
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: 0 !important;
+        width: 44px !important;
+        height: 44px !important;
+    }
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body::after {
+        font-size: 20px !important;
+    }
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-miniswitcher {
+        width: 100% !important;
+        height: 100% !important;
+    }
+}
+
+
+/* ===== 主页版美化v10：修复伸缩抖动+热区精确+手机端折叠可见（可安全删除还原） ===== */
+/* 桌面端：容器缩小到56x56（和圆点一样大），热区精确不提前触发 */
+.aplayer.aplayer-fixed {
+    width: 56px !important;
+    height: 56px !important;
+}
+/* 桌面端：默认圆点完全藏在屏幕外左侧 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    left: -56px !important;
+    width: 56px !important;
+    height: 56px !important;
+    transition: left 0.3s ease !important;
+}
+/* hover 左下角容器热区时，圆点平滑滑出 */
+.aplayer.aplayer-fixed.aplayer-narrow:hover .aplayer-body {
+    left: 0 !important;
+}
+/* 覆盖v9的body:hover规则（hover body时容器也hover，保持滑出不抖动） */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+    left: 0 !important;
+}
+
+/* 手机端：一直显示44px小圆点（不伸缩），折叠后肯定可见 */
+@media (max-width: 768px) {
+    .aplayer.aplayer-fixed {
+        width: 44px !important;
+        height: 44px !important;
+    }
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: 0 !important;
+        width: 44px !important;
+        height: 44px !important;
+    }
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body::after {
+        font-size: 20px !important;
+    }
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-miniswitcher {
+        width: 100% !important;
+        height: 100% !important;
+        border-radius: 50% !important;
+    }
+}
+
+
+/* ===== 主页版美化v11：容器只在收起态缩小，展开时完整显示（可安全删除还原） ===== */
+/* 收起态(narrow)：容器56x56，热区精确 */
+.aplayer.aplayer-fixed.aplayer-narrow {
+    width: 56px !important;
+    height: 56px !important;
+}
+/* 展开态(normal)：容器不限制大小，播放器和歌单完整显示 */
+.aplayer.aplayer-fixed:not(.aplayer-narrow) {
+    width: auto !important;
+    height: auto !important;
+    overflow: visible !important;
+}
+
+/* 手机端：收起态44x44小圆点，展开态完整显示 */
+@media (max-width: 768px) {
+    .aplayer.aplayer-fixed.aplayer-narrow {
+        width: 44px !important;
+        height: 44px !important;
+    }
+    .aplayer.aplayer-fixed:not(.aplayer-narrow) {
+        width: auto !important;
+        height: auto !important;
+        overflow: visible !important;
+    }
+}
+
+
+/* ===== 主页版美化v12：body默认完全隐藏（不露出边缘），彻底消除抖动（可安全删除还原） ===== */
+/* 桌面端：body默认完全藏在屏幕外（left:-78px，不露出任何边缘） */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    left: -78px !important;
+}
+/* hover 左下角容器热区时，圆点平滑滑出 */
+.aplayer.aplayer-fixed.aplayer-narrow:hover .aplayer-body {
+    left: 0 !important;
+}
+/* 鼠标在圆点上时保持滑出（和容器:hover一致，不冲突、不抖动） */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+    left: 0 !important;
+}
+
+
+/* ===== 主页版美化v13：圆点固定不移动+默认半透明提示+缩小间隙（可安全删除还原） ===== */
+/* 容器往左移，缩小和屏幕左边框的间隙 */
+.aplayer.aplayer-fixed {
+    left: 10px !important;
+}
+/* 桌面端：圆点固定在容器位置，不做left移动（彻底消除移动抖动） */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    left: 0 !important;
+    width: 56px !important;
+    height: 56px !important;
+    opacity: 0.4 !important;  /* 默认半透明，能看到入口提示 */
+    transition: opacity 0.3s ease !important;  /* 只做透明度动画，不移动 */
+}
+/* hover 容器时圆点完全显示 */
+.aplayer.aplayer-fixed.aplayer-narrow:hover .aplayer-body {
+    opacity: 1 !important;
+}
+/* 鼠标在圆点上时保持完全显示 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+    opacity: 1 !important;
+}
+
+/* 手机端：一直显示44px小圆点，完全不透明 */
+@media (max-width: 768px) {
+    .aplayer.aplayer-fixed {
+        left: 10px !important;
+    }
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: 0 !important;
+        width: 44px !important;
+        height: 44px !important;
+        opacity: 1 !important;
+    }
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body::after {
+        font-size: 20px !important;
+    }
+}
+
+
+/* ===== 主页版美化v14：恢复伸缩滑出+缩小间隙+CSS顺序防抖动（可安全删除还原） ===== */
+/* 容器往左移，缩小和屏幕左边框的间隙 */
+.aplayer.aplayer-fixed {
+    left: 10px !important;
+}
+/* 桌面端：body默认完全隐藏 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    left: -66px !important;
+    width: 56px !important;
+    height: 56px !important;
+    opacity: 1 !important;
+    transition: left 0.3s ease !important;
+}
+/* body:hover保持隐藏（避免缩回动画经过鼠标位置时反复触发抖动） */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+    left: -66px !important;
+}
+/* 容器:hover时圆点滑出（写在body:hover之后，同特异性下后定义胜出，优先级更高） */
+.aplayer.aplayer-fixed.aplayer-narrow:hover .aplayer-body {
+    left: 0 !important;
+}
+
+/* 手机端：一直显示44px小圆点 */
+@media (max-width: 768px) {
+    .aplayer.aplayer-fixed {
+        left: 10px !important;
+    }
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: 0 !important;
+        width: 44px !important;
+        height: 44px !important;
+        opacity: 1 !important;
+    }
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body::after {
+        font-size: 20px !important;
+    }
+}
+
+
+/* ===== 主页版美化v15：默认露出12px小半圆提示+容器hover完全滑出（可安全删除还原） ===== */
+/* 桌面端：body默认露出12px小半圆（容器left:10px + body宽56px + left:-54px = 右边缘x=12，露出12px） */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    left: -54px !important;
+    width: 56px !important;
+    height: 56px !important;
+    opacity: 1 !important;
+    transition: left 0.3s ease !important;
+}
+/* body:hover保持默认位置（露出的边缘上不触发滑出，避免抖动） */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body:hover {
+    left: -54px !important;
+}
+/* 容器:hover时圆点完全滑出（后定义，优先级高于body:hover） */
+.aplayer.aplayer-fixed.aplayer-narrow:hover .aplayer-body {
+    left: 0 !important;
+}
+
+/* 手机端：一直显示44px小圆点 */
+@media (max-width: 768px) {
+    .aplayer.aplayer-fixed {
+        left: 10px !important;
+    }
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: 0 !important;
+        width: 44px !important;
+        height: 44px !important;
+        opacity: 1 !important;
+    }
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body::after {
+        font-size: 20px !important;
+    }
+}
+
+
+/* ===== 主页版美化v16：展开和折叠都有平滑动画（可安全删除还原） ===== */
+/* normal展开态：width/height/left都过渡 */
+.aplayer.aplayer-fixed .aplayer-body {
+    transition: left 0.3s ease, width 0.3s ease, height 0.3s ease !important;
+}
+/* narrow收起态：覆盖之前只过渡left的规则，width/height/left都过渡 */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    transition: left 0.3s ease, width 0.3s ease, height 0.3s ease !important;
+}
+
+
+/* ===== 主页版美化v17：动画时长设为最友好的0.28s（可安全删除还原） ===== */
+.aplayer.aplayer-fixed .aplayer-body {
+    transition: left 0.28s ease, width 0.28s ease, height 0.28s ease !important;
+}
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    transition: left 0.28s ease, width 0.28s ease, height 0.28s ease !important;
+}
+
+
+/* ===== 主页版美化v18：收起态圆点鼠标显示小手（可安全删除还原） ===== */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    cursor: pointer !important;
+}
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-miniswitcher {
+    cursor: pointer !important;
+}
+
+
+/* ===== 主页版美化v19：暂停时歌词变暗但不消失（可安全删除还原） ===== */
+.aplayer-lrc.lrc-paused {
+    opacity: 0.4 !important;
+    transition: opacity 0.3s ease;
+}
+
+
+/* ===== 主页版美化v20：CSS默认隐藏歌词，避免刷新时Not available闪烁（可安全删除还原） ===== */
+.aplayer-lrc {
+    display: none !important;
+}
+.aplayer-lrc.lrc-visible {
+    display: block !important;
+}
+
+
+/* ===== 主页版美化v21：手机端也隐藏在边上，只露出12px小半圆（可安全删除还原） ===== */
+@media (max-width: 768px) {
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        left: -42px !important;  /* 容器left:10px + body宽44px + left:-42px = 右边缘x:12，露出12px */
+    }
+}
+
+
+/* ===== 主页版美化v23：body加overflow:hidden，展开动画过程中内容不溢出（可安全删除还原） ===== */
+.aplayer.aplayer-fixed .aplayer-body {
+    overflow: hidden !important;
+}
+
+
+/* ===== 主页版美化v24：播放器初始隐藏，初始化完成后淡入（可安全删除还原） ===== */
+#aplayer {
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+#aplayer.aplayer-ready {
+    opacity: 1;
+}
+
+
+/* ===== 主页版美化v25：优化收起态圆点（更透明更朦胧更柔和，可安全删除还原） ===== */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    background: rgba(12, 12, 12, 0.2) !important;
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+
+/* ===== 主页版美化v26：手机端显式指定和电脑端一致的背景毛玻璃（可安全删除还原） ===== */
+@media (max-width: 768px) {
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        background: rgba(12, 12, 12, 0.2) !important;
+        -webkit-backdrop-filter: blur(20px);
+        backdrop-filter: blur(20px);
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15) !important;
+    }
+}
+
+
+/* ===== 主页版美化v27：手机端缩进状态单独加深背景，抵消毛玻璃偏白（可安全删除还原） ===== */
+@media (max-width: 768px) {
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        background: rgba(12, 12, 12, 0.4) !important;
+    }
+}
+
+
+/* ===== 主页版美化v29：去掉毛玻璃，只用纯色半透明，两端完全一致（可安全删除还原） ===== */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    background: rgba(12, 12, 12, 0.25) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+@media (max-width: 768px) {
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        background: rgba(12, 12, 12, 0.25) !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+}
+
+
+/* ===== 主页版美化v30：最人性化圆点样式（可安全删除还原） ===== */
+.aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+    background: rgba(0, 0, 0, 0.55) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+}
+@media (max-width: 768px) {
+    .aplayer.aplayer-fixed.aplayer-narrow .aplayer-body {
+        background: rgba(0, 0, 0, 0.55) !important;
+        border: 1px solid rgba(255, 255, 255, 0.25) !important;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+        -webkit-backdrop-filter: none !important;
+        backdrop-filter: none !important;
+    }
+}

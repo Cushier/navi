@@ -144,6 +144,14 @@ window.addEventListener('load', function () {
                     currentPlayer = player;
                     isSwitching = false; // 切换完成，允许播放
 
+                    // 初始化完成后淡入播放器（避免闪现完整播放器）
+                    setTimeout(function () {
+                        var ap = document.getElementById('aplayer');
+                        if (ap) ap.classList.add('aplayer-ready');
+                    }, 50);
+
+                    // 歌词由CSS默认隐藏，播放时用lrc-visible类显示，避免刷新时Not available闪烁
+
                     console.log('[播放器] 已加载 ' + audios.length + ' 首歌');
 
                     // 3. 按需拉取歌词：切到哪首拉哪首，不占网络，音频切换秒开
@@ -195,6 +203,13 @@ window.addEventListener('load', function () {
                     // 监听事件保存状态
                     player.on('play', function () {
                         if (isSwitching) { player.pause(); return; } // 切换期间禁止播放
+                        try { 
+                            var lrcEl = document.querySelector('.aplayer-lrc');
+                            if (lrcEl) {
+                                lrcEl.classList.add('lrc-visible');
+                                lrcEl.classList.remove('lrc-paused');
+                            }
+                        } catch (e) {} // 播放时显示歌词并恢复正常亮度
                         var idx = player.list.index;
                         var s = getState();
                         s.index = idx;
@@ -219,6 +234,10 @@ window.addEventListener('load', function () {
                     });
                     player.on('pause', function () {
                         var s = getState(); s.autoplay = false; saveState(s);
+                        try { 
+                            var lrcEl = document.querySelector('.aplayer-lrc');
+                            if (lrcEl) lrcEl.classList.add('lrc-paused');
+                        } catch (e) {} // 暂停时歌词变暗但不消失
                     });
 
                     // 第一次交互后自动播放（只播放最新的播放器，避免切换歌单后旧播放器也播放）
@@ -251,26 +270,94 @@ window.addEventListener('load', function () {
             entry.innerHTML = '<span class="aplayer-list-index">🎵</span><span class="aplayer-list-title">自定义歌单（点击输入）</span><span class="aplayer-list-author">设置</span>';
             entry.style.cssText = 'cursor:pointer;color:#2980b9;';
             entry.onclick = function() {
-                var customId = Cookies.get(CUSTOM_KEY) || '';
-                var input = prompt('请输入网易云歌单ID或链接：\n（留空则恢复默认歌单）\n\n获取方式：打开网易云歌单，复制链接，链接里 id= 后面的数字就是歌单ID', customId);
-                if (input === null) return;
-                input = input.trim();
-                if (input === '') {
-                    Cookies.remove(CUSTOM_KEY);
-                    initPlayer(DEFAULT_PLAYLIST_ID);
-                    return;
-                }
-                var id = extractPlaylistId(input);
-                if (id) {
-                    Cookies.set(CUSTOM_KEY, id, { expires: 36500 });
-                    initPlayer(id);
-                } else {
-                    alert('无法识别歌单ID，请输入数字ID或歌单链接');
-                }
+                openPlaylistModal();
             };
 
             list.insertBefore(entry, list.firstChild);
         }
+
+        // ===== 自定义歌单模态框 =====
+        function openPlaylistModal() {
+            var modal = document.getElementById('playlist-modal');
+            var input = document.getElementById('playlist-input');
+            var tip = document.getElementById('playlist-tip');
+            if (!modal || !input) return;
+            var customId = Cookies.get(CUSTOM_KEY) || '';
+            input.value = customId;
+            tip.textContent = customId ? '' : '留空则恢复默认歌单';
+            tip.className = 'playlist-modal-tip';
+            modal.classList.add('show');
+            setTimeout(function() { input.focus(); }, 100);
+        }
+        function closePlaylistModal() {
+            var modal = document.getElementById('playlist-modal');
+            if (modal) modal.classList.remove('show');
+        }
+        function validatePlaylistInput() {
+            var input = document.getElementById('playlist-input');
+            var tip = document.getElementById('playlist-tip');
+            if (!input || !tip) return;
+            var val = input.value.trim();
+            if (!val) {
+                tip.textContent = '留空则恢复默认歌单';
+                tip.className = 'playlist-modal-tip';
+                return;
+            }
+            var id = extractPlaylistId(val);
+            if (id) {
+                tip.textContent = '识别成功，歌单ID：' + id;
+                tip.className = 'playlist-modal-tip success';
+            } else {
+                tip.textContent = '无法识别，请输入数字ID或歌单链接';
+                tip.className = 'playlist-modal-tip error';
+            }
+        }
+        // 绑定模态框事件
+        (function() {
+            var modal = document.getElementById('playlist-modal');
+            if (!modal) return;
+            var mask = modal.querySelector('.playlist-modal-mask');
+            var input = document.getElementById('playlist-input');
+            var confirmBtn = document.getElementById('playlist-confirm');
+            var cancelBtn = document.getElementById('playlist-cancel');
+            var resetBtn = document.getElementById('playlist-reset');
+            if (mask) mask.onclick = closePlaylistModal;
+            if (cancelBtn) cancelBtn.onclick = closePlaylistModal;
+            if (input) input.oninput = validatePlaylistInput;
+            if (input) {
+                input.onkeydown = function(e) {
+                    if (e.key === 'Enter') { if (confirmBtn) confirmBtn.click(); }
+                    else if (e.key === 'Escape') { closePlaylistModal(); }
+                };
+            }
+            if (confirmBtn) {
+                confirmBtn.onclick = function() {
+                    var val = input.value.trim();
+                    if (!val) {
+                        Cookies.remove(CUSTOM_KEY);
+                        initPlayer(DEFAULT_PLAYLIST_ID);
+                        closePlaylistModal();
+                        return;
+                    }
+                    var id = extractPlaylistId(val);
+                    if (id) {
+                        Cookies.set(CUSTOM_KEY, id, { expires: 36500 });
+                        initPlayer(id);
+                        closePlaylistModal();
+                    } else {
+                        validatePlaylistInput();
+                    }
+                };
+            }
+            if (resetBtn) {
+                resetBtn.onclick = function() {
+                    Cookies.remove(CUSTOM_KEY);
+                    initPlayer(DEFAULT_PLAYLIST_ID);
+                    closePlaylistModal();
+                };
+            }
+        })();
+
         // 持续检查并注入（每500ms检查一次，确保 APlayer 重渲染后入口仍存在）
         setInterval(injectCustomEntry, 500);
 

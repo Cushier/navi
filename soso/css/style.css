@@ -1090,3 +1090,138 @@ input[type="radio"]:checked+label {
     height: 100%;
     position: absolute;
 }
+
+
+/* ===== 自定义歌单模态框 ===== */
+.playlist-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 99999;
+}
+.playlist-modal.show {
+    display: block;
+}
+.playlist-modal-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    -webkit-backdrop-filter: blur(4px);
+    backdrop-filter: blur(4px);
+}
+.playlist-modal-box {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.92);
+    width: 90%;
+    max-width: 400px;
+    background: rgba(20, 20, 20, 0.88);
+    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: all 0.25s ease;
+    box-sizing: border-box;
+}
+.playlist-modal.show .playlist-modal-box {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+}
+.playlist-modal-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 16px;
+    text-align: center;
+}
+.playlist-modal-input-wrap {
+    margin-bottom: 16px;
+}
+#playlist-input {
+    width: 100%;
+    padding: 12px 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    color: #fff;
+    font-size: 14px;
+    outline: none;
+    box-sizing: border-box;
+    transition: border-color 0.2s;
+}
+#playlist-input:focus {
+    border-color: rgba(255, 255, 255, 0.5);
+}
+#playlist-input::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+.playlist-modal-tip {
+    font-size: 12px;
+    margin-top: 6px;
+    min-height: 16px;
+    line-height: 16px;
+}
+.playlist-modal-tip.success {
+    color: #4ade80;
+}
+.playlist-modal-tip.error {
+    color: #f87171;
+}
+.playlist-modal-btns {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.playlist-modal-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+.playlist-modal-btn.primary {
+    background: rgba(255, 255, 255, 0.9);
+    color: #1a1a1a;
+}
+.playlist-modal-btn.primary:hover {
+    background: #fff;
+}
+.playlist-modal-btn:not(.primary) {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+.playlist-modal-btn:not(.primary):hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+.playlist-modal-actions {
+    text-align: center;
+    margin-bottom: 12px;
+}
+#playlist-reset {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+}
+#playlist-reset:hover {
+    color: #fff;
+}
+.playlist-modal-help {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    line-height: 1.6;
+}

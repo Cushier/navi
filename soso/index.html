@@ -537,6 +537,28 @@
  <script src="https://cdn.staticfile.org/layer/3.5.1/layer.min.js"></script>
 <script src="./js/v3.js"></script>
 
+
+<!-- 自定义歌单模态框 -->
+<div id="playlist-modal" class="playlist-modal">
+    <div class="playlist-modal-mask"></div>
+    <div class="playlist-modal-box">
+        <div class="playlist-modal-title">自定义歌单</div>
+        <div class="playlist-modal-input-wrap">
+            <input type="text" id="playlist-input" placeholder="输入网易云歌单ID或链接" autocomplete="off" />
+            <div id="playlist-tip" class="playlist-modal-tip"></div>
+        </div>
+        <div class="playlist-modal-btns">
+            <button id="playlist-confirm" class="playlist-modal-btn primary">确定</button>
+            <button id="playlist-cancel" class="playlist-modal-btn">取消</button>
+        </div>
+        <div class="playlist-modal-actions">
+            <a id="playlist-reset" href="javascript:;">恢复默认歌单</a>
+        </div>
+        <div class="playlist-modal-help">
+            获取方式：打开网易云歌单 → 复制链接 → 链接里 id= 后面的数字就是歌单ID
+        </div>
+    </div>
+</div>
 </body>
 
 </html>
