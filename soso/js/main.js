@@ -160,6 +160,19 @@ window.addEventListener('load', function () {
                         if (!rawList[idx]) return;
                         var audio = player.list.audios[idx];
                         if (!audio || audio.lrc) return; // 已有歌词则跳过
+                        // 歌词加载中提示：把 "Not available" 改成 "歌词加载中..."（多次尝试，APlayer可能重新渲染）
+                        var tryCount = 0;
+                        var loadingTimer = setInterval(function() {
+                            tryCount++;
+                            var lrcCont = document.querySelector('.aplayer-lrc-cont');
+                            if (lrcCont) {
+                                var p = lrcCont.querySelector('p');
+                                if (p && (p.textContent === 'Not available' || p.textContent === '')) {
+                                    p.textContent = '歌词加载中...';
+                                }
+                            }
+                            if (tryCount >= 15) clearInterval(loadingTimer);
+                        }, 50);
                         var lrc = rawList[idx].lrc || '';
                         if (!/^https?:\/\//.test(lrc)) {
                             audio.lrc = lrc || '';
@@ -167,6 +180,7 @@ window.addEventListener('load', function () {
                                 player.lrc.parsed[idx] = null;
                             }
                             try { player.lrc.switch(idx); } catch (e) {}
+                            clearInterval(loadingTimer);
                             return;
                         }
                         fetchWithTimeout(lrc, 3000)
@@ -180,8 +194,21 @@ window.addEventListener('load', function () {
                                     player.lrc.parsed[idx] = null;
                                 }
                                 try { player.lrc.switch(idx); } catch (e) {}
+                                clearInterval(loadingTimer);
+                                // 如果歌词为空，显示"暂无歌词"
+                                if (!text || text.trim() === '') {
+                                    setTimeout(function() {
+                                        var lrcCont = document.querySelector('.aplayer-lrc-cont');
+                                        if (lrcCont) {
+                                            var p = lrcCont.querySelector('p');
+                                            if (p && p.textContent === '歌词加载中...') {
+                                                p.textContent = '暂无歌词';
+                                            }
+                                        }
+                                    }, 100);
+                                }
                             })
-                            .catch(function () {});
+                            .catch(function () { clearInterval(loadingTimer); });
                     }
                     // 切换歌曲时按需加载歌词（注意：listswitch 回调参数是 {index:N} 对象）
                     player.on('listswitch', function (data) {
