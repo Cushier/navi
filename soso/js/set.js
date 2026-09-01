@@ -280,10 +280,17 @@ function keywordReminder() {
             success: function (data) {
                 //获取宽度
                 $("#keywords").css("width", $('.sou').width());
-                $("#keywords").empty().show();
+                // 一次性构建HTML再替换，避免先清空再逐条append导致内容闪烁
+                var html = '';
                 $.each(data.s, function (i, val) {
-                    $('#keywords').append(`<div class="keyword" data-id="${i + 1}"><i class='iconfont icon-sousuo'></i>${val}</div>`);
+                    html += `<div class="keyword" data-id="${i + 1}"><i class='iconfont icon-sousuo'></i>${val}</div>`;
                 });
+                // 已显示则只更新内容不调用show，避免重新触发down动画
+                if ($("#keywords").is(":visible")) {
+                    $('#keywords').html(html);
+                } else {
+                    $('#keywords').html(html).show();
+                }
                 $("#keywords").attr("data-length", data.s["length"]);
             },
             error: function () {
