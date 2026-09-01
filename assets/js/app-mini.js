@@ -922,7 +922,12 @@
                             list.slideUp(200);
                         });
                     };
-                    list.hide().slideDown(200).children('ul').show();
+                    // 已显示则直接更新内容不闪烁，只有隐藏时才滑出
+                    if (list.is(":visible")) {
+                        list.children('ul').show();
+                    } else {
+                        list.hide().slideDown(200).children('ul').show();
+                    }
                 } else {
                     list.slideUp(200);
                 }
@@ -954,7 +959,12 @@
                             list.slideUp(200);
                         });
                     };
-                    list.hide().slideDown(200).children('ul').show();
+                    // 已显示则直接更新内容不闪烁，只有隐藏时才滑出
+                    if (list.is(":visible")) {
+                        list.children('ul').show();
+                    } else {
+                        list.hide().slideDown(200).children('ul').show();
+                    }
                 } else {
                     list.slideUp(200);
                 }
