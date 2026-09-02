@@ -148,7 +148,20 @@ window.addEventListener('load', function () {
                     setTimeout(function () {
                         var ap = document.getElementById('aplayer');
                         if (ap) ap.classList.add('aplayer-ready');
-                    }, 50);
+                        // 兜底：强制显示播放模式按钮（切换歌单后可能被APlayer临时隐藏）
+                        var orderBtn = document.querySelector('.aplayer-fixed .aplayer-icon-order');
+                        var loopBtn = document.querySelector('.aplayer-fixed .aplayer-icon-loop');
+                        if (orderBtn) {
+                            orderBtn.style.display = 'inline-block';
+                            orderBtn.style.visibility = 'visible';
+                            orderBtn.style.opacity = '1';
+                        }
+                        if (loopBtn) {
+                            loopBtn.style.display = 'inline-block';
+                            loopBtn.style.visibility = 'visible';
+                            loopBtn.style.opacity = '1';
+                        }
+                    }, 100);
 
                     // 歌词由CSS默认隐藏，播放时用lrc-visible类显示，避免刷新时Not available闪烁
 
@@ -296,7 +309,8 @@ window.addEventListener('load', function () {
             entry.className = 'aplayer-list-item custom-playlist-entry';
             entry.innerHTML = '<span class="aplayer-list-index">🎵</span><span class="aplayer-list-title">自定义歌单（点击输入）</span><span class="aplayer-list-author">设置</span>';
             entry.style.cssText = 'cursor:pointer;color:#2980b9;';
-            entry.onclick = function() {
+            entry.onclick = function(e) {
+                e.stopPropagation();
                 openPlaylistModal();
             };
 

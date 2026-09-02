@@ -369,6 +369,16 @@ $(function() {
         if (checkedValue == 'zhannei') {
             e.preventDefault();
             e.stopPropagation();
+            // 保存搜索历史（站内搜索也保存，因为stopPropagation阻止了app-mini.js里的保存逻辑）
+            try {
+                var historyKey = 'nav_search_history';
+                var historyList = [];
+                try { historyList = JSON.parse(localStorage.getItem(historyKey)) || []; } catch(e) {}
+                historyList = historyList.filter(function(item) { return item !== keyword; });
+                historyList.unshift(keyword);
+                if (historyList.length > 9) historyList = historyList.slice(0, 9);
+                localStorage.setItem(historyKey, JSON.stringify(historyList));
+            } catch(e) {}
             zhanneiFilterPage(keyword);
             $form.parents('.s-search').find('.search-smart-tips').slideUp(200);
         }
@@ -399,8 +409,12 @@ $(function() {
         if (keyword) {
             zhanneiShowTips(keyword, parent);
         } else {
-            parent.children('.search-smart-tips').slideUp(200);
+            // 清空时恢复页面筛选，并显示搜索历史（和百度搜索逻辑一致）
             zhanneiRestorePage();
+            var $tips = parent.children('.search-smart-tips');
+            if ($tips.length && typeof SearchHistory !== 'undefined') {
+                SearchHistory.render($tips);
+            }
         }
     });
     

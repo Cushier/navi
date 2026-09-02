@@ -889,6 +889,8 @@
         var key = encodeURIComponent($form.find(".search-key").val())
         if(key == "")
             return false;
+        // 保存搜索历史
+        SearchHistory.save(decodeURIComponent(key));
         // 直接判断选中radio的value，不依赖id和zhannei属性
         var checkedValue = $form.parents('.s-search').find('input:radio:checked').val();
         if(checkedValue == 'zhannei'){
@@ -978,6 +980,98 @@
     var parent;
     var tipsList = 0;
     var isZhannei = false;
+
+    // ===== 搜索历史管理 =====
+    var SearchHistory = {
+        KEY: 'nav_search_history',
+        MAX: 9,
+        get: function() {
+            try {
+                return JSON.parse(localStorage.getItem(this.KEY)) || [];
+            } catch(e) { return []; }
+        },
+        save: function(kw) {
+            kw = (kw || '').trim();
+            if (!kw) return;
+            var list = this.get();
+            // 去重：如果已存在，先删除旧的
+            list = list.filter(function(item) { return item !== kw; });
+            // 新的放最前面
+            list.unshift(kw);
+            // 超过最大数量则删除最后的
+            if (list.length > this.MAX) list = list.slice(0, this.MAX);
+            localStorage.setItem(this.KEY, JSON.stringify(list));
+        },
+        remove: function(kw) {
+            var list = this.get().filter(function(item) { return item !== kw; });
+            localStorage.setItem(this.KEY, JSON.stringify(list));
+        },
+        clear: function() {
+            localStorage.removeItem(this.KEY);
+        },
+        render: function($tipsContainer) {
+            var list = this.get();
+            var $ul = $tipsContainer.children('ul');
+            $ul.empty();
+            // 先移除之前的头部
+            $tipsContainer.find('.search-history-header').remove();
+            if (list.length === 0) {
+                $ul.hide();
+                $tipsContainer.slideUp(200);
+                return;
+            }
+            // 历史记录li：直接放到搜索建议的同一个ul里，样式完全继承
+            list.forEach(function(kw) {
+                var $li = $('<li class="search-history-item" data-kw="' + kw.replace(/"/g, '&quot;') + '">' + kw + '<a href="javascript:;" class="search-history-delete" title="删除">×</a></li>');
+                $ul.append($li);
+            });
+            // 清空按钮：只有历史记录达到9个时才显示（加清空刚好10个，和搜索建议匹配）
+            if (list.length >= 9) {
+                var $clearLi = $('<li class="search-history-clear-li"><a href="javascript:;" class="search-history-clear">清空历史记录</a></li>');
+                $ul.append($clearLi);
+            }
+            $ul.show();
+            // 如果已经显示，直接更新内容，不重复slideDown避免闪烁
+            if (!$tipsContainer.is(':visible')) {
+                $tipsContainer.slideDown(200);
+            }
+        }
+    };
+
+    // 点击搜索历史项
+    $(document).on('click', '.search-history-item', function(e) {
+        if ($(e.target).hasClass('search-history-delete')) return;
+        var kw = $(this).attr('data-kw');
+        if (!kw) return;
+        var $search = $(this).closest('.s-search');
+        var $input = $search.find('.search-key');
+        $input.val(kw);
+        $input.closest('.super-search-fm').submit();
+    });
+
+    // 删除单条搜索历史（用mousedown阻止搜索框失焦，避免blur关闭下拉框）
+    $(document).on('mousedown', '.search-history-delete', function(e) {
+        e.preventDefault();
+    });
+    $(document).on('click', '.search-history-delete', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        var kw = $(this).parent().attr('data-kw');
+        if (!kw) return;
+        SearchHistory.remove(kw);
+        var $tips = $(this).closest('.search-smart-tips');
+        SearchHistory.render($tips);
+    });
+
+    // 清空搜索历史
+    $(document).on('click', '.search-history-clear', function(e) {
+        e.stopPropagation();
+        SearchHistory.clear();
+        var $tips = $(this).closest('.search-smart-tips');
+        $tips.find('.search-history-header').remove();
+        $tips.children('ul').empty();
+        $tips.slideUp(200);
+    });
     $(document).on("blur", ".smart-tips.search-key", function() {
         parent = '';
         $(".search-smart-tips").delay(150).slideUp(200)
@@ -985,16 +1079,27 @@
     $(document).on("focus", ".smart-tips.search-key", function() {
         isZhannei = $(this).attr('zhannei')!=''?true:false;
         parent = $(this).closest('.s-search');
-        if ($(this).val() && !isZhannei) {
-            switch(theme.hotWords) {
-                case "baidu": 
-                    getSmartTipsBaidu($(this).val(),parent)
-                    break;
-                case "google": 
-                    getSmartTipsGoogle($(this).val(),parent)
-                    break;
-                default: 
-            } 
+        // 清除blur的延迟关闭动画，避免和focus的显示冲突
+        parent.find('.search-smart-tips').stop(true, true);
+        var val = $(this).val();
+        if (val) {
+            if (!isZhannei) {
+                // 有值时先移除搜索历史头部
+                parent.find('.search-history-header').remove();
+                switch(theme.hotWords) {
+                    case "baidu": 
+                        getSmartTipsBaidu(val,parent)
+                        break;
+                    case "google": 
+                        getSmartTipsGoogle(val,parent)
+                        break;
+                    default: 
+                } 
+            }
+        } else {
+            // 输入框为空时显示搜索历史
+            var $tips = parent.children('.search-smart-tips');
+            if ($tips.length) SearchHistory.render($tips);
         }
     });
     $(document).on("keyup", ".smart-tips.search-key", function(e) {
@@ -1004,6 +1109,8 @@
             if (e.keyCode == 38 || e.keyCode == 40 || isZhannei) {
                 return
             }
+            // 输入内容时先移除搜索历史头部
+            parent.find('.search-history-header').remove();
             switch(theme.hotWords) {
                 case "baidu": 
                     getSmartTipsBaidu($(this).val(),parent)
@@ -1015,7 +1122,13 @@
             } 
             listIndex = -1;
         } else {
-            $(".search-smart-tips").slideUp(200)
+            // 输入框清空时显示搜索历史
+            var $tips = parent.children('.search-smart-tips');
+            if ($tips.length) {
+                SearchHistory.render($tips);
+            } else {
+                $(".search-smart-tips").slideUp(200);
+            }
         }
     });
     $(document).on("keydown", ".smart-tips.search-key", function(e) {

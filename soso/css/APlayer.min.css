@@ -1177,18 +1177,36 @@
 
 
 /* ===== 主页版美化v19：暂停时歌词变暗但不消失（可安全删除还原） ===== */
-.aplayer-lrc.lrc-paused {
+.aplayer-lrc.lrc-visible.lrc-paused {
     opacity: 0.4 !important;
+    visibility: visible !important;
     transition: opacity 0.3s ease;
 }
 
 
 /* ===== 主页版美化v20：CSS默认隐藏歌词，避免刷新时Not available闪烁（可安全删除还原） ===== */
 .aplayer-lrc {
-    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+    transition: opacity 0.3s ease;
 }
 .aplayer-lrc.lrc-visible {
-    display: block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+
+/* ===== 主页版美化v31：fixed模式下强制显示播放模式按钮和歌词按钮（可安全删除还原） ===== */
+.aplayer.aplayer-fixed .aplayer-icon-order,
+.aplayer.aplayer-fixed .aplayer-icon-loop,
+.aplayer.aplayer-fixed .aplayer-icon-lrc,
+.aplayer.aplayer-fixed .aplayer-time .aplayer-icon-order,
+.aplayer.aplayer-fixed .aplayer-time .aplayer-icon-loop,
+.aplayer.aplayer-fixed .aplayer-controller .aplayer-icon-order,
+.aplayer.aplayer-fixed .aplayer-controller .aplayer-icon-loop {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
 }
 
 
