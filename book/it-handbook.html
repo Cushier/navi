@@ -1,0 +1,2700 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>信息技术必背知识手册（全8单元合集·单栏详细版）</title>
+<link rel="icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" type="image/x-icon">
+<link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" type="image/x-icon">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "宋体","SimSun",serif; font-size: 10pt; color: #111; background: #f8f9fa; line-height: 1.6; }
+  @media print {
+    body { font-size: 9pt; background: #fff; }
+    @page { size: A4; margin: 15mm 18mm 15mm 18mm; @top-center { content: none; } @bottom-center { content: none; } }
+    .no-print { display: none !important; }
+    .container { width: 100%; padding: 0; background: #fff; box-shadow: none; }
+    /* 只保留小元素的avoid，允许module/table/op-block跨页断行 */
+    .tip-box, .kp-list li, .code-block { break-inside: avoid; }
+    .module { break-inside: auto; }
+    table { break-inside: auto; }
+    tr { break-inside: auto; }
+    .op-block { break-inside: auto; }
+    .func-table-wrap { break-inside: auto; }
+    /* 标题跟紧下一内容，避免标题孤行 */
+    .chapter-title, .module-title { break-after: avoid; }
+    /* 确保背景色和边框打印可见 */
+    .module-title, th, .tip-box, .kw, .chapter-title, .unit-banner, .otitle, .ftitle, .op-block .otitle, .func-table-wrap .ftitle, .func-table-wrap .fsub, .func-table-wrap td, .func-table-wrap tr:nth-child(even) td, .op-note, tr:nth-child(even) td { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .unit-section { page-break-before: always; }
+    .unit-section:first-of-type { page-break-before: avoid; }
+    .unit-banner { margin: 0 0 4px; }
+    /* 打印时压缩间距 */
+    .chapter-title { margin: 10px 0 4px 0; }
+    .module { margin-bottom: 5px; }
+    .kp-list { margin: 0 0 4px 0; }
+    .kp-list li { margin-bottom: 2px; }
+    .divider { margin: 6px 0; }
+    .footer { margin-top: 8px; padding-top: 3px; }
+    .tip-box { margin: 4px 0; padding: 3px 8px; }
+  }
+  .container { width: 90%; max-width: 920px; margin: 0 auto; padding: 12px 16px; background: #fff; box-shadow: 0 0 12px rgba(0,0,0,0.06); }
+  .book-title { text-align: center; font-size: 17pt; font-weight: bold; letter-spacing: 4px; margin-bottom: 3px; color: #1a237e; font-family: "黑体","SimHei",sans-serif; }
+  .book-sub { text-align: center; font-size: 9pt; color: #666; margin-bottom: 12px; border-bottom: 2.5px solid #1a237e; padding-bottom: 5px; }
+  .unit-section { margin-bottom: 0; }
+  .unit-banner { background: linear-gradient(135deg, #1a237e 0%, #3949ab 100%); color: #fff; text-align: center; padding: 10px 8px; border-radius: 5px; margin: 18px 0 10px; }
+  .unit-banner .main-title { color: #fff; font-size: 15pt; letter-spacing: 3px; margin-bottom: 2px; }
+  .unit-banner .sub-title { color: rgba(255,255,255,0.8); font-size: 8.5pt; border-bottom: none; padding-bottom: 0; margin-bottom: 0; }
+  .unit-section:first-of-type .unit-banner { margin-top: 6px; }
+  .main-title { text-align: center; font-size: 15pt; font-weight: bold; letter-spacing: 2px; margin-bottom: 2px; color: #1a237e; font-family: "黑体","SimHei",sans-serif; }
+  .sub-title { text-align: center; font-size: 8.5pt; color: #555; margin-bottom: 6px; border-bottom: 2px solid #1a237e; padding-bottom: 4px; }
+  .chapter-title { font-size: 11.5pt; font-weight: bold; color: #1a237e; font-family: "黑体","SimHei",sans-serif; margin: 16px 0 6px 0; padding: 4px 10px; background: linear-gradient(to right,#e8eaf6,#fff); border-left: 5px solid #3949ab; border-radius: 2px; }
+  .chapter-num { display: inline-block; background: #3949ab; color: #fff; font-size: 8.5pt; padding: 2px 8px; border-radius: 10px; margin-right: 6px; font-family: "黑体","SimHei",sans-serif; }
+  .module { margin-bottom: 8px; }
+  .module-title { background: #283593; color: #fff; font-size: 9.5pt; font-weight: bold; padding: 4px 10px; border-radius: 3px; margin-bottom: 5px; letter-spacing: 0.5px; font-family: "黑体","SimHei",sans-serif; }
+  .kp-list { list-style: none; padding: 0; margin: 0 0 6px 0; }
+  .kp-list li { display: flex; align-items: flex-start; line-height: 1.7; margin-bottom: 3.5px; font-size: 9pt; }
+  .kp-list li .num { display: inline-block; min-width: 26px; font-weight: bold; color: #283593; flex-shrink: 0; font-size: 9pt; }
+  .kp-list li .text { flex: 1; overflow-wrap: anywhere; }
+  .kw { font-weight: bold; color: #c62828; font-family: "黑体","SimHei",sans-serif; }
+  table { width: 100%; border-collapse: collapse; font-size: 8.5pt; margin: 4px 0; }
+  th { background: #3949ab; color: #fff; padding: 4px 6px; text-align: center; font-weight: bold; font-size: 8pt; font-family: "黑体","SimHei",sans-serif; }
+  td { border: 1px solid #b0b0b0; padding: 3px 6px; vertical-align: top; line-height: 1.5; }
+  tr:nth-child(even) td { background: #f0f2ff; }
+  .tip-box { background: #fff8e1; border-left: 4px solid #ff8f00; padding: 5px 10px; font-size: 8.5pt; margin: 6px 0; line-height: 1.7; border-radius: 0 3px 3px 0; }
+  .tip-box strong { color: #1a237e; }
+  .divider { border: none; border-top: 1.5px dashed #bbb; margin: 10px 0; }
+  .unit-divider { border: none; border-top: 3px solid #1a237e; margin: 10px 0 6px; }
+  .footer { text-align: center; font-size: 8pt; color: #888; margin-top: 12px; border-top: 1.5px solid #c5cae9; padding-top: 5px; }
+  .print-btn { display: inline-block; margin: 10px 8px 4px; padding: 8px 30px; background: #1a237e; color: #fff; font-size: 12pt; border: none; border-radius: 4px; cursor: pointer; letter-spacing: 2px; font-family: "黑体","SimHei",sans-serif; }
+  .print-btn:hover { background: #283593; }
+  .print-hint { font-size: 9pt; color: #666; margin-bottom: 10px; }
+  .toc { background: #f5f7ff; border: 1.5px solid #c5cae9; border-radius: 6px; padding: 12px 16px; margin-bottom: 14px; font-size: 9.5pt; }
+  .toc-title { font-weight: bold; color: #1a237e; font-size: 11pt; margin-bottom: 8px; font-family: "黑体","SimHei",sans-serif; }
+  .toc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 3px 14px; }
+  .toc a { color: #283593; text-decoration: none; display: block; padding: 3px 6px; border-radius: 3px; transition: background 0.2s; }
+  .toc a:hover { text-decoration: none; background: #e8eaf6; color: #c62828; }
+  /* ===== 模拟操作题样式（Word/Excel/PPT） ===== */
+  .op-block { border: 1px solid #ffcc80; border-radius: 4px; margin: 5px 0; background: #fffde7; overflow: hidden; }
+  .op-block .otitle { background: #3949ab; color: #fff; font-weight: bold; font-size: 9pt; padding: 3px 8px; font-family: "黑体","SimHei",sans-serif; }
+  .op-block .ostep { font-size: 8.5pt; line-height: 1.6; padding: 3px 8px; }
+  .op-block .ostep div { margin-bottom: 1.5px; }
+  .op-key { font-weight: bold; color: #bf360c; }
+  .op-note { color: #1b5e20; font-size: 8pt; background: #f1f8e9; border-top: 1px solid #ffe082; padding: 2px 8px 3px 8px; font-family: "Consolas","Courier New",monospace; line-height: 1.5; }
+  /* ===== 快捷键速查表 ===== */
+  .quick-table { width: 100%; border-collapse: collapse; font-size: 8pt; margin: 3px 0; }
+  .quick-table th { background: #546e7a; color: #fff; padding: 2px 5px; text-align: center; font-size: 8pt; font-family: "黑体","SimHei",sans-serif; }
+  .quick-table td { border: 1px solid #90a4ae; padding: 2px 5px; vertical-align: middle; line-height: 1.4; }
+  .quick-table tr:nth-child(even) td { background: #eceff1; }
+  .qk { font-family: "Consolas","Courier New",monospace; font-weight: bold; color: #1a237e; font-size: 8pt; }
+  /* ===== 代码块样式（Python） ===== */
+  .code-block { background: #f5f5f5; border: 1px solid #ccc; border-radius: 3px; padding: 4px 8px; font-family: "Consolas","Courier New",monospace; font-size: 8.5pt; line-height: 1.5; margin: 3px 0; }
+  /* ===== Excel函数表格样式 ===== */
+  .func-table-wrap { border: 1px solid #9fa8da; border-radius: 4px; margin: 5px 0; background: #f4f6ff; overflow: hidden; }
+  .func-table-wrap .ftitle { background: #3949ab; color: #fff; font-weight: bold; font-size: 9pt; padding: 3px 8px; font-family: "黑体","SimHei",sans-serif; letter-spacing: 0.3px; }
+  .func-table-wrap .fsub { font-size: 8pt; color: #1a237e; padding: 2px 8px 1px 8px; font-family: "Consolas","Courier New",monospace; background: #e8eaf6; border-top: 1px solid #c5cae9; }
+  .func-table-wrap table { margin: 0; }
+  .func-table-wrap td { background: #f4f6ff !important; font-size: 8pt; border-color: #c5cae9; padding: 2px 5px; }
+  .func-table-wrap tr:nth-child(even) td { background: #e8eaf6 !important; }
+  .func-ex { color: #1b5e20; font-family: "Consolas","Courier New",monospace; font-size: 8pt; padding: 2px 8px 3px 8px; border-top: 1px solid #c5cae9; background: #f1f8e9; line-height: 1.5; }
+
+  /* ===== 增强功能样式 ===== */
+  /* 回到顶部按钮 */
+  .back-to-top {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 44px;
+    height: 44px;
+    background: #1a237e;
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .back-to-top.show {
+    opacity: 1;
+    visibility: visible;
+  }
+  .back-to-top:hover {
+    background: #283593;
+    transform: translateY(-2px);
+  }
+
+  /* 悬浮侧边目录 */
+  .toc-sidebar {
+    position: fixed;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 200px;
+    background: #fff;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 2px 2px 12px rgba(0,0,0,0.15);
+    padding: 12px 10px;
+    z-index: 9998;
+    transition: transform 0.3s ease;
+  }
+  .toc-sidebar.collapsed {
+    transform: translateX(-200px) translateY(-50%);
+  }
+  .toc-sidebar .toc-toggle {
+    position: absolute;
+    right: -28px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 50px;
+    background: #1a237e;
+    color: #fff;
+    border: none;
+    border-radius: 0 6px 6px 0;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .toc-sidebar .toc-sidebar-title {
+    font-size: 12px;
+    font-weight: bold;
+    color: #1a237e;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid #e8eaf6;
+    text-align: center;
+  }
+  .toc-sidebar .toc-sidebar-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 60vh;
+    overflow-y: auto;
+  }
+  .toc-sidebar .toc-sidebar-list li {
+    margin-bottom: 2px;
+  }
+  .toc-sidebar .toc-sidebar-list a {
+    display: block;
+    padding: 5px 8px;
+    font-size: 11px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 3px;
+    transition: background 0.2s, color 0.2s;
+    line-height: 1.4;
+  }
+  .toc-sidebar .toc-sidebar-list a:hover,
+  .toc-sidebar .toc-sidebar-list a.active {
+    background: #e8eaf6;
+    color: #1a237e;
+  }
+
+  /* 阅读进度条 */
+  .reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #1a237e, #3949ab);
+    z-index: 10000;
+    width: 0%;
+    transition: width 0.1s;
+  }
+
+  /* ===== 移动端响应式适配 ===== */
+  @media (max-width: 768px) {
+    body { font-size: 14px; }
+    .container {
+      width: 100% !important;
+      padding: 10px 8px !important;
+      margin: 0;
+      box-shadow: none;
+    }
+    .book-title { font-size: 18px; letter-spacing: 2px; }
+    .book-sub { font-size: 11px; }
+    .unit-banner .main-title { font-size: 16px; }
+    .unit-banner .sub-title { font-size: 10px; }
+    .chapter-title { font-size: 15px; padding: 6px 8px; }
+    .module-title { font-size: 13px; padding: 5px 8px; }
+    .kp-list li { font-size: 13px; line-height: 1.7; }
+    .kp-list li .num { min-width: 22px; font-size: 13px; }
+    table { font-size: 11px; }
+    th, td { padding: 4px 5px; }
+    .tip-box { font-size: 12px; padding: 6px 10px; }
+    .toc { padding: 10px 12px; }
+    .toc-grid { grid-template-columns: 1fr; gap: 2px; }
+    .toc a { font-size: 12px; padding: 5px 8px; }
+    .func-table-wrap { font-size: 11px; }
+    .code-block { font-size: 11px; overflow-x: auto; }
+    .quick-table { font-size: 10px; }
+    /* 表格外层加横向滚动 */
+    .table-wrapper {
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+    /* 侧边目录在手机上：完全收起只露按钮，不露出目录部分 */
+    .toc-sidebar {
+      left: 0;
+      right: auto;
+      width: 150px;
+      padding: 10px 8px;
+      border-radius: 0 8px 8px 0;
+    }
+    .toc-sidebar.collapsed {
+      transform: translateX(-150px) translateY(-50%);
+    }
+    .toc-sidebar .toc-toggle {
+      right: -28px;
+      left: auto;
+      border-radius: 0 6px 6px 0;
+    }
+    .toc-sidebar .toc-sidebar-list a {
+      font-size: 11px;
+      padding: 4px 6px;
+    }
+    .back-to-top {
+      width: 40px;
+      height: 40px;
+      bottom: 20px;
+      right: 20px;
+      font-size: 18px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .book-title { font-size: 16px; }
+    .kp-list li { font-size: 12px; }
+    table { font-size: 10px; }
+    th, td { padding: 3px 4px; }
+  }
+
+  /* ===== 打印优化（修复大PDF生成问题） ===== */
+  @media print {
+    /* 隐藏所有增强功能 */
+    .back-to-top, .toc-sidebar, .reading-progress { display: none !important; }
+    /* 优化分页，减少浏览器负担 */
+    .unit-section { page-break-before: always; }
+    .unit-section:first-of-type { page-break-before: avoid; }
+    /* 确保表格不被强制拆分导致问题 */
+    table { page-break-inside: auto; }
+    tr { page-break-inside: avoid; }
+    /* 简化@page规则，去掉可能导致问题的margin-box */
+    @page {
+      size: A4;
+      margin: 15mm 16mm;
+    }
+    /* 图片最大宽度 */
+    img { max-width: 100% !important; }
+    /* 避免孤行 */
+    p, li { orphans: 3; widows: 3; }
+  }
+
+</style>
+</head>
+<body>
+<!-- 阅读进度条 -->
+<div class="reading-progress no-print" id="readingProgress"></div>
+
+<!-- 悬浮侧边目录 -->
+<div class="toc-sidebar no-print collapsed" id="tocSidebar">
+  <button class="toc-toggle" onclick="toggleTocSidebar()" title="展开/收起目录">📑</button>
+  <div class="toc-sidebar-title">📑 单元目录</div>
+  <ul class="toc-sidebar-list">
+    <li><a href="#unit1" onclick="scrollToUnit('unit1')">第一单元 · 信息技术基础</a></li>
+    <li><a href="#unit2" onclick="scrollToUnit('unit2')">第二单元 · 计算机网络</a></li>
+    <li><a href="#unit3" onclick="scrollToUnit('unit3')">第三单元 · 图文处理(Word)</a></li>
+    <li><a href="#unit4" onclick="scrollToUnit('unit4')">第四单元 · 数据处理(Excel)</a></li>
+    <li><a href="#unit5" onclick="scrollToUnit('unit5')">第五单元 · 程序设计入门</a></li>
+    <li><a href="#unit6" onclick="scrollToUnit('unit6')">第六单元 · 数字媒体技术</a></li>
+    <li><a href="#unit7" onclick="scrollToUnit('unit7')">第七单元 · 信息安全基础</a></li>
+    <li><a href="#unit8" onclick="scrollToUnit('unit8')">第八单元 · 人工智能初步</a></li>
+  </ul>
+</div>
+
+<!-- 回到顶部按钮 -->
+<button class="back-to-top no-print" id="backToTop" onclick="scrollToTop()" title="回到顶部">↑</button>
+
+<div class="no-print" style="text-align:center; padding: 6px 0;">
+  <button class="print-btn" onclick="window.print()">🖨️ 打印（A4纸）</button>
+  <p class="print-hint">建议：去掉页眉页脚 · 缩放选「适合页面」· 勾选「背景图形」确保彩色打印 · 双面打印节省纸张</p>
+</div>
+<div class="container">
+  <div class="book-title">信息技术必背知识手册 · 全8单元合集</div>
+  <div class="book-sub">单栏详细版 · 第1～8单元完整版 · 江西省单招·对口升学专用 · 红色粗体为重点关键词，黑白打印清晰可见</div>
+  <div class="toc no-print">
+    <div class="toc-title">📑 快速导航 · 全8单元目录</div>
+    <div class="toc-grid">
+    <a href="#unit1">◎ 第一单元 · 信息技术基础（1.1～1.6）</a>
+    <a href="#unit2">◎ 第二单元 · 计算机网络（2.1～2.6）</a>
+    <a href="#unit3">◎ 第三单元 · 图文处理（Word）（3.1～3.5）</a>
+    <a href="#unit4">◎ 第四单元 · 数据处理（Excel）（4.1～4.4）</a>
+    <a href="#unit5">◎ 第五单元 · 程序设计入门（5.1～5.3）</a>
+    <a href="#unit6">◎ 第六单元 · 数字媒体技术（6.1～6.4）</a>
+    <a href="#unit7">◎ 第七单元 · 信息安全基础（7.1～7.2）</a>
+    <a href="#unit8">◎ 第八单元 · 人工智能初步（8.1～8.2）</a>
+    </div>
+  </div>
+
+  <!-- ==================== 第一单元 ==================== -->
+  <div class="unit-section" id="unit1">
+    <div class="unit-banner">
+      <div class="main-title">◎ 第一单元 · 信息技术基础</div>
+      <div class="sub-title">1.1～1.6｜江西省单招·对口升学专用</div>
+    </div>
+<!-- ===== 1.1 信息技术发展 ===== -->
+  <div class="chapter-title"><span class="chapter-num">1.1</span>信息技术发展</div>
+
+  <div class="module">
+    <div class="module-title">◆ 信息与信息技术的概念</div>
+    <ul class="kp-list">
+      <li><span class="num">1.</span><span class="text"><span class="kw">信息</span>是物质存在的基本方式之一，是对客观事物运动状态的<span class="kw">反映</span>，是经过加工并对人类社会实践和生产活动产生决策影响的数据。</span></li>
+      <li><span class="num">2.</span><span class="text"><span class="kw">信息5大特征</span>：<span class="kw">载体依附性</span>（依附于某种载体存在，不能独立存在）；<span class="kw">价值性</span>（对人类有用）；<span class="kw">时效性</span>（会过时）；<span class="kw">共享性</span>（可被多人同时使用）；<span class="kw">真伪性</span>（有真有假）。</span></li>
+      <li><span class="num">3.</span><span class="text"><span class="kw">信息技术（IT）4大核心技术</span>：<span class="kw">微电子技术</span>（基础）；<span class="kw">计算机技术</span>（核心）；<span class="kw">通信技术</span>（支撑）；<span class="kw">传感技术</span>（感知）。</span></li>
+      <li><span class="num">4.</span><span class="text">IT发展5个里程碑：<span class="kw">文字可记录</span>→<span class="kw">印刷术可传播</span>→<span class="kw">电视多媒体</span>→<span class="kw">互联网</span>→<span class="kw">移动互联与AI时代</span>。</span></li>
+      <li><span class="num">5.</span><span class="text">世界第一台计算机：<span class="kw">ENIAC</span>，1946年，美国宾夕法尼亚大学，<span class="kw">第一代，电子管</span>，占地170平方米，重30吨，用于军事计算。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 计算机4个发展阶段（必背简答题）</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:8%">代</th><th style="width:20%">年份</th><th style="width:28%">核心元器件</th><th style="width:22%">软件</th><th>应用领域</th></tr>
+      <tr><td style="text-align:center;font-weight:bold">一</td><td>1946—1958</td><td><span class="kw">电子管</span></td><td>机器语言、汇编语言</td><td>军事、科研计算</td></tr>
+      <tr><td style="text-align:center;font-weight:bold">二</td><td>1959—1964</td><td><span class="kw">晶体管</span></td><td><span class="kw">高级语言、操作系统</span></td><td>数据处理、事务管理</td></tr>
+      <tr><td style="text-align:center;font-weight:bold">三</td><td>1965—1970</td><td><span class="kw">中小规模集成电路</span></td><td>完善的操作系统</td><td>科学计算、过程控制</td></tr>
+      <tr><td style="text-align:center;font-weight:bold">四</td><td>1971—至今</td><td><span class="kw">大规模/超大规模集成电路（LSI/VLSI）</span></td><td>数据库、网络操作系统</td><td>人工智能、社会各领域</td></tr>
+    </table></div>
+    <div class="tip-box"><strong>⚡ 助记口诀：</strong><span class="kw">一管二晶三集成，四代超大集成用</span>（电子管→晶体管→中小规模集成电路→大规模/超大规模集成电路）</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 信息技术应用领域</div>
+    <ul class="kp-list">
+      <li><span class="num">6.</span><span class="text"><span class="kw">科学计算（数值计算）</span>：计算机最早最重要的应用领域，用于导弹轨道计算、气象预报等。</span></li>
+      <li><span class="num">7.</span><span class="text"><span class="kw">数据处理（信息管理）</span>：应用最广泛的领域，包括财务报表、档案管理、学生成绩统计等，是对大量数据进行存储、加工、统计的技术。</span></li>
+      <li><span class="num">8.</span><span class="text"><span class="kw">过程控制（实时控制）</span>：又称自动控制，用于工业生产中对温度、压力、流量等参数的实时监控和调节（如数控机床）。</span></li>
+      <li><span class="num">9.</span><span class="text">计算机辅助技术：<span class="kw">CAD</span>=计算机辅助设计（如建筑图纸）；<span class="kw">CAM</span>=计算机辅助制造；<span class="kw">CAI</span>=计算机辅助教学；<span class="kw">CAT</span>=计算机辅助测试。</span></li>
+      <li><span class="num">10.</span><span class="text"><span class="kw">人工智能（AI）</span>：研究用计算机模拟、延伸和扩展人的智能的理论和方法，如专家系统、自然语言处理、模式识别、机器人等。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 信息社会4大特征</div>
+    <ul class="kp-list">
+      <li><span class="num">11.</span><span class="text">信息社会4大特征：<span class="kw">信息经济</span>（以信息生产和服务为核心）；<span class="kw">网络社会</span>（互联网深度渗透）；<span class="kw">数字生活</span>（数字化生活方式普及）；<span class="kw">在线政务</span>（政府公共服务网络化）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 1.2 认识信息系统 ===== -->
+  <div class="chapter-title"><span class="chapter-num">1.2</span>认识信息系统</div>
+
+  <div class="module">
+    <div class="module-title">◆ 信息系统4大组成要素</div>
+    <ul class="kp-list">
+      <li><span class="num">12.</span><span class="text">信息系统4要素：<span class="kw">硬件</span>（计算机、服务器、网络设备等物理设备）；<span class="kw">软件</span>（系统软件和应用软件）；<span class="kw">通信网络</span>（局域网、互联网等传输通道）；<span class="kw">信息资源</span>（数据、文本、图像等）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 系统软件与应用软件</div>
+    <ul class="kp-list">
+      <li><span class="num">13.</span><span class="text"><span class="kw">系统软件</span>：管理、维护计算机正常运行的基础软件，包括：
+        ① <span class="kw">操作系统</span>（如Windows、Linux、Android，最重要）；
+        ② <span class="kw">编译程序</span>（将高级语言翻译成机器语言）；
+        ③ <span class="kw">数据库管理系统DBMS</span>（如MySQL、Oracle）；
+        ④ <span class="kw">网络支持软件</span>（提供网络通信功能）。</span></li>
+      <li><span class="num">14.</span><span class="text"><span class="kw">应用软件</span>：解决特定问题的软件，如Photoshop（图像处理）、PowerPoint（演示文稿）、QQ（通信）、学生成绩管理系统（定制开发）。</span></li>
+      <li><span class="num">15.</span><span class="text"><span class="kw">裸机</span>：未安装任何软件的计算机，无法完成任何有实际意义的工作。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ CPU（中央处理器）</div>
+    <ul class="kp-list">
+      <li><span class="num">16.</span><span class="text"><span class="kw">CPU</span>由<span class="kw">运算器（ALU）</span>和<span class="kw">控制器</span>两大部件组成：
+        ① <span class="kw">运算器（ALU）</span>：负责算术运算（+−×÷）和逻辑运算（与或非）；
+        ② <span class="kw">控制器</span>：指挥协调各部件工作，取指令、译码、执行。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 存储器（必背对比表）</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:15%">类型</th><th style="width:18%">全称</th><th style="width:18%">断电后</th><th style="width:25%">特点与作用</th><th>常见形式</th></tr>
+      <tr><td><span class="kw">ROM</span></td><td>只读存储器</td><td><span class="kw">不丢失</span></td><td>只读不写，存放BIOS和固化程序</td><td>主板上的ROM芯片</td></tr>
+      <tr><td><span class="kw">RAM</span></td><td>随机存取存储器</td><td><span class="kw">数据丢失</span></td><td>可读可写，速度快，临时存放运行时数据</td><td>内存条（DDR）</td></tr>
+      <tr><td><span class="kw">Cache</span></td><td>高速缓存</td><td><span class="kw">丢失</span></td><td>速度最快（比RAM快10倍），容量最小，弥补CPU与内存速度差</td><td>集成在CPU内</td></tr>
+      <tr><td><span class="kw">外存</span></td><td>外部存储器</td><td><span class="kw">不丢失</span></td><td>容量大、速度慢，<span class="kw">不能直接与CPU交换数据</span>，需先调入内存</td><td>硬盘/SSD、U盘、光盘</td></tr>
+    </table></div>
+    <ul class="kp-list">
+      <li><span class="num">17.</span><span class="text">速度排序（由快到慢）：<span class="kw">Cache > RAM > SSD（固态硬盘）> HDD（机械硬盘）</span>。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 缓存-主存-辅存三级存储体系（★常考）</div>
+    <ul class="kp-list">
+      <li><span class="num">18.</span><span class="text">计算机存储体系分<span class="kw">三级</span>：<span class="kw">高速缓存（Cache）→主存（RAM内存）→辅存（外存/硬盘/U盘）</span>。CPU先访问Cache，未命中再访问RAM，仍未命中则访问辅存。三级结构的核心目标是<span class="kw">解决CPU与存储器之间的速度不匹配问题</span>。</span></li>
+      <li><span class="num">19.</span><span class="text">为什么需要三级结构？CPU速度远快于内存，内存远快于硬盘。如果CPU直接读写硬盘，会严重拖慢整个系统。<span class="kw">Cache容量最小速度最快，辅存容量最大速度最慢</span>。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>助记</strong>：三级存储体系 = <span class="kw">Cache（最快最小）→RAM（中间）→外存（最慢最大）</span>。CPU访问顺序：先Cache→再RAM→最后辅存。</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 存储单位换算（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">20.</span><span class="text"><span class="kw">1 Byte = 8 bit</span>（位，最小单位）；1 KB = <span class="kw">1024 B</span>；1 MB = 1024 KB；1 GB = 1024 MB；1 TB = 1024 GB。<br>（速记：每级×1024，硬件厂商有时简化为×1000）</span></li>
+      <li><span class="num">21.</span><span class="text">字符存储空间：西文字母/数字 = <span class="kw">1字节</span>；汉字 = <span class="kw">2字节</span>；16×16点阵汉字 = 32字节（16×16÷8=32）；<span class="kw">32×32点阵汉字 = 128字节</span>（32×32=1024点÷8=128字节）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 进制与编码 ===== -->
+  <div class="chapter-title"><span class="chapter-num">✦</span>进制转换与信息编码</div>
+
+  <div class="module">
+    <div class="module-title">◆ 四种进位计数制（必背对比）</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:15%">进制</th><th style="width:15%">基数</th><th style="width:15%">数码</th><th style="width:12%">标识符</th><th>计数规则</th></tr>
+      <tr><td><span class="kw">二进制</span></td><td>2</td><td>0, 1</td><td><span class="kw">B</span></td><td>逢二进一</td></tr>
+      <tr><td><span class="kw">八进制</span></td><td>8</td><td>0~7</td><td><span class="kw">O</span>（或Q）</td><td>逢八进一</td></tr>
+      <tr><td><span class="kw">十进制</span></td><td>10</td><td>0~9</td><td><span class="kw">D</span>（通常省略）</td><td>逢十进一</td></tr>
+      <tr><td><span class="kw">十六进制</span></td><td>16</td><td>0~9, A~F</td><td><span class="kw">H</span></td><td>逢十六进一（A=10, B=11...F=15）</td></tr>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 进制转换方法</div>
+    <ul class="kp-list">
+      <li><span class="num">22.</span><span class="text"><strong>任意进制 → 十进制：按权展开求和法</strong><br>例：(11011)₂ = 1×2⁴+1×2³+0×2²+1×2¹+1×2⁰ = 16+8+0+2+1 = <span class="kw">27</span><br>例：(3A)₁₆ = 3×16¹+10×16⁰ = 48+10 = <span class="kw">58</span></span></li>
+      <li><span class="num">23.</span><span class="text"><strong>十进制 → 其他进制：除基取余法（倒序输出）</strong><br>27转二进制：27÷2=13余1，13÷2=6余1，6÷2=3余0，3÷2=1余1，1÷2=0余1 → <span class="kw">(11011)₂</span>（从下往上读余数）</span></li>
+      <li><span class="num">24.</span><span class="text"><strong>二进制 ↔ 八进制：3位二进制 = 1位八进制</strong>（从小数点向左/右每3位分组，不足补0）<br>例：(11 010 101)₂ = (3 2 5)₈；反过来 (725)₈ = (111 010 101)₂</span></li>
+      <li><span class="num">25.</span><span class="text"><strong>二进制 ↔ 十六进制：4位二进制 = 1位十六进制</strong><br>例：(1101 0110)₂ = (D 6)₁₆；反过来 (E7)₁₆ = (1110 0111)₂</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ ASCII码与汉字编码（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">26.</span><span class="text"><span class="kw">ASCII码</span>：美国信息交换标准码，<span class="kw">7位二进制</span>编码，共<span class="kw">128个</span>字符。<br>关键值（必须记忆）：<span class="kw">"0"=48</span>，<span class="kw">"A"=65</span>，<span class="kw">"a"=97</span>；相邻字符码值连续，大写字母码值比小写字母小32。</span></li>
+      <li><span class="num">27.</span><span class="text"><span class="kw">汉字编码4种</span>：
+        ① <span class="kw">输入码（外码）</span>：输入汉字时使用的编码，如拼音输入法（音码）、五笔输入法（形码）；
+        ② <span class="kw">国标码（交换码）</span>：用于不同系统间交换汉字信息，GB2312-80收录6763个汉字；
+        ③ <span class="kw">机内码（内码）</span>：计算机内部存储和处理汉字使用的编码；
+        ④ <span class="kw">字形码</span>：描述汉字字形点阵的编码（16×16、24×24、32×32等）。</span></li>
+      <li><span class="num">28.</span><span class="text">换算关系：<span class="kw">国标码 = 区位码 + 2020H</span>（H表示十六进制）；<span class="kw">机内码 = 国标码 + 8080H</span>（即：机内码 = 区位码 + A0A0H）。</span></li>
+      <li><span class="num">29.</span><span class="text">计算机采用二进制原因：<span class="kw">物理上容易实现</span>（电压高低/电流有无）；<span class="kw">运算规则简单</span>（只有0和1）；<span class="kw">可靠性高</span>（不易出错）；<span class="kw">逻辑性好</span>（0/1对应逻辑真假）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 1.3 信息设备 ===== -->
+  <div class="chapter-title"><span class="chapter-num">1.3</span>选配信息设备</div>
+
+  <div class="module">
+    <div class="module-title">◆ 输入/输出设备</div>
+    <ul class="kp-list">
+      <li><span class="num">30.</span><span class="text">信息设备5大类：<span class="kw">计算机设备、移动终端、可穿戴设备、外围设备、网络设备</span>。</span></li>
+      <li><span class="num">31.</span><span class="text"><strong>输入设备</strong>（将信息输入计算机）：键盘、鼠标、扫描仪、摄像头、麦克风、光笔、条形码阅读器、手写板等。</span></li>
+      <li><span class="num">32.</span><span class="text"><strong>输出设备</strong>（将结果输出给人）：显示器、打印机、<span class="kw">绘图仪</span>（输出工程图纸）、音箱、耳机、投影仪等。</span></li>
+      <li><span class="num">33.</span><span class="text">网络设备：交换机、无线路由器、网卡（NIC）、调制解调器（猫/Modem）、网线、光纤等。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ CPU性能指标（必背）</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:15%">指标</th><th>含义</th><th>说明</th></tr>
+      <tr><td><span class="kw">主频</span></td><td>CPU内核工作频率</td><td>单位：MHz（兆赫）/GHz（吉赫），数值越<span class="kw">越高速度越快</span></td></tr>
+      <tr><td><span class="kw">字长</span></td><td>CPU一次能处理的二进制位数</td><td>常见：32位/64位，字长越长，运算精度越高</td></tr>
+      <tr><td><span class="kw">外频</span></td><td>CPU与主板同步的基础工作频率</td><td>主频 = 外频 × 倍频系数</td></tr>
+      <tr><td><span class="kw">运算速度</span></td><td>CPU每秒能执行的指令条数</td><td>单位：<span class="kw">MIPS</span>（百万条指令/秒）或 <span class="kw">FLOPS</span>（浮点运算次数/秒）</td></tr>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 常用接口与总线（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">34.</span><span class="text"><span class="kw">PS/2接口</span>：圆形6针，键盘=紫色，鼠标=绿色（现已逐渐被USB取代）。</span></li>
+      <li><span class="num">35.</span><span class="text"><strong>显示接口</strong>：<span class="kw">VGA</span>（模拟信号，蓝针蓝孔，清晰度有限）；<span class="kw">DVI</span>（数字信号）；<span class="kw">HDMI</span>（高清音视频一线通）；<span class="kw">DP</span>（DisplayPort，性能优于HDMI）。<strong>1080P以上不建议用VGA</strong>（模拟信号会衰减）。</span></li>
+      <li><span class="num">36.</span><span class="text"><span class="kw">USB接口</span>（通用串行总线）：标准统一、支持<span class="kw">热插拔</span>，最多可连接<span class="kw">127台</span>设备；类型包括标准USB、微型USB（手机常用）、Type-C（正反插均可）。</span></li>
+      <li><span class="num">37.</span><span class="text">有线网口：<span class="kw">RJ-45</span>接口（双绞线，水晶头8针）；蓝牙有效范围：约<span class="kw">10米</span>。</span></li>
+      <li><span class="num">38.</span><span class="text"><span class="kw">BIOS</span>（基本输入输出系统）：固化在主板<span class="kw">ROM芯片</span>中，开机自检POST和系统启动引导；<span class="kw">CMOS</span>：用于存储BIOS设置参数的<span class="kw">RAM芯片</span>（靠主板电池供电，断电后信息不丢失）。</span></li>
+      <li><span class="num">39.</span><span class="text"><span class="kw">总线（Bus）3类</span>：<span class="kw">数据总线DB</span>（双向，传输数据）；<span class="kw">地址总线AB</span>（单向，从CPU向内存/外设发地址）；<span class="kw">控制总线CB</span>（传输控制信号）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 1.4 使用操作系统 ===== -->
+  <div class="chapter-title"><span class="chapter-num">1.4</span>使用操作系统</div>
+
+  <div class="module">
+    <div class="module-title">◆ 操作系统基础</div>
+    <ul class="kp-list">
+      <li><span class="num">40.</span><span class="text"><span class="kw">操作系统（OS）</span>：管理计算机软硬件及信息资源，是<span class="kw">计算机必备的最重要的系统软件</span>，是用户与计算机之间的接口（界面）。</span></li>
+      <li><span class="num">41.</span><span class="text"><strong>桌面操作系统</strong>：<span class="kw">Windows</span>（全球最流行）；<span class="kw">Linux</span>（开源免费，如Deepin深度、麒麟Kylin）；<span class="kw">Mac OS X</span>（苹果专用）。</span></li>
+      <li><span class="num">42.</span><span class="text"><strong>移动操作系统</strong>：<span class="kw">Android</span>（谷歌开源，Linux内核）；<span class="kw">HarmonyOS鸿蒙</span>（华为自研）；<span class="kw">iOS</span>（苹果闭源）。</span></li>
+      <li><span class="num">43.</span><span class="text"><strong>服务器操作系统</strong>：<span class="kw">Windows Server、NetWare、UNIX、Linux</span>（稳定、安全，Linux最流行）。</span></li>
+      <li><span class="num">44.</span><span class="text"><strong>国产操作系统</strong>：<span class="kw">Deepin（深度）、统信UOS、银河麒麟、中兴新支点、鸿蒙HarmonyOS</span>。</span></li>
+      <li><span class="num">45.</span><span class="text">用户界面两类：<span class="kw">命令行界面CUI</span>（输入命令操作，如DOS）；<span class="kw">图形用户界面GUI</span>（图形图标操作，如Windows/Mac）。</span></li>
+      <li><span class="num">46.</span><span class="text"><span class="kw">对话框</span>：有标题栏和关闭按钮；<span class="kw">没有</span>最大化/最小化按钮；不能改变窗口大小（不同于普通窗口）。</span></li>
+      <li><span class="num">47.</span><span class="text">窗口最小化：程序<span class="kw">继续在后台运行</span>（只是隐藏）；删除快捷方式：<span class="kw">程序本身不被删除</span>。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 操作系统五大管理功能（★常考简答题）</div>
+    <ul class="kp-list">
+      <li><span class="num">48.</span><span class="text">操作系统五大管理功能：<span class="kw">处理器管理（进程管理）</span>：合理分配CPU时间，管理进程的创建、调度、终止；<span class="kw">存储管理</span>：管理内存的分配与回收，实现虚拟内存；<span class="kw">设备管理</span>：管理输入/输出设备，驱动程序加载，设备分配与调度；<span class="kw">文件管理</span>：管理文件的组织、存储、检索、共享与保护（文件系统）；<span class="kw">接口管理</span>：为用户提供操作界面（命令行CUI/图形界面GUI）和程序接口（系统调用API）。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>助记口诀</strong>：<span class="kw">处存设文接</span>（处理器管理、存储管理、设备管理、文件管理、接口管理）</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 键盘操作（★常考）</div>
+    <ul class="kp-list">
+      <li><span class="num">49.</span><span class="text"><span class="kw">8个基准键</span>（左右手定位）：左手：<span class="kw">A S D F</span>；右手：<span class="kw">J K L ；</span>（J/K上有小凸点用于盲打定位）。</span></li>
+      <li><span class="num">50.</span><span class="text"><span class="kw">CapsLock</span>=大小写切换键（灯亮=大写）；<span class="kw">NumLock</span>=数字键盘模式切换；<span class="kw">PrintScreen</span>=截取整个屏幕到剪贴板。</span></li>
+      <li><span class="num">51.</span><span class="text"><strong>切换输入法</strong>：<span class="kw">Ctrl+Shift</span>（在已安装输入法间切换）；<strong>中英文切换</strong>：<span class="kw">Ctrl+空格</span>（启动/关闭输入法）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ Windows程序与软件安装</div>
+    <ul class="kp-list">
+      <li><span class="num">52.</span><span class="text">Windows 10自带程序：<span class="kw">记事本</span>（.txt）、<span class="kw">写字板</span>（.rtf）、<span class="kw">画图</span>（基本绘图）、Edge浏览器、<span class="kw">计算器</span>（支持进制转换！）、截图工具、便签等。</span></li>
+      <li><span class="num">53.</span><span class="text">安装包格式：Windows程序=<span class="kw">.exe / .msi</span>；Android安装包=<span class="kw">.apk</span>；Linux安装包=<span class="kw">.deb / .rpm</span>。</span></li>
+      <li><span class="num">54.</span><span class="text"><span class="kw">五笔字型输入法</span>：形码输入法，重码率低（选字少），适合专业打字员；<span class="kw">OCR</span>=光学字符识别（将图片中的文字识别为可编辑文本，如扫描全能王）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+<div class="module">
+    <div class="module-title">◆ 程序安装步骤（★常考实务）</div>
+    <ul class="kp-list">
+      <li><span class="num">55.</span><span class="text"><span class="kw">程序安装步骤</span>：① 双击安装包（.exe/.msi）→ ② 选择安装路径（默认C:\Program Files）→ ③ 选择安装组件（典型/自定义）→ ④ 等待安装完成 → ⑤ 勾选"运行程序"或"查看说明"后点击完成。<span class="kw">程序卸载</span>：控制面板→程序→程序和功能→选中目标程序→<span class="kw">卸载</span>（或设置→应用→应用和功能→卸载）。不要直接删除安装文件夹（会留下注册表垃圾）。</span></li>
+    </ul>
+  </div>
+
+  <!-- ===== 1.5 管理信息资源 ===== -->
+  <div class="chapter-title"><span class="chapter-num">1.5</span>管理信息资源</div>
+
+  <div class="module">
+    <div class="module-title">◆ 文件命名规则</div>
+    <ul class="kp-list">
+      <li><span class="num">56.</span><span class="text">文件名最长<span class="kw">255个字符</span>（Windows）；文件名中可以使用多个"."；<span class="kw">文件名中禁止使用的9个字符</span>：<span class="kw">&lt; &gt; / \ | : " * ?</span>（口诀：尖括号斜杠竖管冒号，双引星号问号）。</span></li>
+      <li><span class="num">57.</span><span class="text">Windows系统<span class="kw">不区分</span>文件名大小写（abc.txt = ABC.TXT）；Linux/UNIX系统<span class="kw">严格区分</span>大小写。</span></li>
+      <li><span class="num">58.</span><span class="text"><strong>通配符</strong>：<span class="kw">*</span>（星号）代表<span class="kw">0个或多个任意字符</span>；<span class="kw">?</span>（问号）代表<span class="kw">1个任意字符</span>（占位符）。<br>例：*.docx（所有Word文档）；A??.txt（A开头、后接两个字符的txt文件）。</span></li>
+      <li><span class="num">59.</span><span class="text">路径格式（Windows）：<span class="kw">盘符:\文件夹1\文件夹2\文件名</span>；根目录符号：<span class="kw">\</span>（反斜杠，不是"/"）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 常见文件类型扩展名（必背）</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:18%">类型</th><th>常见扩展名</th><th style="width:18%">类型</th><th>常见扩展名</th></tr>
+      <tr><td>纯文本</td><td><span class="kw">.txt</span></td><td>网页</td><td><span class="kw">.htm / .html</span></td></tr>
+      <tr><td>图像</td><td><span class="kw">.jpg / .png / .bmp / .gif / .tif</span></td><td>音频</td><td><span class="kw">.wav / .mp3 / .wma / .au</span></td></tr>
+      <tr><td>视频</td><td><span class="kw">.avi / .mp4 / .mkv / .wmv / .mov</span></td><td>压缩包</td><td><span class="kw">.zip / .rar</span></td></tr>
+      <tr><td>程序(Win)</td><td><span class="kw">.exe / .com</span></td><td>程序(安卓)</td><td><span class="kw">.apk</span></td></tr>
+      <tr><td>Word文档</td><td><span class="kw">.docx / .doc</span></td><td>Excel表格</td><td><span class="kw">.xlsx / .xls</span></td></tr>
+      <tr><td>PPT演示</td><td><span class="kw">.pptx / .ppt</span></td><td>PDF</td><td><span class="kw">.pdf</span></td></tr>
+    </table></div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 资源管理器操作（★高频实务）</div>
+    <ul class="kp-list">
+      <li><span class="num">60.</span><span class="text"><strong>选择操作</strong>：单击=选中单个；<span class="kw">Shift+单击</span>=选中<span class="kw">相邻</span>多个；<span class="kw">Ctrl+单击</span>=选中<span class="kw">不相邻</span>多个；<span class="kw">Ctrl+A</span>=全选。</span></li>
+      <li><span class="num">61.</span><span class="text">文件管理常用快捷键：<span class="kw">Ctrl+C</span>=复制、<span class="kw">Ctrl+X</span>=剪切、<span class="kw">Ctrl+V</span>=粘贴；还可用<span class="kw">Ctrl+Z</span>撤销、<span class="kw">Ctrl+Y</span>恢复。（完整快捷键速查表见1.6节）</span></li>
+      <li><span class="num">62.</span><span class="text"><span class="kw">Delete键</span>=将文件移至<span class="kw">回收站</span>（可还原）；<span class="kw">Shift+Delete</span>=<span class="kw">永久删除</span>（不经过回收站，无法直接还原！）。</span></li>
+      <li><span class="num">63.</span><span class="text"><span class="kw">Win+E</span>=直接打开资源管理器窗口。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 拖拽法（★高频对比）</div>
+    <div class="table-wrapper"><table>
+      <tr><th></th><th style="width:38%">复制</th><th>移动</th></tr>
+      <tr><td><strong>同一磁盘内</strong></td><td><span class="kw">Ctrl+拖拽</span></td><td>直接拖（不按任何键）</td></tr>
+      <tr><td><strong>不同磁盘间</strong></td><td>直接拖（不按任何键）</td><td><span class="kw">Shift+拖拽</span></td></tr>
+    </table></div>
+    <div class="tip-box"><strong>助记：</strong>同盘拖=移动；Ctrl+同盘=复制；不同盘拖=复制；Shift+不同盘=移动。</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 1.6 维护信息系统 ===== -->
+  <div class="chapter-title"><span class="chapter-num">1.6</span>维护信息系统</div>
+
+  <div class="module">
+    <div class="module-title">◆ 用户账户类型</div>
+    <ul class="kp-list">
+      <li><span class="num">64.</span><span class="text"><strong>Windows用户账户3类</strong>：<span class="kw">管理员账户</span>（最高权限，可安装软件、修改系统设置）；<span class="kw">普通用户账户</span>（标准用户，受限权限）；<span class="kw">来宾Guest</span>（权限最低，受限访问，默认关闭）。</span></li>
+      <li><span class="num">65.</span><span class="text"><strong>Linux用户账户3类</strong>：<span class="kw">超级用户Root</span>（最高权限，可操作一切）；普通用户（权限受限）；系统用户（运行系统服务用，通常无登录密码）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 系统维护与优化</div>
+    <ul class="kp-list">
+      <li><span class="num">66.</span><span class="text"><span class="kw">磁盘清理</span>：删除临时文件（.tmp）、Internet临时文件、回收站内容等，<span class="kw">释放磁盘空间</span>，不删除正常文件。</span></li>
+      <li><span class="num">67.</span><span class="text"><span class="kw">磁盘碎片整理</span>：将分散存放的文件重新排列组合到连续空间，<span class="kw">优化硬盘读写性能</span>；SSD固态硬盘不建议碎片整理（会损耗寿命）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 计算机病毒主要特性（★高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">68.</span><span class="text"><span class="kw">破坏性</span>：占用CPU和内存资源、干扰程序运行、破坏数据文件，严重时可破坏硬件（如CIH病毒）或瘫痪整个网络。</span></li>
+      <li><span class="num">69.</span><span class="text"><span class="kw">传染性</span>：能够自我复制并传播到其他计算机或程序中；传染性是判断一段程序是否为病毒的<span class="kw">主要判断依据</span>。</span></li>
+      <li><span class="num">70.</span><span class="text"><span class="kw">潜伏性</span>：平时隐藏自己，不立即发作，满足特定触发条件（如特定日期、特定操作）才激活破坏。</span></li>
+      <li><span class="num">71.</span><span class="text"><span class="kw">隐蔽性</span>：程序代码短小精悍，附着在正常程序或磁盘的隐蔽位置，不易被发现。</span></li>
+      <li><span class="num">72.</span><span class="text"><span class="kw">不可预见性</span>：病毒的种类和形式不断变化，永远领先于现有杀毒软件的检测能力。</span></li>
+    </ul>
+    <div class="tip-box"><strong>⚡ 助记口诀：</strong><span class="kw">破传潜隐预</span>（破坏性、传染性、潜伏性、隐蔽性、不可预见性）</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 病毒传播途径与防护（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">73.</span><span class="text"><strong>主要传播途径</strong>：<span class="kw">移动存储设备</span>（U盘/移动硬盘）；<span class="kw">网络传播</span>（下载文件/邮件/网页）；<span class="kw">光盘等介质</span>。</span></li>
+      <li><span class="num">74.</span><span class="text"><strong>防护措施</strong>：安装<span class="kw">杀毒软件</span>并定期更新病毒库；启用<span class="kw">防火墙</span>；定期更新系统补丁；不随意下载不明文件；<span class="kw">警惕邮件附件</span>；使用正版软件；<span class="kw">定期备份重要数据</span>。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ Windows常用快捷键</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">快捷键</th><th>功能</th><th style="width:22%">快捷键</th><th>功能</th></tr>
+      <tr><td><span class="kw">F1</span></td><td>打开帮助</td><td><span class="kw">Win+E</span></td><td>打开资源管理器</td></tr>
+      <tr><td><span class="kw">Ctrl+A</span></td><td>全选</td><td><span class="kw">Ctrl+C</span></td><td>复制</td></tr>
+      <tr><td><span class="kw">Ctrl+X</span></td><td>剪切</td><td><span class="kw">Ctrl+V</span></td><td>粘贴</td></tr>
+      <tr><td><span class="kw">Ctrl+Z</span></td><td>撤销</td><td><span class="kw">Ctrl+Y</span></td><td>恢复（重做）</td></tr>
+      <tr><td><span class="kw">Ctrl+S</span></td><td>保存</td><td><span class="kw">Ctrl+Space</span></td><td>启动/关闭输入法</td></tr>
+      <tr><td><span class="kw">Shift+Ctrl</span></td><td>切换输入法</td><td><span class="kw">Delete</span></td><td>删除到回收站</td></tr>
+      <tr><td><span class="kw">Shift+Delete</span></td><td>永久删除</td><td><span class="kw">Ctrl+N</span></td><td>新建文件/窗口</td></tr>
+    </table></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===== 附录速查表 ===== -->
+  <div class="module">
+    <div class="module-title">◆ 核心概念速查表</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:15%">缩写</th><th>英文全称</th><th>中文含义</th><th>关键知识点</th></tr>
+      <tr><td><span class="kw">ASCII</span></td><td>American Standard Code for Information Interchange</td><td>美国信息交换标准码</td><td>128字符；"A"=65，"a"=97，"0"=48</td></tr>
+      <tr><td><span class="kw">CPU</span></td><td>Central Processing Unit</td><td>中央处理器</td><td>运算器(ALU)+控制器</td></tr>
+      <tr><td><span class="kw">ROM</span></td><td>Read Only Memory</td><td>只读存储器</td><td>断电<span class="kw">不丢失</span>，存BIOS</td></tr>
+      <tr><td><span class="kw">RAM</span></td><td>Random Access Memory</td><td>随机存取存储器</td><td>断电<span class="kw">丢失</span>，即内存</td></tr>
+      <tr><td><span class="kw">BIOS</span></td><td>Basic Input/Output System</td><td>基本输入输出系统</td><td>固化在主板<span class="kw">ROM</span>中</td></tr>
+      <tr><td><span class="kw">ENIAC</span></td><td>Electronic Numerical Integrator And Computer</td><td>世界第一台电子计算机</td><td><span class="kw">1946年</span>，美国，<span class="kw">电子管</span></td></tr>
+      <tr><td><span class="kw">CAD</span></td><td>Computer Aided Design</td><td>计算机辅助设计</td><td>工程图纸设计</td></tr>
+      <tr><td><span class="kw">OS</span></td><td>Operating System</td><td>操作系统</td><td>最重要的系统软件</td></tr>
+    </table></div>
+  </div>
+  <div class="tip-box">
+    <strong>【第一单元高频易错汇总】</strong><br>
+    ① ENIAC是第一台<span class="kw">电子</span>计算机（1946年，电子管）——不是第一台计算机（算盘/机械计算机更早）<br>
+    ② 计算机最早最重要的应用是<span class="kw">科学计算</span>（不是数据处理）<br>
+    ③ RAM断电数据<span class="kw">丢失</span>，ROM断电<span class="kw">不丢失</span>；BIOS固化在ROM中<br>
+    ④ Cache是<span class="kw">高速缓存</span>，集成在CPU内部，断电丢失<br>
+    ⑤ 外存（硬盘/U盘）<span class="kw">不能直接与CPU交换数据</span>，必须先调入内存<br>
+    ⑥ ASCII码："0"=48，"A"=65，"a"=97；大写比小写小<span class="kw">32</span><br>
+    ⑦ 字母/数字=1字节，汉字=2字节；32×32点阵汉字=128字节<br>
+    ⑧ 国标码=区位码+2020H，机内码=国标码+8080H<br>
+    ⑨ 操作系统是最重要的<span class="kw">系统软件</span>（不是应用软件）<br>
+    ⑩ 窗口最小化=程序<span class="kw">继续在后台运行</span>（不是关闭）；删除快捷方式≠删除程序本身
+  </div>
+    <div class="footer">第一单元 · 信息技术基础（1.1～1.6）· 江西省单招·对口升学信息技术专用</div>
+  </div>
+  <!-- ==================== 第二单元 ==================== -->
+  <div class="unit-section" id="unit2" style="page-break-before:always;">
+    <div class="unit-banner">
+      <div class="main-title">◎ 第二单元 · 计算机网络</div>
+      <div class="sub-title">2.1～2.6｜江西省单招·对口升学专用</div>
+    </div>
+<!-- ===================== 2.1 走进网络社会 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">2.1</span>走进网络社会</div>
+
+  <div class="module">
+    <div class="module-title">◆ 网络基础概念（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">1.</span><span class="text"><span class="kw">计算机网络</span>：通过<span class="kw">通信设备（网卡、交换机、路由器等）</span>相互连接，实现<span class="kw">信息交换、资源共享、协同工作</span>的系统。</span></li>
+      <li><span class="num">2.</span><span class="text">网络发展阶段（四阶段）：<span class="kw">面向终端的联机系统</span>→<span class="kw">多主机互联网络</span>→<span class="kw">TCP/IP协议统一的互联网</span>→<span class="kw">高速、移动、智能网络</span>（移动互联网+物联网+云计算）。</span></li>
+      <li><span class="num">3.</span><span class="text"><span class="kw">Internet（因特网/互联网）</span>：全球最大的、基于<span class="kw">TCP/IP协议</span>互联的计算机网络，汇聚全球信息资源。</span></li>
+      <li><span class="num">4.</span><span class="text">Internet前身：<span class="kw">ARPAnet</span>（1960年代末，美国国防部高级研究计划局），最初用于军事，后向民用/教育/商业渗透。</span></li>
+      <li><span class="num">5.</span><span class="text"><span class="kw">"互联网+"</span>：互联网与传统行业深度融合，推动<span class="kw">生产方式、商业模式、工作模式、社交方式</span>全面转变。</span></li>
+      <li><span class="num">6.</span><span class="text">常见电商模式：<span class="kw">B2C</span>（Business to Consumer，商家对客户，如京东、天猫）；<span class="kw">B2B</span>（Business to Business，企业对企业，如阿里巴巴）；<span class="kw">C2C</span>（Consumer to Consumer，个人对个人，如闲鱼）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 网络拓扑结构 & 传输介质（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">7.</span><span class="text">基本拓扑结构：<span class="kw">总线型</span>（所有设备共一条总线，成本低但故障难查）；<span class="kw">星状</span>（所有设备连中心设备，易于维护，中心故障全网瘫痪）；<span class="kw">环状</span>（设备环形连接，无冲突但断一环全断）；综合应用形成<span class="kw">网状拓扑</span>（冗余高，可靠性最好）。</span></li>
+      <li><span class="num">8.</span><span class="text">传输介质（有线）：<span class="kw">双绞线</span>（最常用，100米内，成本低）；<span class="kw">同轴电缆</span>（抗干扰强，用于有线电视/早期以太网）；<span class="kw">光纤</span>（传输距离远、带宽极高、抗干扰，用于骨干网）。
+        传输介质（无线）：<span class="kw">无线电波</span>（Wi-Fi/蓝牙）；<span class="kw">微波</span>（卫星通信/地面接力，直线传播）；<span class="kw">红外线</span>（短距离，如遥控器）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ TCP/IP协议模型（高频考点）</div>
+    <div class="table-wrapper"><table>
+      <tr><th>层次</th><th>主要功能</th><th>主要协议</th></tr>
+      <tr><td><span class="kw">应用层</span></td><td>为用户应用程序提供网络服务接口</td><td>HTTP、HTTPS、FTP、SMTP、POP3、IMAP4、DNS、Telnet</td></tr>
+      <tr><td><span class="kw">传输层</span></td><td>端到端的数据传输，负责可靠/快速传送</td><td><span class="kw">TCP</span>（面向连接、可靠传输、三次握手）；<span class="kw">UDP</span>（无连接、不保证可靠、速度快）</td></tr>
+      <tr><td><span class="kw">网络层</span></td><td>路由选择、IP地址分配与寻址</td><td><span class="kw">IP</span>（IPv4/IPv6）、ICMP、ARP、RARP</td></tr>
+      <tr><td><span class="kw">网络接口层</span></td><td>负责物理传输，对应OSI的物理层+数据链路层</td><td>以太网(Ethernet)、Wi-Fi(IEEE 802.11)、MAC层协议</td></tr>
+    </table></div>
+    <div class="tip-box">⚡ <strong>助记</strong>：TCP/IP四层 vs OSI七层——OSI是理论参考模型，TCP/IP是实际使用的工业标准。TCP（三次握手建连接）保证可靠；UDP（无连接）适合视频/语音等实时应用。</div>
+  <div class="module">
+    <div class="module-title">◆ OSI七层参考模型（必背）</div>
+    <div class="table-wrapper"><table>
+      <tr><th>层次</th><th>主要功能</th><th>典型协议/设备</th></tr>
+      <tr><td><span class="kw">应用层</span>（7）</td><td>为用户提供网络服务接口</td><td>HTTP、FTP、SMTP、DNS</td></tr>
+      <tr><td><span class="kw">表示层</span>（6）</td><td>数据格式转换、加密解密、压缩</td><td>SSL/TLS、JPEG、ASCII</td></tr>
+      <tr><td><span class="kw">会话层</span>（5）</td><td>建立、管理和终止会话</td><td>NetBIOS、RPC</td></tr>
+      <tr><td><span class="kw">传输层</span>（4）</td><td>端到端可靠/快速数据传输</td><td>TCP、UDP</td></tr>
+      <tr><td><span class="kw">网络层</span>（3）</td><td>路由选择、IP寻址</td><td>IP、ICMP、路由器</td></tr>
+      <tr><td><span class="kw">数据链路层</span>（2）</td><td>帧的封装、MAC寻址、差错控制</td><td>以太网、交换机、MAC地址</td></tr>
+      <tr><td><span class="kw">物理层</span>（1）</td><td>比特流传输（0和1的电气信号）</td><td>网线、光纤、集线器、中继器</td></tr>
+    </table></div>
+    <div class="tip-box">⚡ <strong>助记（从上到下）</strong>：<span class="kw">应表会传网数物</span>（All People Seem To Need Data Processing）；OSI是理论模型，TCP/IP是实际工业标准。</div>
+  </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 2.1续：HTTP/HTTPS/IP/DNS ===================== -->
+  <div class="module">
+    <div class="module-title">◆ HTTP / HTTPS & IP地址（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">9.</span><span class="text"><span class="kw">HTTP</span>（超文本传输协议）：基于TCP，用于Web浏览器与服务器之间传输超文本，默认端口<span class="kw">80</span>。</span></li>
+      <li><span class="num">10.</span><span class="text"><span class="kw">HTTPS</span>=HTTP+SSL/TLS（安全套接层/传输层安全），对所有传输数据进行<span class="kw">加密</span>，默认端口<span class="kw">443</span>，比HTTP更安全，防窃听/篡改/冒充。</span></li>
+      <li><span class="num">11.</span><span class="text"><span class="kw">IPv4</span>：32位二进制，通常用4个十进制数表示（每个0~255），如<span class="kw">192.168.1.1</span>；IPv4地址总数=<span class="kw">2³²</span>≈43亿个，已接近枯竭。</span></li>
+      <li><span class="num">12.</span><span class="text"><span class="kw">IPv6</span>：128位二进制，地址空间<span class="kw">2¹²⁸</span>，彻底解决地址枯竭问题；格式为8组4位十六进制数（如2001:0db8::1），可实现所有设备直接双向通信。</span></li>
+      <li><span class="num">13.</span><span class="text"><span class="kw">私有IP地址</span>（局域网内部使用，不可直接在互联网路由）：
+        <span class="kw">10.0.0.0 ~ 10.255.255.255</span>（A类私有，大型网络）；
+        <span class="kw">172.16.0.0 ~ 172.31.255.255</span>（B类私有，中型网络）；
+        <span class="kw">192.168.0.0 ~ 192.168.255.255</span>（C类私有，小型网络/家庭）。
+        私有IP访问互联网需要<span class="kw">NAT（网络地址转换）</span>。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 域名系统DNS（高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">14.</span><span class="text"><span class="kw">DNS</span>（域名系统）：将<span class="kw">域名（如www.baidu.com）转换为IP地址</span>（如220.181.38.148），像"通讯录"或"翻译官"。</span></li>
+      <li><span class="num">15.</span><span class="text">域名结构（四级，从右到左范围递减）：<span class="kw">主机名.三级域名.二级域名.顶级域名</span>（如 www.moe.gov.cn：www=主机名，moe=机构名，gov=政府机构，cn=中国）。</span></li>
+      <li><span class="num">16.</span><span class="text">常见顶级域名：<span class="kw">.com</span>（商业机构）；<span class="kw">.org</span>（非营利组织）；<span class="kw">.net</span>（网络服务机构）；<span class="kw">.gov</span>（政府部门，仅限政府）；<span class="kw">.edu</span>（教育机构，仅限美国）；<span class="kw">.cn</span>（中国）；<span class="kw">.uk</span>（英国）。中国二级域名：<span class="kw">.com.cn</span>（商业）、<span class="kw">.edu.cn</span>（教育）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 万维网WWW & 电子邮件（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">17.</span><span class="text"><span class="kw">WWW</span>（万维网/World Wide Web）：基于<span class="kw">HTTP协议+HTML超文本+URL统一资源定位符</span>，采用<span class="kw">浏览器/服务器（B/S）模式</span>，是Internet上最广泛的应用服务。</span></li>
+      <li><span class="num">18.</span><span class="text"><span class="kw">URL</span>（统一资源定位符）格式：<span class="kw">协议://域名或IP地址:端口/资源路径</span>（如 https://www.baidu.com/s?wd=hello）。</span></li>
+      <li><span class="num">19.</span><span class="text">电子邮件地址格式：<span class="kw">用户名@域名</span>（如 xy_cjlg@yeah.net）；符号<span class="kw">@</span>读作"at"（在）；域名部分是邮箱所属邮件服务器的域名。</span></li>
+      <li><span class="num">20.</span><span class="text">邮件收发协议：
+        <span class="kw">SMTP</span>（Simple Mail Transfer Protocol）：<span class="kw">发送</span>邮件，端口<span class="kw">25</span>；
+        <span class="kw">POP3</span>（Post Office Protocol v3）：<span class="kw">接收</span>邮件，将邮件下载到本地，端口<span class="kw">110</span>；
+        <span class="kw">IMAP4</span>（Internet Message Access Protocol v4）：<span class="kw">在线同步</span>邮件，多设备同步邮件状态，端口<span class="kw">143</span>。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ ISP 与 ICP</div>
+    <ul class="kp-list">
+      <li><span class="num">21.</span><span class="text"><span class="kw">ISP</span>（Internet Service Provider，互联网服务提供商）：提供<span class="kw">互联网接入服务</span>，如<span class="kw">中国电信、中国移动、中国联通</span>。</span></li>
+      <li><span class="num">22.</span><span class="text"><span class="kw">ICP</span>（Internet Content Provider，互联网内容提供商）：提供<span class="kw">互联网内容服务</span>，如腾讯、百度、阿里巴巴、新华社网。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 2.2 配置网络 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">2.2</span>配置网络</div>
+
+  <div class="module">
+    <div class="module-title">◆ 网络设备（必背，常考区别）</div>
+    <div class="table-wrapper"><table>
+      <tr><th>设备</th><th>OSI层次</th><th>核心功能</th><th>隔离域</th></tr>
+      <tr><td><span class="kw">集线器(Hub)</span></td><td>物理层</td><td>信号放大转发，广播发送</td><td><span class="kw">不隔离冲突域，不隔离广播域</span></td></tr>
+      <tr><td><span class="kw">交换机(Switch)</span></td><td>数据链路层</td><td>根据<span class="kw">MAC地址</span>转发，智能寻址</td><td><span class="kw">隔离冲突域，不隔离广播域</span></td></tr>
+      <tr><td><span class="kw">路由器(Router)</span></td><td>网络层</td><td>根据<span class="kw">IP地址</span>转发，连接不同网络</td><td><span class="kw">隔离广播域</span></td></tr>
+    </table></div>
+    <ul class="kp-list">
+      <li><span class="num">23.</span><span class="text"><span class="kw">网卡(NIC)</span>：网络接口卡，每块网卡有全球唯一的<span class="kw">MAC地址</span>（48位，如 00-1A-2B-3C-4D-5E）；分为有线网卡（<span class="kw">RJ-45接口</span>）和无线网卡（Wi-Fi）。</span></li>
+      <li><span class="num">24.</span><span class="text"><span class="kw">调制解调器(Modem/猫)</span>：<span class="kw">数字信号↔模拟信号</span>转换；<span class="kw">调制</span>=数字→模拟（发送端）；<span class="kw">解调</span>=模拟→数字（接收端）。</span></li>
+      <li><span class="num">25.</span><span class="text"><span class="kw">防火墙(Firewall)</span>：部署在网络边界，监控和控制进出网络的通信，阻挡非法访问和入侵攻击，可基于软件或硬件实现。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 网线制作 & 端口速率（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">26.</span><span class="text">双绞线两种接线标准：
+        两种接线标准：<span class="kw">T568A</span>和<span class="kw">T568B</span>（橙色和绿色对调）。<span class="kw">直通线</span>：两端同标准（连不同设备，如电脑→交换机）；<span class="kw">交叉线</span>：两端不同标准（连相同设备，现已多数支持自动翻转，MDI/MDIX）。</span></li>
+      <li><span class="num">27.</span><span class="text">交换机端口速率标识：<span class="kw">E口</span>（Ethernet）=10Mbps；<span class="kw">F口</span>（Fast Ethernet）=100Mbps；<span class="kw">G口</span>（Gigabit Ethernet）=1000Mbps=1Gbps；<span class="kw">10G口</span>=10Gbps。</span></li>
+      <li><span class="num">28.</span><span class="text"><span class="kw">DHCP</span>（动态主机配置协议）：自动为网络内的设备分配<span class="kw">IP地址、子网掩码、默认网关、DNS服务器</span>地址，无需手动配置。</span></li>
+      <li><span class="num">29.</span><span class="text">家庭上网三种方式：<span class="kw">光纤入户</span>（需光猫/ONU，速度最快，主流方式）；<span class="kw">LAN接入</span>（网线直接入户，无需光猫，小区宽带常见）；<span class="kw">ADSL拨号</span>（电话线+调制解调器，速度慢，已基本淘汰）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 2.3 获取网络资源 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">2.3</span>获取网络资源</div>
+
+  <div class="module">
+    <div class="module-title">◆ 网络信息资源特点与分类（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">30.</span><span class="text">网络信息资源五大特点：<span class="kw">数量巨大、内容广泛、变化频繁、结构复杂、分布分散</span>。</span></li>
+      <li><span class="num">31.</span><span class="text">按提供主体分类：<span class="kw">政府信息资源</span>（最权威，如政府官网）；<span class="kw">行业企业信息</span>（专业性强，如各公司官网）；<span class="kw">大众传媒/个人自媒体</span>（时效性强但权威性参差，如微博/抖音/公众号）。</span></li>
+      <li><span class="num">32.</span><span class="text">按知识产权分类：<span class="kw">开放资源</span>（公共领域，无版权限制，可自由使用）；<span class="kw">免费资源</span>（在许可范围内免费使用，如某些开放课程）；<span class="kw">收费资源</span>（需付费获取，如知网论文、付费课程）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 搜索引擎（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">33.</span><span class="text">四类搜索引擎：
+        <span class="kw">全文搜索引擎</span>（如Google、百度、必应）：自动抓取网页建立索引，输入关键词检索；
+        <span class="kw">元搜索引擎</span>（如搜狗/360）：同时调用多个搜索引擎，整合结果返回；
+        <span class="kw">垂直搜索引擎</span>（如携程/马蜂窝）：专注特定领域（旅游/购物/学术）；
+        <span class="kw">目录搜索引擎</span>（如雅虎目录/开放目录）：人工分类整理网站，层次浏览。</span></li>
+      <li><span class="num">34.</span><span class="text">网络信息资源的<span class="kw">评估四维度</span>：<span class="kw">可信度</span>（作者/来源是否权威）、<span class="kw">可用性</span>（内容是否完整可用）、<span class="kw">合理性</span>（论述是否客观合理）、<span class="kw">可获取性</span>（能否方便获取）。
+        检索过程：<span class="kw">初选</span>（广泛搜索）→<span class="kw">精选</span>（筛选相关）→<span class="kw">终选</span>（深度评估确定可用）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 2.4 进行网络交流 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">2.4</span>进行网络交流</div>
+
+  <div class="module">
+    <div class="module-title">◆ 电子邮件（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">35.</span><span class="text">电子邮件优点：<span class="kw">使用简易、投递迅速、易于保存、全球畅通、支持一对多发送</span>（群发）。</span></li>
+      <li><span class="num">36.</span><span class="text">常用邮件客户端：<span class="kw">Outlook</span>（微软，集成邮件+日历+联系人+任务）；<span class="kw">Foxmail</span>（腾讯，界面简洁，功能完善）。Web端邮箱：网易163/126、QQ邮箱、Gmail等。</span></li>
+      <li><span class="num">37.</span><span class="text">邮件功能：<span class="kw">抄送(Cc)</span>：所有收件人可见抄送对象；<span class="kw">密送(Bcc)</span>：收件人不可见密送对象（用于秘密抄送）；<span class="kw">转发(Fw)</span>：将原邮件转发给他人；<span class="kw">回复(Re)</span>：回复原发件人；<span class="kw">撤回</span>：仅限同平台邮箱（如163→163）且通常<span class="kw">30秒内</span>可撤回。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 即时通信 & 自媒体（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">38.</span><span class="text">即时通信(IM)软件：<span class="kw">QQ、微信、钉钉、飞书</span>（企业办公）、MSN（已停运）、阿里旺旺（淘宝购物）、WhatsApp/Telegram（国外）。支持文字/语音/视频通话/文件传送。</span></li>
+      <li><span class="num">39.</span><span class="text">自媒体平台：<span class="kw">微博</span>（新浪，短图文社交）；<span class="kw">微信公众号</span>（图文推送）；短视频平台：<span class="kw">抖音、快手、小红书、哔哩哔哩</span>；博客（早期自媒体形式）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 2.5 运用网络工具 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">2.5</span>运用网络工具</div>
+
+  <div class="module">
+    <div class="module-title">◆ 常用网络工具（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">40.</span><span class="text"><span class="kw">云盘（网盘）</span>：提供多终端文件存储、同步与共享服务；如<span class="kw">百度网盘、OneDrive（微软）、iCloud（苹果）、阿里云盘</span>。</span></li>
+      <li><span class="num">41.</span><span class="text"><span class="kw">在线协作工具</span>：支持多人实时编辑同一文档；如<span class="kw">腾讯文档、金山文档、石墨文档、飞书文档</span>；支持版本管理（查看历史版本/恢复）。</span></li>
+      <li><span class="num">42.</span><span class="text"><span class="kw">网络学习平台</span>：<span class="kw">中国大学MOOC（慕课）</span>（教育部主办，名校课程）、智慧职教、学堂在线、网易公开课、可汗学院。</span></li>
+      <li><span class="num">43.</span><span class="text"><span class="kw">远程桌面/远程协助</span>：通过网络远程控制另一台计算机；Windows远程桌面（RDP，端口3389）、QQ远程协助、TeamViewer、向日葵远程控制。</span></li>
+      <li><span class="num">44.</span><span class="text"><span class="kw">FTP</span>（文件传输协议）：用于向FTP服务器<span class="kw">上传/下载</span>文件，默认端口<span class="kw">21</span>；主动模式/被动模式。</span></li>
+      <li><span class="num">45.</span><span class="text"><span class="kw">Telnet</span>（远程登录协议）：远程登录并控制主机，默认端口<span class="kw">23</span>；<span class="kw">明文传输，安全性低</span>，已被SSH（端口22，加密）取代。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 搜索技巧 & 其他工具</div>
+    <ul class="kp-list">
+      <li><span class="num">46.</span><span class="text">搜索引擎高级技巧：<span class="kw">双引号</span>"关键词"（精确匹配，不拆分）；<span class="kw">减号-</span>关键词（排除含该词的结果）；<span class="kw">site:域名</span>（限定站点内搜索）；<span class="kw">filetype:文件类型</span>（限定文件格式，如 filetype:pdf）；<span class="kw">布尔逻辑</span>：AND（同时包含）、OR（包含其一）、NOT（排除）。</span></li>
+      <li><span class="num">47.</span><span class="text">学术检索工具：<span class="kw">中国知网（CNKI）</span>（中文学术最全）、万方数据、维普资讯、<span class="kw">Google Scholar</span>（谷歌学术，英文学术）。</span></li>
+      <li><span class="num">48.</span><span class="text"><span class="kw">RSS订阅</span>（Really Simple Syndication）：聚合多个网站的更新内容，无需逐一访问，集中阅读。</span></li>
+      <li><span class="num">49.</span><span class="text"><span class="kw">二维码(QR Code)</span>：快速获取网址/文件/联系方式，用手机摄像头或微信扫描即可识别。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 2.6 探索物联网 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">2.6</span>探索物联网</div>
+
+  <div class="module">
+    <div class="module-title">◆ 物联网基础（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">50.</span><span class="text"><span class="kw">物联网（IoT）</span>：通过信息传感设备，将<span class="kw">物与物、物与人</span>连接起来，实现智能化识别、定位、跟踪、监控和管理的网络。</span></li>
+      <li><span class="num">51.</span><span class="text">物联网概念于<span class="kw">1999年</span>由<span class="kw">凯文·阿什顿</span>（Kevin Ashton）首次提出，被称为"物联网之父"。</span></li>
+      <li><span class="num">52.</span><span class="text">物联网技术基础：<span class="kw">移动互联网 + RFID（射频识别技术）</span>。RFID按频率分为低频、高频、超高频、微波四类。</span></li>
+      <li><span class="num">53.</span><span class="text">物联网工作原理（四字诀）：<span class="kw">感</span>知（采集物理世界信息）→<span class="kw">传</span>送（通过网络传输数据）→<span class="kw">知</span>（云计算/大数据进行分析决策）→<span class="kw">用</span>（智能控制与反馈）。</span></li>
+      <li><span class="num">54.</span><span class="text">物联网<span class="kw">三大特征</span>：<span class="kw">全面感知</span>（随时获取物体信息）、<span class="kw">可靠传送</span>（数据稳定传输）、<span class="kw">智能处理</span>（云计算/AI分析处理）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 物联网三层体系结构（高频）</div>
+    <div class="table-wrapper"><table>
+      <tr><th>层次</th><th>主要功能</th><th>典型设备/技术</th></tr>
+      <tr><td><span class="kw">感知层</span><br>（最底层）</td><td>采集物理世界的信息，相当于"五官"</td><td>传感器（温湿度/光照/声音/压力）、RFID标签与读写器、二维码/条形码、<span class="kw">生物识别</span>（指纹/人脸/语音）、卫星定位(GPS/北斗)</td></tr>
+      <tr><td><span class="kw">网络层</span><br>（中间层）</td><td>传输和处理感知层采集的数据，相当于"神经"</td><td>有线/无线网络、移动通信(4G/5G)、<span class="kw">NB-IoT</span>（窄带物联网，低功耗广覆盖）、<span class="kw">LoRa</span>（远距离低功耗）、<span class="kw">ZigBee</span>（短距离低功耗无线）、蓝牙(Bluetooth)</td></tr>
+      <tr><td><span class="kw">应用层</span><br>（最高层）</td><td>实现智能化应用，相当于"大脑决策"</td><td>智慧城市、智慧交通、智慧医疗、智慧物流、智能家居、<span class="kw">物联网网关</span>（感知层↔网络层数据中转）</td></tr>
+    </table></div>
+    <div class="tip-box">⚡ <strong>助记</strong>：物联网四字诀<span class="kw">"感→传→知→用"</span>；三层结构<span class="kw">"感知层→网络层→应用层"</span>；感知层=五官采集，网络层=神经传输，应用层=大脑决策。</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 智慧城市 & 物联网应用（高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">55.</span><span class="text"><span class="kw">智慧城市</span>：运用<span class="kw">物联网+云计算+大数据+人工智能</span>技术，对城市运行数据进行感知、传输、分析和智能处理，实现城市治理智慧化。</span></li>
+      <li><span class="num">56.</span><span class="text">智慧城市典型应用：<span class="kw">智慧交通</span>（智能红绿灯/拥堵预测）、<span class="kw">智慧物流</span>（包裹实时追踪）、<span class="kw">智慧医疗</span>（急救车→医院实时传输患者数据）、<span class="kw">智慧环保</span>（空气质量实时监测）、<span class="kw">智慧社区</span>（人脸识别门禁/智能停车）。</span></li>
+      <li><span class="num">57.</span><span class="text">典型物联网应用实例：<span class="kw">门禁系统</span>（人脸识别/刷卡）、<span class="kw">公交卡/地铁卡</span>（RFID）、<span class="kw">ETC</span>（不停车收费，RFID）、<span class="kw">校园一卡通</span>（食堂/图书馆/门禁集成）、智能家居（智能灯泡/空调/扫地机器人）。</span></li>
+      <li><span class="num">58.</span><span class="text"><span class="kw">互联网+物联网=智慧地球</span>（IBM提出的概念，将智能化扩展到全球范围）。</span></li>
+    </ul>
+  </div>
+
+  <div class="tip-box">
+    <strong>【第二单元高频易错汇总】</strong><br>
+    ① TCP（可靠，三次握手）vs UDP（不可靠，快）→ 视频会议用UDP，文件传输用TCP<br>
+    ② 交换机（数据链路层，MAC地址）vs 路由器（网络层，IP地址）→ 路由器隔离广播域<br>
+    ③ 私有IP不能直接访问互联网，需要NAT转换<br>
+    ④ 物联网三层：感知层（传感器/RFID）→ 网络层（5G/NB-IoT/ZigBee）→ 应用层（智慧城市）<br>
+    ⑤ 邮件协议：SMTP(发,25) / POP3(收,110) / IMAP4(同步,143) / HTTP(网页邮件)<br>
+    ⑥ OSI七层助记：<span class="kw">应表会传网数物</span>；路由器=网络层，交换机=数据链路层，集线器=物理层
+  </div>
+    <div class="footer">第二单元 · 计算机网络（2.1～2.6）· 江西省单招·对口升学信息技术专用</div>
+  </div>
+  <!-- ==================== 第三单元 ==================== -->
+  <div class="unit-section" id="unit3" style="page-break-before:always;">
+    <div class="unit-banner">
+      <div class="main-title">◎ 第三单元 · 图文处理（Word）</div>
+      <div class="sub-title">3.1～3.5｜江西省单招·对口升学专用</div>
+    </div>
+<!-- ===================== 3.1 图文编辑入门 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">3.1</span>图文编辑入门</div>
+
+  <div class="module">
+    <div class="module-title">◆ Word基础与界面（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">1.</span><span class="text">常用文字处理软件：<span class="kw">Microsoft Word</span>（微软Office套件）；<span class="kw">WPS文字</span>（金山公司，兼容Word格式）；Windows自带：记事本（.txt纯文本）、写字板（.rtf支持基本格式）。</span></li>
+      <li><span class="num">2.</span><span class="text">Word界面五大区域：<span class="kw">标题栏</span>（显示文档名和程序名）；<span class="kw">快速访问工具栏</span>（保存/撤销/恢复，可自定义）；<span class="kw">菜单栏/功能区</span>（所有命令按选项卡组织）；<span class="kw">文档编辑区</span>（输入和编辑内容）；<span class="kw">状态栏</span>（显示页码/字数/拼写状态等）。</span></li>
+      <li><span class="num">3.</span><span class="text">文档基本操作快捷键：<span class="kw">Ctrl+N</span>（新建空白文档）；<span class="kw">Ctrl+O</span>（打开已有文档）；<span class="kw">Ctrl+S</span>（保存当前文档）；<span class="kw">F12</span>（另存为，选择新路径/新格式）；<span class="kw">Ctrl+P</span>（打印预览/打印）。</span></li>
+      <li><span class="num">4.</span><span class="text">保存格式区别：<span class="kw">.docx</span>（Word 2007及以后默认格式，基于XML，体积小）；<span class="kw">.doc</span>（Word 97-2003兼容格式，旧版）；<span class="kw">.pdf</span>（固定排版，不可随意编辑，适合分发）；<span class="kw">.txt</span>（纯文本，无格式）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 文本编辑基础（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">5.</span><span class="text">选中文本技巧：<span class="kw">单击</span>（选中一个单词/中文字符区域）；<span class="kw">双击</span>（选中一个英文单词或中文词组）；<span class="kw">三击</span>（选中整个段落）；<span class="kw">Ctrl+A</span>（选中整篇文档）；<span class="kw">Shift+单击</span>（从当前位置扩展到单击位置）。</span></li>
+      <li><span class="num">6.</span><span class="text">移动与复制：<span class="kw">剪切Ctrl+X</span>（移动到剪贴板，原位置消失）→ 粘贴<span class="kw">Ctrl+V</span>；<span class="kw">复制Ctrl+C</span>（原位置保留）→ Ctrl+V粘贴；<span class="kw">拖动</span>（直接拖选中的文本=移动）；<span class="kw">Ctrl+拖动</span>（复制文本到新位置）。</span></li>
+      <li><span class="num">7.</span><span class="text">撤销与恢复：<span class="kw">Ctrl+Z</span>（撤销上一步操作，可连续撤销）；<span class="kw">Ctrl+Y</span>（恢复刚才撤销的操作，即"重做"）；Word默认记录最近<span class="kw">100次</span>操作（可在选项里调整）。</span></li>
+      <li><span class="num">8.</span><span class="text"><span class="kw">字数统计</span>：底部状态栏直接查看（显示字数/字符数/段落数/行数）；或 审阅→字数统计（弹出详细统计对话框）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 视图方式（★常考）</div>
+    <ul class="kp-list">
+      <li><span class="num">9.</span><span class="text">五种视图方式：
+        <span class="kw">页面视图</span>（默认，所见即所得，显示页边距/页眉页脚/分栏）；
+        <span class="kw">阅读模式</span>（全屏，便于阅读，隐藏编辑工具）；
+        <span class="kw">Web版式视图</span>（按网页方式显示，无分页，适合浏览）；
+        <span class="kw">大纲视图</span>（显示文档结构，只看标题层级，便于调整章节顺序）；
+        <span class="kw">草稿视图</span>（最简模式，只显示文字，不显示页边距/页眉页脚/分栏，编辑最快）。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>助记</strong>：页面视图=默认编辑；大纲视图=调结构；草稿=快速录文字</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 3.2 设置文档格式 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">3.2</span>设置文档格式</div>
+
+  <div class="module">
+    <div class="module-title">◆ 字体格式设置（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">10.</span><span class="text">字体格式快捷键：<span class="kw">Ctrl+D</span>（打开字体对话框，可设字体/字号/颜色/下划线/效果）；<span class="kw">Ctrl+B</span>（加粗）；<span class="kw">Ctrl+I</span>（倾斜）；<span class="kw">Ctrl+U</span>（下划线）。</span></li>
+      <li><span class="num">11.</span><span class="text">字号两种单位：<span class="kw">中文号制</span>（初号最大，八号最小；数字越小字号越大）；<span class="kw">磅值</span>（5~72磅，数字越大字号越大；可手动输入更大值如100磅）。中文字号：初号＞小初＞一号＞小一＞二号...</span></li>
+      <li><span class="num">12.</span><span class="text">字符间距（字体对话框→高级选项卡）：<span class="kw">缩放</span>（字符横向拉伸/压缩比，100%为标准）；<span class="kw">间距</span>（加宽/紧缩字符间距）；<span class="kw">位置</span>（提升/降低字符位置，以磅为单位）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 段落格式设置（必背·高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">13.</span><span class="text">段落对齐方式（快捷键）：<span class="kw">Ctrl+L</span>（左对齐）；<span class="kw">Ctrl+E</span>（居中对齐）；<span class="kw">Ctrl+R</span>（右对齐）；<span class="kw">Ctrl+J</span>（两端对齐，自动调整字间距使左右都对齐）；分散对齐（强制占满整行）。</span></li>
+      <li><span class="num">14.</span><span class="text">段落缩进：<span class="kw">首行缩进</span>（段落第一行向左缩进，中文规范为2字符）；<span class="kw">悬挂缩进</span>（除第一行外其余行缩进）；<span class="kw">左缩进/右缩进</span>（整体向左/右缩进）。特殊格式在"段落对话框→缩进"设置。</span></li>
+      <li><span class="num">15.</span><span class="text">行距与间距：<span class="kw">单倍行距</span>（默认，行与行之间紧凑）；<span class="kw">1.5倍/2倍行距</span>；<span class="kw">固定值</span>（设定具体磅值，文字不会被撑开，内容多会隐藏）；<span class="kw">最小值</span>（至少指定磅值，内容多会自动撑开）；段前/段后间距（段落之间的距离）。</span></li>
+      <li><span class="num">16.</span><span class="text">项目符号与编号：<span class="kw">项目符号</span>（●■◆等符号列表，无序）；<span class="kw">自动编号</span>（1. 2. 3. 或 a. b. c. 有序）；<span class="kw">多级列表</span>（1. → 1.1 → 1.1.1 层级编号，常用于长文档章节）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 样式与模板（★高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">17.</span><span class="text"><span class="kw">样式</span>：一组格式的集合（字体+段落+边框等），可一键应用到段落；修改样式后，<span class="kw">所有应用该样式的段落自动更新</span>（批量修改格式的高效方法）。</span></li>
+      <li><span class="num">18.</span><span class="text">内置样式：<span class="kw">标题1/标题2/标题3</span>（用于建立文档结构）；正文（默认样式）；引用/目录/索引等。应用标题样式后才能自动生成目录。</span></li>
+      <li><span class="num">19.</span><span class="text"><span class="kw">模板（.dotx/.dotm）</span>：预先设计好格式和版式的文档框架；基于模板新建文档，自动继承模板中的样式/页眉页脚/封面等；典型应用：奖状/录取通知书/合同/简历。</span></li>
+      <li><span class="num">20.</span><span class="text"><span class="kw">邮件合并</span>：使用模板（主文档）+ 数据源（Excel/Access/CSV），<span class="kw">批量生成个性化文档</span>（如成绩单、工资条、邀请函）。详见3.5节高级功能。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 查找、替换与定位（★常考）</div>
+    <ul class="kp-list">
+      <li><span class="num">21.</span><span class="text">快捷键：<span class="kw">Ctrl+F</span>（查找）；<span class="kw">Ctrl+H</span>（查找并替换，重要！）；<span class="kw">Ctrl+G</span>（定位，可定位到页/节/行/书签/批注/表格等）。</span></li>
+      <li><span class="num">22.</span><span class="text">替换高级用法：可替换<span class="kw">格式</span>（如将所有"标题"字样替换为"章节"，并设为红色加粗）；可替换<span class="kw">特殊标记</span>：^p=段落标记（回车符）；^l=手动换行符（Shift+Enter）；^t=制表符；^m=分栏符；^b=分节符。</span></li>
+      <li><span class="num">23.</span><span class="text"><span class="kw">批注</span>：插入→批注（或审阅→新建批注）；在文档侧边显示评论，不影响正文内容；常用于审阅修改意见。</span></li>
+      <li><span class="num">24.</span><span class="text"><span class="kw">修订</span>：审阅→修订（或Ctrl+Shift+E）；开启后所有增删改操作都会以<span class="kw">痕迹</span>显示（删除线+颜色标记）；可接受/拒绝修订。常用于多人协作编辑。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 3.3 制作表格 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">3.3</span>制作表格</div>
+
+  <div class="module">
+    <div class="module-title">◆ 表格创建（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">25.</span><span class="text">插入表格三种方法：
+        <span class="kw">虚拟表格</span>（插入→表格→拖选网格，最多10列8行，最直观）；
+        <span class="kw">插入表格对话框</span>（插入→表格→插入表格，输入精确的行数列数，可设自动调整行为）；
+        <span class="kw">绘制表格</span>（插入→表格→绘制表格，手动画线条，适合不规则表格）。</span></li>
+      <li><span class="num">26.</span><span class="text">表格自动调整行为：<span class="kw">固定列宽</span>（列宽不变，内容多会隐藏）；<span class="kw">根据内容调整表格</span>（列宽随内容自动撑开）；<span class="kw">根据窗口调整表格</span>（表格宽度=页面版心宽度，列宽等比例分配）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 表格编辑（必背·高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">27.</span><span class="text">选中操作：<span class="kw">选中整个表格</span>：单击表格左上角的十字箭头；<span class="kw">选中一行</span>：鼠标移到该行左侧边界，单击；<span class="kw">选中一列</span>：鼠标移到该列上方边界，单击；<span class="kw">选中一个单元格</span>：三次单击该单元格内文字。</span></li>
+      <li><span class="num">28.</span><span class="text">行/列操作：<span class="kw">插入行</span>：在目标位置右键→插入→在上方/下方插入行；<span class="kw">插入列</span>：右键→插入→在左侧/右侧插入列；<span class="kw">删除</span>：右键→删除行/删除列/删除表格。</span></li>
+      <li><span class="num">29.</span><span class="text">单元格合并与拆分：<span class="kw">合并单元格</span>：选中多个单元格→右键→合并单元格（或布局→合并单元格，跨行/跨列合并）；<span class="kw">拆分单元格</span>：选中单元格→右键→拆分单元格（指定拆分为几行×几列）。</span></li>
+      <li><span class="num">30.</span><span class="text"><span class="kw">平均分布各行/各列</span>：布局→分布行/分布列（快速让多行等高/多列等宽，排版整齐）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 表格格式与计算</div>
+    <ul class="kp-list">
+      <li><span class="num">31.</span><span class="text">表格样式：设计选项卡→表格样式库（预设美观样式一键套用）；可自定义<span class="kw">边框</span>（线型/粗细/颜色）和<span class="kw">底纹</span>（单元格背景色）。</span></li>
+      <li><span class="num">32.</span><span class="text">文字方向：布局→文字方向（切换单元格内文字横排/竖排）。对齐方式：布局→对齐方式（九宫格：左/中/右 × 上/中/下）。</span></li>
+      <li><span class="num">33.</span><span class="text"><span class="kw">表头重复</span>（重要！多页表格必备）：选中首行（表头行）→布局→重复标题行；设置后表格跨页时，每页顶部自动出现表头。</span></li>
+      <li><span class="num">34.</span><span class="text">表格内计算（布局→公式）：<span class="kw">=SUM(LEFT)</span>（对左侧单元格求和）；<span class="kw">=SUM(ABOVE)</span>（对上方单元格求和）；<span class="kw">=AVERAGE()</span>求平均；<span class="kw">=MAX()/MIN()</span>最值；<span class="kw">=COUNT()</span>计数。注意：Word表格公式不会自动更新，需<span class="kw">F9</span>刷新。</span></li>
+      <li><span class="num">35.</span><span class="text">表格排序：选中列→布局→排序；可按<span class="kw">升序/降序</span>，按<span class="kw">笔画/拼音</span>排序；支持主要关键字+次要关键字。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>注意</strong>：Word表格公式计算结果不会自动更新！修改数据后必须按<span class="kw">F9</span>（或右键→更新域）才能刷新计算结果。Excel则会自动更新。</div>
+  </div>
+
+  <hr class="divider">
+
+<div class="module">
+    <div class="module-title">◆ 文本与表格相互转换（★常考）</div>
+    <ul class="kp-list">
+      <li><span class="num">36.</span><span class="text"><span class="kw">文本转表格</span>：选中用分隔符（逗号/制表符/空格等）分隔的文本→插入→表格→文本转换表格→选择分隔符→确定。</span></li>
+      <li><span class="num">37.</span><span class="text"><span class="kw">表格转文本</span>：选中表格→布局→转换为文本→选择分隔符→确定。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>注意</strong>：文本转表格前，确保文本中各数据之间有明确的分隔符（逗号/制表符/Tab键），否则转换结果会混乱。</div>
+  </div>
+
+  <!-- ===================== 3.4 图文表混排 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">3.4</span>图文表混排</div>
+
+  <div class="module">
+    <div class="module-title">◆ 图片与图形对象（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">38.</span><span class="text">插入图片：插入→图片→此设备（从文件插入）；可<span class="kw">裁剪</span>（去掉多余部分）；可<span class="kw">压缩图片</span>（减小文件体积，删除剪裁区域/适用于Web）；可<span class="kw">更改颜色/透明度</span>。</span></li>
+      <li><span class="num">39.</span><span class="text"><span class="kw">文字环绕方式</span>（重要！决定图片与文字的关系）：
+        <span class="kw">嵌入型</span>（像字符一样随文字移动，不能自由拖动，最稳定）；
+        <span class="kw">四周型/紧密型</span>（文字环绕图片边缘，可自由拖动）；
+        <span class="kw">衬于文字下方</span>（图片为底纹，文字在上层，适合做水印）；
+        <span class="kw">浮于文字上方</span>（图片遮住文字，类似图层置顶）。</span></li>
+      <li><span class="num">40.</span><span class="text">插入形状：插入→形状（直线/矩形/箭头/流程图符号等）；可设填充色/线条色/阴影/三维效果；可<span class="kw">组合</span>（选中多个形状→右键→组合，整体移动）。</span></li>
+      <li><span class="num">41.</span><span class="text"><span class="kw">SmartArt</span>：插入→SmartArt（智能图形）；类型：列表/流程/循环/层次结构（组织结构图）/关系/矩阵/棱锥图；快速制作可视化图表，避免手动画形状。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 艺术字、文本框与注释（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">42.</span><span class="text"><span class="kw">艺术字</span>：插入→艺术字（预设样式，文字有特殊效果如阴影/立体/渐变）；可更改艺术字的形状样式/文本效果；本质是<span class="kw">文本框+特效</span>。</span></li>
+      <li><span class="num">43.</span><span class="text"><span class="kw">文本框</span>：插入→文本框→绘制横排/竖排文本框；用于<span class="kw">独立于正文流</span>的文字（如侧边注释/标题标签/图文说明）；可设边框/填充/阴影；多个文本框可用<span class="kw">链接</span>（文字溢出时自动延伸至下一文本框）。</span></li>
+      <li><span class="num">44.</span><span class="text"><span class="kw">脚注</span>：光标定位→引用→插入脚注；注释内容出现在<span class="kw">页面底部</span>，正文对应位置有上标编号（如¹）。<span class="kw">尾注</span>：注释内容出现在<span class="kw">文档末尾</span>，常用于参考文献列表。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 3.5 文档创编进阶 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">3.5</span>文档创编进阶</div>
+
+  <div class="module">
+    <div class="module-title">◆ 长文档排版（必背·高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">45.</span><span class="text"><span class="kw">样式建立结构</span>：对章节标题应用"标题1/标题2/标题3"样式；打开导航窗格（视图→导航窗格）可查看文档结构，点击标题可快速跳转。</span></li>
+      <li><span class="num">46.</span><span class="text"><span class="kw">自动生成目录</span>：引用→目录→选择内置目录样式（如"自动目录1"）；目录基于标题样式自动生成；更新目录：<span class="kw">F9</span>或右键→更新域（可选"只更新页码"或"更新整个目录"）。</span></li>
+      <li><span class="num">47.</span><span class="text"><span class="kw">分节符</span>（布局→分隔符→分节符）：将文档分为不同"节"，每节可有<span class="kw">独立的页眉/页脚/页码/页面方向</span>；类型：下一页（分节并分页）/连续（分节不分页）/奇数页/偶数页。</span></li>
+      <li><span class="num">48.</span><span class="text"><span class="kw">页码</span>：插入→页码→页面顶端/底端/页边距；可设置<span class="kw">起始页码</span>（如前言用i/ii编号，正文从第1页开始）；<span class="kw">奇偶页不同</span>/<span class="kw">首页不同</span>（装订美观）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 高级功能（★常考）</div>
+    <ul class="kp-list">
+      <li><span class="num">49.</span><span class="text"><span class="kw">书签</span>：插入→书签（给文档中某个位置命名标记）；配合<span class="kw">超链接</span>可实现文档内跳转（目录→章节/返回顶部）。</span></li>
+      <li><span class="num">50.</span><span class="text"><span class="kw">超链接</span>：插入→超链接；可链接到：<span class="kw">现有文件或网页</span>（外部文件/网址）；<span class="kw">本文档中的位置</span>（书签/标题）；<span class="kw">新建文档</span>；<span class="kw">电子邮件地址</span>。</span></li>
+      <li><span class="num">51.</span><span class="text"><span class="kw">邮件合并详细步骤</span>：① 新建主文档（如录取通知书模板）→ ② 邮件→选择收件人→使用现有列表（选Excel数据源）→ ③ 插入合并域（如«姓名»«成绩»）→ ④ 完成并合并→编辑单个文档（生成所有记录对应的独立文档）。</span></li>
+      <li><span class="num">52.</span><span class="text"><span class="kw">宏（VBA）</span>：视图→宏→录制宏（将重复操作录制成VBA代码）；保存时需存为<span class="kw">.docm</span>格式（启用宏的文档）；安全设置：开发工具→宏安全性（禁用/启用）。</span></li>
+      <li><span class="num">53.</span><span class="text"><span class="kw">保护文档</span>：文件→信息→保护文档；选项：用密码进行加密（打开需密码）/限制编辑（只允许批注/只读）/标记最终状态（提示"只读"）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 题注与交叉引用（★常考）</div>
+    <ul class="kp-list">
+      <li><span class="num">54.</span><span class="text"><span class="kw">题注</span>：引用→插入题注（可为图片/表格/公式添加自动编号，如"图1-1""表2-3"）。设置后，当插入新题注时后续编号<span class="kw">自动更新</span>。配合<span class="kw">交叉引用</span>可在正文中引用题注编号（如"见图1-1"），删除/新增时自动更新。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>助记</strong>：题注=给图片/表格自动编号；交叉引用=在正文里引用这些编号，两者配合确保全文编号自动一致。</div>
+  </div>
+
+<div class="module">
+    <div class="module-title">◆ 拼写和语法检查 & 翻译</div>
+    <ul class="kp-list">
+      <li><span class="num">55.</span><span class="text"><span class="kw">拼写和语法检查</span>：审阅→拼写和语法（或按<span class="kw">F7</span>）；Word自动检查红色波浪下划线=拼写错误，蓝色波浪下划线=语法错误。可设置语言（审阅→语言→设置校对语言）。</span></li>
+      <li><span class="num">56.</span><span class="text"><span class="kw">翻译功能</span>：审阅→翻译→选择翻译语言（可整篇翻译或选中文本翻译）；审阅→语言→翻译（Mini译/全文译）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ Word常用快捷键速查表（必背）</div>
+    <div class="table-wrapper"><table class="quick-table">
+      <tr><th>快捷键</th><th>功能</th><th>快捷键</th><th>功能</th></tr>
+      <tr><td><span class="qk">Ctrl+S</span></td><td>保存文档</td><td><span class="qk">Ctrl+Z</span></td><td>撤销上一步</td></tr>
+      <tr><td><span class="qk">Ctrl+C</span></td><td>复制选中内容</td><td><span class="qk">Ctrl+V</span></td><td>粘贴</td></tr>
+      <tr><td><span class="qk">Ctrl+X</span></td><td>剪切</td><td><span class="qk">Ctrl+Y</span></td><td>恢复（重做）</td></tr>
+      <tr><td><span class="qk">Ctrl+B</span></td><td>加粗</td><td><span class="qk">Ctrl+I</span></td><td>倾斜</td></tr>
+      <tr><td><span class="qk">Ctrl+U</span></td><td>下划线</td><td><span class="qk">Ctrl+D</span></td><td>打开字体对话框</td></tr>
+      <tr><td><span class="qk">Ctrl+E</span></td><td>居中对齐</td><td><span class="qk">Ctrl+L/R</span></td><td>左/右对齐</td></tr>
+      <tr><td><span class="qk">Ctrl+1/2/5</span></td><td>单倍/双倍/1.5倍行距</td><td><span class="qk">F4</span></td><td>重复上一步操作（万能）</td></tr>
+      <tr><td><span class="qk">Ctrl+Enter</span></td><td>插入分页符</td><td><span class="qk">Ctrl+K</span></td><td>插入超链接</td></tr>
+    </table></div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== Word模拟操作题 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">✦</span>Word模拟操作题——典型考点与标准操作步骤</div>
+
+  <div class="op-block">
+    <div class="otitle">【考点1】文档基本操作（必会基础）</div>
+    <div class="ostep">
+      <div><strong>新建文档：</strong>启动Word自动新建空白文档；或 <span class="op-key">Ctrl+N</span> 新建；文件→新建→可选择模板</div>
+      <div><strong>保存文档：</strong><span class="op-key">Ctrl+S</span> 保存；第一次保存会弹出"另存为"对话框，选择保存位置/文件名/保存类型</div>
+      <div><strong>另存为：</strong>文件→另存为（或 <span class="op-key">F12</span>）；可更换保存路径/文件名/文件格式（如.docx转.pdf）</div>
+      <div><strong>打开文档：</strong><span class="op-key">Ctrl+O</span>；可选择打开只读/副本/浏览器中打开</div>
+      <div><strong>打印文档：</strong><span class="op-key">Ctrl+P</span>；设置打印机/打印份数/页码范围（如"1-3,5"表示打印第1~3页和第5页）</div>
+    </div>
+    <div class="op-note">★ 常考：将文档另存为PDF格式；设置打印页码范围"2-5"；设打开权限密码（文件→信息→保护文档→用密码进行加密）</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点2】文本编辑操作</div>
+    <div class="ostep">
+      <div><strong>选中文本：</strong>拖动鼠标连续选中；<span class="op-key">Ctrl+拖动</span>可不连续选中多处；<span class="op-key">Ctrl+A</span> 全选</div>
+      <div><strong>复制/剪切/粘贴：</strong><span class="op-key">Ctrl+C</span> 复制 → <span class="op-key">Ctrl+V</span> 粘贴；<span class="op-key">Ctrl+X</span> 剪切 → Ctrl+V 移动粘贴</div>
+      <div><strong>格式刷（重要！）：</strong>选中已格式化的文本 → 开始→<span class="op-key">格式刷</span>（单击=用一次；<span class="op-key">双击格式刷</span>=连续用多次）→ 刷目标文本</div>
+      <div><strong>撤销/恢复：</strong><span class="op-key">Ctrl+Z</span> 撤销；<span class="op-key">Ctrl+Y</span> 恢复</div>
+      <div><strong>查找替换（高频！）：</strong><span class="op-key">Ctrl+H</span> 打开查找和替换对话框 → 输入查找内容/替换为内容 → 可点"更多"设格式替换</div>
+      <div>&nbsp;&nbsp;→ 特殊标记：<span class="op-key">^p</span>=段落标记（回车）；<span class="op-key">^l</span>=手动换行符（Shift+Enter）；<span class="op-key">^t</span>=制表符</div>
+    </div>
+    <div class="op-note">★ 常考：将全文"信息技术"替换为"Information Technology"并设为红色加粗；删除所有手动换行符（^l替换为^p）</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点3】字体与段落格式设置</div>
+    <div class="ostep">
+      <div><strong>字体格式：</strong>开始选项卡→字体组；或直接 <span class="op-key">Ctrl+D</span> 打开字体对话框（可设字符间距）</div>
+      <div><strong>段落格式：</strong>开始选项卡→段落组（对齐/行距/缩进）；或右键→<span class="op-key">段落</span>（打开段落对话框，精确设置）</div>
+      <div><strong>首行缩进（中文规范）：</strong>段落对话框→缩进→特殊格式→<span class="op-key">首行缩进</span>→2字符</div>
+      <div><strong>行距设置：</strong>开始→行和段落间距→可选单倍/1.5倍/2倍；或段落对话框→行距→固定值→设磅值（如20磅）</div>
+      <div><strong>段前/段后间距：</strong>段落对话框→间距→段前/段后（如设段前6磅段后3磅，让段落之间有呼吸感）</div>
+    </div>
+    <div class="op-note">★ 常考：全文设为宋体小四、首行缩进2字符、行距1.5倍；标题设为黑体二号、居中、段前12磅段后6磅</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点4】页面设置（高频！）</div>
+    <div class="ostep">
+      <div><strong>入口：</strong>布局（或页面布局）选项卡→<span class="op-key">页面设置</span>右下角箭头（打开完整对话框）</div>
+      <div><strong>页边距：</strong>上/下/左/右边距（如设上3cm、下2.5cm、左右各2.5cm）；<span class="op-key">装订线</span>（装订一侧额外留白，如左侧装订设0.5cm装订线）</div>
+      <div><strong>纸张：</strong>纸张大小（<span class="op-key">A4</span>默认21cm×29.7cm；B5；自定义大小）；纸张方向（<span class="op-key">纵向/横向</span>）</div>
+      <div><strong>版式：</strong>页眉和页脚（<span class="op-key">奇偶页不同</span>/首页不同）；垂直对齐方式（顶端/居中/两端）</div>
+      <div><strong>分栏：</strong>布局→<span class="op-key">分栏</span>→一栏/两栏/三栏/更多栏；可设栏宽不相等、加分隔线</div>
+      <div><strong>分隔符：</strong>布局→<span class="op-key">分隔符</span>→分页符（Ctrl+Enter，强制跳到下一页）；分节符（下一页/连续，分节后可独立设页眉页脚）</div>
+    </div>
+    <div class="op-note">★ 常考：设A4纸横向、上下边距2cm、左右边距1.5cm；全文分两栏并加分隔线；插入分页符使某段落从新页开始</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点5】页眉、页脚与页码</div>
+    <div class="ostep">
+      <div><strong>插入页眉/页脚：</strong>插入→<span class="op-key">页眉</span>（或页脚）→选择样式（空白/边线/内置样式）</div>
+      <div><strong>编辑页眉/页脚：</strong>双击页眉/页脚区域进入编辑模式；可插入<span class="op-key">图片/日期/文档属性</span>（如文件名/作者/单位）</div>
+      <div><strong>页码：</strong>插入→<span class="op-key">页码</span>→页面顶端/底端/页边距；设置格式→<span class="op-key">起始页码</span>（如设为0或1或i）</div>
+      <div><strong>奇偶页不同：</strong>页眉页脚工具→设计→勾选"<span class="op-key">奇偶页不同</span>"；奇数页页眉写章节名，偶数页页眉写书名</div>
+      <div><strong>首页不同：</strong>勾选"首页不同"；封面不显示页眉页脚和页码</div>
+      <div><strong>分节后独立页码：</strong>在页眉页脚工具中，取消"<span class="op-key">链接到前一节</span>"（断开与前一节的联系），然后独立设置本节页码</div>
+    </div>
+    <div class="op-note">★ 常考：首页无页眉页脚；奇数页页眉写章节标题、偶数页页眉写文档标题；页码从正文第1页开始编号（前言用罗马数字i,ii...）</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点6】样式与目录生成（高频！）</div>
+    <div class="ostep">
+      <div><strong>应用样式：</strong>光标置于段落→开始→样式组→选择<span class="op-key">标题1/标题2/标题3</span>（章/节/小节）</div>
+      <div><strong>修改样式：</strong>开始→样式组→右键某样式→<span class="op-key">修改</span>→可改字体/段落/编号等；修改后所有应用该样式的段落自动更新</div>
+      <div><strong>生成目录：</strong>光标定位到目录位置→引用→<span class="op-key">目录</span>→选择自动目录样式</div>
+      <div><strong>更新目录：</strong>目录区域右键→<span class="op-key">更新域</span>→选"只更新页码"（内容不变）或"更新整个目录"（标题有变动时选此项）</div>
+      <div><strong>导航窗格：</strong>视图→勾选"<span class="op-key">导航窗格</span>"；左侧出现文档结构图，点击标题可快速跳转；可拖拽标题调整章节顺序</div>
+    </div>
+    <div class="op-note">★ 常考：对"第一章..."应用标题1样式（黑体二号居中），对"1.1..."应用标题2样式（楷体三号左对齐），然后插入自动目录</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点7】表格操作</div>
+    <div class="ostep">
+      <div><strong>插入表格：</strong>插入→表格→可选择虚拟表格（拖选）或插入表格对话框（精确行列数）</div>
+      <div><strong>调整列宽：</strong>直接拖动表格线；或布局→<span class="op-key">自动调整</span>→根据窗口调整表格（等宽填满版心）</div>
+      <div><strong>合并/拆分单元格：</strong>选中多个单元格→布局→<span class="op-key">合并单元格</span>；选中单元格→布局→<span class="op-key">拆分单元格</span>（指定行数×列数）</div>
+      <div><strong>表头重复：</strong>选中首行→布局→<span class="op-key">重复标题行</span>（跨页表格每页自动重复表头，必考！）</div>
+      <div><strong>表格样式：</strong>设计选项卡→表格样式库（一键套用美观样式）；可自定义边框和底纹</div>
+      <div><strong>表格内计算：</strong>光标置单元格→布局→<span class="op-key">公式</span>→输入 =SUM(LEFT) 等；修改数据后按 <span class="op-key">F9</span> 刷新计算结果</div>
+    </div>
+    <div class="op-note">★ 常考：制作课程表（5列×6行），合并首行作为标题，设表头行底纹浅蓝、重复标题行；计算总分列（=SUM(LEFT)），按F9刷新</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点8】图片与图文混排</div>
+    <div class="ostep">
+      <div><strong>插入图片：</strong>插入→图片→此设备→选择图片文件</div>
+      <div><strong>设置环绕方式：</strong>选中图片→图片格式→<span class="op-key">环绕文字</span>→选择合适方式（嵌入型最稳定；四周型可自由拖动）</div>
+      <div><strong>裁剪图片：</strong>图片格式→<span class="op-key">裁剪</span>→拖动黑色裁剪手柄；可裁剪为形状（如圆形/圆角矩形）</div>
+      <div><strong>压缩图片：</strong>图片格式→<span class="op-key">压缩图片</span>→可选"删除图片的裁剪区域"和"应用于所有图片"，减小文档体积</div>
+      <div><strong>插入文本框：</strong>插入→文本框→绘制横排/竖排；用于侧边注释/标题说明；可设边框和填充</div>
+      <div><strong>插入SmartArt：</strong>插入→SmartArt→选择图形类型（如组织结构图/流程图）；可添加形状/更改颜色/应用样式</div>
+    </div>
+    <div class="op-note">★ 常考：插入图片并设置四周型环绕，调整图片大小并拖到页面右侧；用SmartArt制作组织结构图（董事长→部门经理→员工）</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点9】邮件合并（高频难点）</div>
+    <div class="ostep">
+      <div><strong>第一步 - 准备主文档：</strong>新建Word文档，写好固定不变的内容（如录取通知书模板，"同学"等个性化内容先空着）</div>
+      <div><strong>第二步 - 准备数据源：</strong>用Excel建立数据表（如列：姓名/成绩/专业），保存关闭</div>
+      <div><strong>第三步 - 关联数据源：</strong>Word中→邮件→<span class="op-key">选择收件人</span>→使用现有列表→选择Excel文件→选工作表→确定</div>
+      <div><strong>第四步 - 插入合并域：</strong>光标定位到要插入个性化内容的位置→邮件→<span class="op-key">插入合并域</span>→选择对应字段（如«姓名»）→继续插入其他域（如«成绩»«专业»）</div>
+      <div><strong>第五步 - 完成合并：</strong>邮件→<span class="op-key">完成并合并</span>→编辑单个文档→全部→确定（生成所有记录的独立文档）；或打印（直接批量打印）</div>
+    </div>
+    <div class="op-note">★ 常考：用邮件合并批量生成录取通知书（数据源含姓名/专业/学号）；批量生成工资条（每行数据生成一条）；预览结果检查无误后再完成合并</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点10】修订、批注与文档保护</div>
+    <div class="ostep">
+      <div><strong>打开修订：</strong>审阅→<span class="op-key">修订</span>（或 Ctrl+Shift+E）；此后所有增删改都以<span class="kw">痕迹</span>显示（删除线+颜色）</div>
+      <div><strong>接受/拒绝修订：</strong>审阅→<span class="op-key">接受</span>（保留修改）/ <span class="op-key">拒绝</span>（撤销修改）；可逐条处理或接受/拒绝所有修订</div>
+      <div><strong>插入批注：</strong>选中文字→审阅→<span class="op-key">新建批注</span>（或 Ctrl+Alt+M）；批注显示在右侧，不影响正文；可回复批注/删除批注</div>
+      <div><strong>保护文档：</strong>文件→信息→<span class="op-key">保护文档</span>→选项：用密码进行加密（打开需密码）/限制编辑（只允许批注或只读）</div>
+    </div>
+    <div class="op-note">★ 常考：打开修订模式修改文档，然后将所有修订接受并删除批注；设打开权限密码（文件→信息→保护文档→用密码进行加密）</div>
+  </div>
+
+  <div class="tip-box">
+    <strong>【第三单元高频易错汇总】</strong><br>
+    ① Word表格公式不会自动更新，修改数据后必须按<span class="kw">F9</span>刷新（Excel会自动更新）<br>
+    ② 分节符与分页符区别：分节符可独立设页眉/页码/纸张方向；分页符只是跳页<br>
+    ③ 邮件合并数据源可以是Excel/Access/CSV；完成合并后可生成新文档或直接打印<br>
+    ④ 格式刷单击用一次，<span class="kw">双击格式刷可连续用多次</span>，按Esc退出<br>
+    ⑤ 嵌入型图片最稳定（随文字移动）；衬于文字下方适合做水印
+  </div>
+    <div class="footer">第三单元 · 图文处理（Word）（3.1～3.5）· 江西省单招·对口升学信息技术专用</div>
+  </div>
+  <!-- ==================== 第四单元 ==================== -->
+  <div class="unit-section" id="unit4" style="page-break-before:always;">
+    <div class="unit-banner">
+      <div class="main-title">◎ 第四单元 · 数据处理（Excel）</div>
+      <div class="sub-title">4.1～4.4｜江西省单招·对口升学专用</div>
+    </div>
+<!-- ===================== 4.1 采集数据 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">4.1</span>采集数据</div>
+
+  <div class="module">
+    <div class="module-title">◆ 基础概念（数据、信息与数据结构）</div>
+    <ul class="kp-list">
+      <li><span class="num">1.</span><span class="text"><span class="kw">数据</span>是对客观事物观察测量所得到的<span class="kw">事实</span>，是物理状态的直接反映（如数字、文字、图像、声音等）。<span class="kw">信息</span>是加工处理后有意义的<span class="kw">数据</span>。</span></li>
+      <li><span class="num">2.</span><span class="text">数据按结构分为三类：
+        <span class="kw">结构化数据</span>——有固定格式，如表格、数据库；<span class="kw">半结构化数据</span>——有标记但无固定模式，如HTML网页、XML、JSON；<span class="kw">非结构化数据</span>——无固定模式，如图像、音视频。</span></li>
+      <li><span class="num">3.</span><span class="text">采集方法：<span class="kw">人工采集</span>（键盘输入、手写板、麦克风）；<span class="kw">自动化采集</span>（传感器、RFID、GPS等自动设备定时采集）。</span></li>
+      <li><span class="num">4.</span><span class="text">常用表格软件：金山<span class="kw">WPS表格</span>、微软<span class="kw">Excel</span>；网络问卷平台：<span class="kw">问卷星、腾讯问卷、金数据</span>。</span></li>
+      <li><span class="num">5.</span><span class="text">网络问卷一般流程：<span class="kw">确定调查主题</span>→<span class="kw">设计问卷题目</span>→<span class="kw">上传至问卷平台</span>→<span class="kw">开启采集</span>→<span class="kw">分析结果</span>→<span class="kw">导出数据</span>。</span></li>
+      <li><span class="num">6.</span><span class="text">文本文件格式：<span class="kw">TXT</span>（纯文本，无格式）；<span class="kw">CSV</span>（逗号分隔值，可用Excel直接打开）；导入外部数据：数据→<span class="kw">获取外部数据</span>。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 单元格与数据类型</div>
+    <ul class="kp-list">
+      <li><span class="num">7.</span><span class="text"><span class="kw">数字型数据</span>默认<span class="kw">右对齐</span>；<span class="kw">文本型数据</span>默认<span class="kw">左对齐</span>；<span class="kw">逻辑值</span>居中。</span></li>
+      <li><span class="num">8.</span><span class="text">强制输入为文本格式：单元格输入前加<span class="kw">单引号 '</span>（显示前导零如'001、学号001234）。</span></li>
+      <li><span class="num">9.</span><span class="text">输入 1/6 回车→系统识别为<span class="kw">1月6日</span>（不是分数）；正确输入分数：先输入 <span class="kw">0 空格</span> 再输入 1/6（显示为 1/6）。</span></li>
+      <li><span class="num">10.</span><span class="text">打开<span class="kw">单元格格式</span>对话框：<span class="kw">Ctrl+1</span>；六个选项卡：<span class="kw">数字、对齐、字体、边框、填充、保护</span>。</span></li>
+      <li><span class="num">11.</span><span class="text"><span class="kw">条件格式</span>（开始→条件格式）：突出显示单元格规则、项目选取规则、<span class="kw">数据条</span>（渐变/实色）、<span class="kw">色阶</span>（三色/双色）、<span class="kw">图标集</span>（方向/形状/等级/数值）。</span></li>
+      <li><span class="num">12.</span><span class="text"><span class="kw">数据验证</span>（数据→数据验证）：设置允许类型（整数/小数/序列/日期/文本长度/自定义）；可设<span class="kw">输入信息</span>（鼠标选中时提示）和<span class="kw">出错警告</span>（停止/警告/信息）。</span></li>
+      <li><span class="num">13.</span><span class="text"><span class="kw">保护工作表</span>：审阅→保护工作表；设密码后他人无法编辑，需密码才能解除。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 4.2 加工数据 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">4.2</span>加工数据——公式基础</div>
+
+  <div class="module">
+    <div class="module-title">◆ 公式基础</div>
+    <ul class="kp-list">
+      <li><span class="num">14.</span><span class="text">公式必须以<span class="kw">=</span>开头；不以前缀=开头的是<span class="kw">文本</span>，不参与计算。</span></li>
+      <li><span class="num">15.</span><span class="text">运算符四类：<span class="kw">算术</span>（+−×÷ % ^）；<span class="kw">比较</span>（=&gt; &lt;= &lt;&gt;）；<span class="kw">文本连接</span>（&amp;）；<span class="kw">引用</span>（: , 空格）。</span></li>
+      <li><span class="num">16.</span><span class="text">算术优先级：<span class="kw">% &gt; ^ &gt; ×÷ &gt; +-</span>；总优先级：<span class="kw">括号() &gt; 算术 &gt; 文本&amp; &gt; 比较</span>。</span></li>
+      <li><span class="num">17.</span><span class="text">引用运算符：<span class="kw">:</span> 区域（如A1:B5表示A1到B5围成的矩形）；<span class="kw">,</span> 联合（将多个区域合并，如A1:A10,B1:B10）；<span class="kw">空格</span> 交叉（两个区域的交集）。</span></li>
+      <li><span class="num">18.</span><span class="text">单元格引用三种：<span class="kw">相对引用</span>B5（复制时随行列移动）；<span class="kw">绝对引用</span>$B$5（固定不变）；<span class="kw">混合引用</span>$B5（列固定）或B$5（行固定）。按<span class="kw">F4</span>循环切换四种形式。</span></li>
+      <li><span class="num">19.</span><span class="text">跨表引用：<span class="kw">工作表名!单元格</span>（如Sheet2!A1）；跨工作簿引用：<span class="kw">[工作簿名]工作表名!单元格</span>。</span></li>
+      <li><span class="num">20.</span><span class="text">常见错误值：<span class="kw">#####</span>（列宽不足）；<span class="kw">#DIV/0!</span>（除以0）；<span class="kw">#NAME?</span>（函数名/区域名错误）；<span class="kw">#REF!</span>（引用无效）；<span class="kw">#VALUE!</span>（数据类型不匹配）；<span class="kw">#N/A</span>（查询的值不存在）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 比较运算符与文本运算符详解（★常考）</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:18%">运算符</th><th style="width:22%">名称</th><th style="width:35%">说明</th><th>示例</th></tr>
+      <tr><td><span class="kw">=</span></td><td>等于</td><td>两边值相等返回TRUE</td><td>=A1=10（A1等于10返回TRUE）</td></tr>
+      <tr><td><span class="kw">&lt;&gt;</span></td><td>不等于</td><td>两边值不等返回TRUE</td><td>=A1&lt;&gt;"男"（A1不是"男"）</td></tr>
+      <tr><td><span class="kw">&gt;</span></td><td>大于</td><td>左边大于右边返回TRUE</td><td>=A1&gt;60（A1大于60）</td></tr>
+      <tr><td><span class="kw">&lt;</span></td><td>小于</td><td>左边小于右边返回TRUE</td><td>=A1&lt;60</td></tr>
+      <tr><td><span class="kw">&gt;=</span></td><td>大于等于</td><td>左边大于或等于右边</td><td>=A1&gt;=60</td></tr>
+      <tr><td><span class="kw">&lt;=</span></td><td>小于等于</td><td>左边小于或等于右边</td><td>=A1&lt;=100</td></tr>
+      <tr><td><span class="kw">&amp;</span></td><td>文本连接符</td><td>将多个文本<span class="kw">拼接</span>为一个字符串，等价于CONCATENATE函数</td><td>="姓名："&amp;A1<br>=A1&amp;" "&amp;B1（中间加空格）</td></tr>
+    </table></div>
+    <div class="tip-box">⚡ <strong>注意</strong>：比较运算符结果为逻辑值TRUE/FALSE；<span class="kw">&amp;连接的是文本</span>，数字会被当作文本处理（如1&amp;2="12"，不是3）。如需数字参与连接后仍为数字格式，用<span class="kw">CONCATENATE</span>或<span class="kw">TEXT</span>函数。</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 排序、筛选与分类汇总</div>
+    <ul class="kp-list">
+      <li><span class="num">21.</span><span class="text"><span class="kw">简单排序</span>：单击数据区任意单元格 → 数据 → 升序↑/降序↓；<span class="kw">多重排序</span>：数据 → 排序 → 添加条件（主关键字只能设一个，次要关键字可设多个）。</span></li>
+      <li><span class="num">22.</span><span class="text">排序注意：必须勾选"<span class="kw">数据包含标题</span>"否则表头会参与排序；<span class="kw">空白单元格始终排在最后</span>（升序降序均如此）。</span></li>
+      <li><span class="num">23.</span><span class="text"><span class="kw">自动筛选</span>：数据 → 筛选（或<span class="kw">Ctrl+Shift+L</span>）；点击列头下拉箭头 → 数字筛选/文本筛选 → 自定义（可设两个条件用AND/OR连接）。</span></li>
+      <li><span class="num">24.</span><span class="text"><span class="kw">高级筛选</span>：先在空白单元格区域写好<span class="kw">条件区域</span>（同行写条件=AND，不同行=OR）；数据 → 高级 → 列表区域/条件区域 → 可勾选"将筛选结果复制到其他位置"。</span></li>
+      <li><span class="num">25.</span><span class="text"><span class="kw">分类汇总</span>：必须先按分类字段<span class="kw">排序</span>（不可省略！）；数据 → 分类汇总 → 设分类字段/汇总方式/选定汇总项。汇总方式：求和/计数/平均值/最大值/最小值等。</span></li>
+      <li><span class="num">26.</span><span class="text">分类汇总后左侧出现<span class="kw">分级按钮</span>：<span class="kw">1</span>（只看总计）/ <span class="kw">2</span>（显示分类合计，隐藏明细）/ <span class="kw">3</span>（显示全部明细）。取消汇总：数据 → 分类汇总 → 全部删除。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 函数详解 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">✦</span>常用函数详解（语法 · 参数 · 示例）</div>
+
+  <!-- SUM / AVERAGE / MAX / MIN / COUNT -->
+  <div class="func-table-wrap">
+    <div class="ftitle">SUM / AVERAGE / MAX / MIN / COUNT / COUNTA — 统计类基础函数</div>
+    <div class="fsub">SUM(number1,[number2],...) &nbsp;|&nbsp; AVERAGE(number1,[number2],...) &nbsp;|&nbsp; MAX/MIN/COUNT/COUNTA 同格式</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">函数</th><th style="width:42%">参数说明</th><th>典型示例与注意事项</th></tr>
+      <tr>
+        <td><span class="kw">SUM</span></td>
+        <td>number1：第一个数或区域（必填）；number2...：其余数或区域（可选，最多255个）</td>
+        <td>=SUM(B2:B20) — 统计B2到B20之和<br>=SUM(B2,D2,F2) — 多区域求和</td>
+      </tr>
+      <tr>
+        <td><span class="kw">AVERAGE</span></td>
+        <td>参数格式同SUM；自动忽略文本和空白单元格，但<span class="kw">不忽略0</span></td>
+        <td>=AVERAGE(C2:C30) — 求C列平均分<br>含0和不含0结果不同！</td>
+      </tr>
+      <tr>
+        <td><span class="kw">MAX</span></td>
+        <td>参数同SUM；返回所有参数中的<span class="kw">最大数值</span></td>
+        <td>=MAX(D2:D50) — 求D列最大值<br>=MAX(A1,B1,C1) — 取三列最大值</td>
+      </tr>
+      <tr>
+        <td><span class="kw">MIN</span></td>
+        <td>参数同SUM；返回所有参数中的<span class="kw">最小数值</span></td>
+        <td>=MIN(E2:E50) — 求E列最小值</td>
+      </tr>
+      <tr>
+        <td><span class="kw">COUNT</span></td>
+        <td>只统计<span class="kw">含数字</span>的单元格数量；文本、逻辑值TRUE/FALSE、空单元格<span class="kw">不计入</span></td>
+        <td>=COUNT(A2:A20) — 统计A列含数字的单元格个数</td>
+      </tr>
+      <tr>
+        <td><span class="kw">COUNTA</span></td>
+        <td>统计<span class="kw">非空</span>单元格数量（含数字、文本、逻辑值）</td>
+        <td>=COUNTA(A2:A20) — 统计所有已填单元格个数</td>
+      </tr>
+    </table></div>
+    <div class="func-ex">★ 注意：AVERAGE不忽略0（值为0的单元格参与计算）；COUNT不统计文本；COUNTA统计一切非空。</div>
+  </div>
+
+  <!-- IF -->
+  <div class="func-table-wrap">
+    <div class="ftitle">IF — 逻辑判断函数</div>
+    <div class="fsub">IF(logical_test, value_if_true, [value_if_false])</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">参数</th><th>说明</th></tr>
+      <tr><td>logical_test</td><td>条件表达式，返回TRUE或FALSE，如 <span class="kw">A1&gt;=60</span>、<span class="kw">B1="男"</span>（必填）</td></tr>
+      <tr><td>value_if_true</td><td>条件为<span class="kw">真（TRUE）</span>时返回的值（必填）；可用数字（1）、文本（"及格"）或公式</td></tr>
+      <tr><td>value_if_false</td><td>条件为<span class="kw">假（FALSE）</span>时返回的值（可省略）；省略则返回逻辑值<span class="kw">FALSE</span></td></tr>
+    </table></div>
+    <div class="func-ex">=IF(A1&gt;=60,"及格","不及格")
+=IF(B1&gt;=90,"优秀",IF(B1&gt;=60,"及格","不及格"))  ← 嵌套IF，最多可嵌64层
+=IF(A1&lt;&gt;"","有成绩","缺考")  ← 判断单元格是否为空</div>
+  </div>
+
+  <!-- ROUND / INT / MOD -->
+  <div class="func-table-wrap">
+    <div class="ftitle">ROUND / INT / MOD — 数学运算函数</div>
+    <div class="fsub">ROUND(number, num_digits) &nbsp;|&nbsp; INT(number) &nbsp;|&nbsp; MOD(number, divisor)</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">函数</th><th style="width:42%">参数说明</th><th>示例</th></tr>
+      <tr>
+        <td><span class="kw">ROUND</span></td>
+        <td>num_digits：保留小数位数<br>→ 正数：小数位数（如2=保留2位小数）<br>→ 0：四舍五入为整数<br>→ 负数：对整数位四舍五入</td>
+        <td>=ROUND(3.146,2) → 3.15<br>=ROUND(3.141,0) → 3<br>=ROUND(1234,-2) → 1200</td>
+      </tr>
+      <tr>
+        <td><span class="kw">INT</span></td>
+        <td>向下取整（取<span class="kw">小于等于</span>该数的最大整数）<br>★ 注意：负数时INT(-3.2)=<span class="kw">-4</span>（不是-3！），与截断不同</td>
+        <td>=INT(3.9) → 3<br>=INT(-3.2) → -4（≠-3）</td>
+      </tr>
+      <tr>
+        <td><span class="kw">MOD</span></td>
+        <td>divisor：除数；返回number除以divisor的<span class="kw">余数</span>；常用于判断奇偶性、循环周期</td>
+        <td>=MOD(10,3) → 1（余数）<br>=MOD(A1,2)=0 → 偶数<br>=MOD(A1,2)=1 → 奇数</td>
+      </tr>
+    </table></div>
+    <div class="func-ex">★ 易错点：ROUND(1234,-2)=1200；INT(-3.2)=-4（向下取整，往更小的数取）</div>
+  </div>
+
+  <!-- RANK -->
+  <div class="func-table-wrap">
+    <div class="ftitle">RANK — 排名函数</div>
+    <div class="fsub">RANK(number, ref, [order])</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">参数</th><th>说明</th></tr>
+      <tr><td>number</td><td>要参与排名的数字（必填，通常是单元格引用，如A2）</td></tr>
+      <tr><td>ref</td><td>排名的数值范围（必填，<span class="kw">拖动填充时必须绝对引用</span>，如$A$2:$A$21，否则范围会偏移）</td></tr>
+      <tr><td>order</td><td>0或省略=<span class="kw">降序</span>（数值大排第1）；非0（填1）=<span class="kw">升序</span>（数值小排第1）</td></tr>
+    </table></div>
+    <div class="func-ex">=RANK(A2,$A$2:$A$21,0)  → A2的分数在A2:A21范围内的降序排名（大→小）
+★ 注意：填充时$A$2:$A$21不可变，需绝对引用；同行学生分数相同时名次相同（并列），下一名次跳过（如并列第2后是第4）</div>
+  </div>
+
+  <!-- COUNTIF / SUMIF -->
+  <div class="func-table-wrap">
+    <div class="ftitle">COUNTIF / SUMIF — 条件统计函数</div>
+    <div class="fsub">COUNTIF(range, criteria) &nbsp;|&nbsp; SUMIF(range, criteria, [sum_range])</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">参数</th><th style="width:42%">COUNTIF说明</th><th>SUMIF说明</th></tr>
+      <tr><td>第一个参数</td><td><span class="kw">range</span> — 条件判断区域（必填）</td><td><span class="kw">range</span> — 条件判断区域（必填）</td></tr>
+      <tr><td>第二个参数</td><td><span class="kw">criteria</span> — 条件；文本或表达式需加<span class="kw">双引号</span></td><td><span class="kw">criteria</span> — 同COUNTIF（必填）</td></tr>
+      <tr><td>第三个参数</td><td>—（COUNTIF无此参数）</td><td><span class="kw">sum_range</span> — 实际求和区域；<span class="kw">省略则对range本身求和</span></td></tr>
+    </table></div>
+    <div class="func-ex">=COUNTIF(B2:B50,"男")          → 统计B列中"男"出现的次数
+=COUNTIF(C2:C50,"&gt;=60")         → 统计C列中≥60的个数
+=COUNTIF(A2:A50,"&lt;&gt;")         → 统计A列非空单元格个数
+=SUMIF(B2:B50,"男",D2:D50)        → 统计B列为"男"的对应D列之和
+=SUMIF(A2:A20,"&gt;0",A2:A20)      → 求A列正数之和（省略sum_range时对range求和）</div>
+  </div>
+
+  <!-- VLOOKUP -->
+  <div class="func-table-wrap">
+    <div class="ftitle">VLOOKUP — 垂直查找函数（重要！常考！）</div>
+    <div class="fsub">VLOOKUP(lookup_value, table_array, col_index_num, [range_lookup])</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">参数</th><th>说明</th></tr>
+      <tr><td>lookup_value</td><td>要查找的值（必填），通常是一个单元格引用，如A2（学号）</td></tr>
+      <tr><td>table_array</td><td>查找区域（必填，<span class="kw">必须绝对引用</span>，如$A$2:$E$100）；<span class="kw">查找值必须在区域的第一列</span></td></tr>
+      <tr><td>col_index_num</td><td>返回区域中第几列的值（必填，从1开始数）；1=第一列，2=第二列…</td></tr>
+      <tr><td>range_lookup</td><td>匹配方式：<span class="kw">0/FALSE</span>=精确匹配（必须找到完全相同的值）；<span class="kw">1/TRUE</span>=近似匹配（查找小于等于查找值的最大值，要求第一列升序排列）</td></tr>
+    </table></div>
+    <div class="func-ex">=VLOOKUP(A2,$A$2:$E$100,3,0)  → 在A:E区域的首列找A2，返回第3列的值（精确匹配）
+=VLOOKUP(85,A2:D20,2,1)  → 在A2:D20第一列找≤85的最大值，返回第2列（近似匹配，用于等级划分）
+★ 易错：查找区域第一列必须包含要查找的值；区域用绝对引用；近似匹配要求首列升序</div>
+  </div>
+
+  <!-- AVERAGEIF / SUMIFS / IFERROR -->
+
+  <div class="func-table-wrap">
+    <div class="ftitle">AVERAGEIF / SUMIFS / IFERROR — 高级条件函数</div>
+    <div class="fsub">AVERAGEIF(range, criteria, [avg_range]) &nbsp;|&nbsp; SUMIFS(sum_range, criteria_range1, criteria1, ...) &nbsp;|&nbsp; IFERROR(value, value_if_error)</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">函数</th><th style="width:42%">参数说明</th><th>示例</th></tr>
+      <tr>
+        <td><span class="kw">AVERAGEIF</span></td>
+        <td>range=条件区域；criteria=条件；avg_range=实际求平均区域（省略则对range求平均）</td>
+        <td>=AVERAGEIF(B2:B50,"男",D2:D50) → 求B列为"男"的D列平均值</td>
+      </tr>
+      <tr>
+        <td><span class="kw">SUMIFS</span></td>
+        <td>sum_range=求和区域；后面成对出现(条件区域,条件)，可多条件求和</td>
+        <td>=SUMIFS(D2:D50,B2:B50,"男",C2:C50,">=60") → B列"男"且C列≥60的D列之和</td>
+      </tr>
+      <tr>
+        <td><span class="kw">IFERROR</span></td>
+        <td>value=可能出错的公式；value_if_error=出错时返回的值（常用于VLOOKUP防错）</td>
+        <td>=IFERROR(VLOOKUP(A2,$A$2:$E$100,3,0),"未找到") → 查不到时显示"未找到"而非#N/A</td>
+      </tr>
+    </table></div>
+    <div class="func-ex">★ SUMIFS与SUMIF的区别：SUMIFS先写求和区域，支持多条件；SUMIF先写条件区域，只支持单条件。<br>★ IFERROR常配合VLOOKUP使用，避免查不到数据时显示错误值。</div>
+  </div>
+
+  <!-- LEFT / RIGHT / MID / CONCATENATE -->
+  <div class="func-table-wrap">
+    <div class="ftitle">LEFT / RIGHT / MID / LEN / CONCATENATE — 文本处理函数</div>
+    <div class="fsub">LEFT(text, [num_chars]) &nbsp;|&nbsp; RIGHT(text, [num_chars]) &nbsp;|&nbsp; MID(text, start_num, num_chars)</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">函数</th><th style="width:42%">参数说明</th><th>示例</th></tr>
+      <tr>
+        <td><span class="kw">LEFT</span></td>
+        <td>从文本<span class="kw">左边</span>起取字符；num_chars省略=1</td>
+        <td>=LEFT("ABCD",2) → "AB"<br>=LEFT(A1,4) → A1的前4个字符</td>
+      </tr>
+      <tr>
+        <td><span class="kw">RIGHT</span></td>
+        <td>从文本<span class="kw">右边</span>起取字符；num_chars省略=1</td>
+        <td>=RIGHT("ABCD",2) → "CD"</td>
+      </tr>
+      <tr>
+        <td><span class="kw">MID</span></td>
+        <td>从start_num指定位置起取num_chars个字符；<span class="kw">start_num从1开始计数</span>（不是从0）</td>
+        <td>=MID("信息技术考试",3,2) → "技术"<br>=MID(A1,7,8) → 从A1第7位取8个字符<br>★ 身份证提取出生年月：=MID(A1,7,4)&amp;"年"&amp;MID(A1,11,2)&amp;"月"</td>
+      </tr>
+      <tr>
+        <td><span class="kw">LEN</span></td>
+        <td>返回文本的字符个数（<span class="kw">一个汉字=1个字符</span>）</td>
+        <td>=LEN("ABC123") → 6<br>=LEN(A1) → A1的字符总数</td>
+      </tr>
+      <tr>
+        <td><span class="kw">CONCATENATE</span></td>
+        <td>将多个文本<span class="kw">连接</span>成一个；可用&amp;运算符替代</td>
+        <td>=CONCATENATE(A1,B1) 等同于 =A1&amp;B1<br>="总分为"&amp;A1&amp;"分"</td>
+      </tr>
+    </table></div>
+  </div>
+
+  
+
+  <div class="func-table-wrap">
+    <div class="ftitle">DATE / TODAY / NOW / YEAR / MONTH / DAY — 日期函数</div>
+    <div class="fsub">DATE(year,month,day) &nbsp;|&nbsp; TODAY() &nbsp;|&nbsp; NOW() &nbsp;|&nbsp; YEAR/MONTH/DAY(date)</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">函数</th><th style="width:42%">参数说明</th><th>示例</th></tr>
+      <tr>
+        <td><span class="kw">TODAY</span></td>
+        <td>无参数，返回<span class="kw">当前日期</span>（每次打开文件自动更新）</td>
+        <td>=TODAY() → 2026/5/14</td>
+      </tr>
+      <tr>
+        <td><span class="kw">NOW</span></td>
+        <td>无参数，返回<span class="kw">当前日期和时间</span></td>
+        <td>=NOW() → 2026/5/14 15:30</td>
+      </tr>
+      <tr>
+        <td><span class="kw">YEAR</span></td>
+        <td>从日期中提取<span class="kw">年份</span></td>
+        <td>=YEAR(A1) → 若A1为2026/5/14则返回2026</td>
+      </tr>
+      <tr>
+        <td><span class="kw">MONTH</span></td>
+        <td>从日期中提取<span class="kw">月份</span></td>
+        <td>=MONTH(A1) → 5</td>
+      </tr>
+      <tr>
+        <td><span class="kw">DAY</span></td>
+        <td>从日期中提取<span class="kw">日</span></td>
+        <td>=DAY(A1) → 14</td>
+      </tr>
+      <tr>
+        <td><span class="kw">DATEDIF</span></td>
+        <td>计算两个日期之间的差（隐藏函数，不在函数列表中）</td>
+        <td>=DATEDIF(A1,B1,"Y") → 两日期相差年数（"M"=月数，"D"=天数）</td>
+      </tr>
+    </table></div>
+    <div class="func-ex">★ 快捷键：<span class="kw">Ctrl+;</span> 输入当前日期（固定值，不自动更新）；<span class="kw">Ctrl+Shift+;</span> 输入当前时间</div>
+  </div>
+
+  <hr class="divider">
+
+<div class="func-table-wrap">
+    <div class="ftitle">RAND / PRODUCT / SQRT / POWER / RANDBETWEEN — 其他数学函数</div>
+    <div class="fsub">RAND() &nbsp;|&nbsp; PRODUCT(number1,[number2],...) &nbsp;|&nbsp; SQRT(number) &nbsp;|&nbsp; POWER(number,power) &nbsp;|&nbsp; RANDBETWEEN(bottom,top)</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">函数</th><th style="width:42%">参数说明</th><th>示例</th></tr>
+      <tr>
+        <td><span class="kw">RAND</span></td>
+        <td><span class="kw">无参数</span>，返回 [0,1) 之间的<span class="kw">随机小数</span>（每次计算表自动刷新值会变化）；要生成a~b之间的随机整数用 <span class="kw">=INT(RAND()*(b-a+1))+a</span></td>
+        <td>=RAND() → 如0.7283<br>=INT(RAND()*100)+1 → 1~100随机整数</td>
+      </tr>
+      <tr>
+        <td><span class="kw">RANDBETWEEN</span></td>
+        <td>bottom（最小整数）、top（最大整数），返回两数之间的<span class="kw">随机整数</span>（含两端）</td>
+        <td>=RANDBETWEEN(1,100) → 1~100随机整数（比RAND更方便）</td>
+      </tr>
+      <tr>
+        <td><span class="kw">PRODUCT</span></td>
+        <td>求所有参数的<span class="kw">乘积</span>；最多255个参数；可引用区域</td>
+        <td>=PRODUCT(A1:A5) → A1到A5的乘积<br>=PRODUCT(2,3,4) → 24</td>
+      </tr>
+      <tr>
+        <td><span class="kw">SQRT</span></td>
+        <td>返回正数的<span class="kw">算术平方根</span>；参数必须≥0，否则返回#NUM!</td>
+        <td>=SQRT(16) → 4<br>=SQRT(2) → 1.41421356</td>
+      </tr>
+      <tr>
+        <td><span class="kw">POWER</span></td>
+        <td>number的power次幂；等价于 <span class="kw">^</span> 运算符</td>
+        <td>=POWER(2,10) → 1024<br>=2^10 → 1024（效果相同）</td>
+      </tr>
+    </table></div>
+    <div class="func-ex">★ 常考：=RANDBETWEEN(1,100) 比 =INT(RAND()*100)+1 更简洁；SQRT(-1) 返回 #NUM!（不能对负数开方）</div>
+  </div>
+
+<div class="func-table-wrap">
+    <div class="ftitle">FREQUENCY / COUNTBLANK — 频率统计与空白统计函数</div>
+    <div class="fsub">FREQUENCY(data_array, bins_array) &nbsp;|&nbsp; COUNTBLANK(range)</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">函数</th><th style="width:42%">参数说明</th><th>示例</th></tr>
+      <tr>
+        <td><span class="kw">FREQUENCY</span></td>
+        <td>data_array=要统计的<span class="kw">数据区域</span>；bins_array=<span class="kw">分组区间</span>（每个值表示该区间的上限）。返回各区间内的<span class="kw">频率分布</span>。<span class="kw">必须以数组公式输入</span>：选中输出区域→输入公式→<span class="kw">Ctrl+Shift+Enter</span></td>
+        <td>成绩在A2:A20，分组区间B2:B5={59,69,79,89}<br>选中C2:C6→=FREQUENCY(A2:A20,B2:B5)<br>→ Ctrl+Shift+Enter → 得到各分数段人数</td>
+      </tr>
+      <tr>
+        <td><span class="kw">COUNTBLANK</span></td>
+        <td>统计指定区域中<span class="kw">空白单元格</span>的个数（不包括含0或含空格的单元格）</td>
+        <td>=COUNTBLANK(A2:A20) → 统计A列有多少空白格<br>=COUNTA(A2:A20)-COUNTBLANK(A2:A20) = 非空且非文本的数字单元格</td>
+      </tr>
+    </table></div>
+    <div class="func-ex">★ FREQUENCY是<span class="kw">数组公式</span>，必须按Ctrl+Shift+Enter输入（不能只按Enter），Excel会在公式两端自动加大括号{}。<br>★ COUNTBLANK只统计真正为空的单元格；含空格""的单元格不被计入。</div>
+  </div>
+
+<div class="func-table-wrap">
+    <div class="ftitle">SUMPRODUCT / INDEX / MATCH — 高级查找计算函数</div>
+    <div class="fsub">SUMPRODUCT(array1,[array2],...) &nbsp;|&nbsp; INDEX(array,row_num,[col_num]) &nbsp;|&nbsp; MATCH(lookup_value,lookup_array,[match_type])</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:22%">函数</th><th style="width:42%">参数说明</th><th>示例</th></tr>
+      <tr>
+        <td><span class="kw">SUMPRODUCT</span></td>
+        <td>先对多个数组<span class="kw">对应元素相乘</span>，再求和；<span class="kw">天然支持多条件求和</span>（不需要像SUMIFS那样成对写条件区域）</td>
+        <td>=SUMPRODUCT((B2:B50="男")*(C2:C50>=60))<br>→ 统计B列"男"且C列≥60的个数<br>=SUMPRODUCT(A2:A10,B2:B10) → 对应相乘再求和</td>
+      </tr>
+      <tr>
+        <td><span class="kw">INDEX</span></td>
+        <td>返回指定区域中<span class="kw">特定行列交叉处</span>的值；row_num=行号，col_num=列号</td>
+        <td>=INDEX(A1:D10,3,2) → 返回A1:D10区域第3行第2列的值（即B3）</td>
+      </tr>
+      <tr>
+        <td><span class="kw">MATCH</span></td>
+        <td>返回查找值在区域中的<span class="kw">相对位置</span>（第几个）；match_type：0=精确匹配；1或省略=小于等于（需升序）；-1=大于等于（需降序）</td>
+        <td>=MATCH("张三",A1:A20,0) → "张三"在A1:A20中第几个<br>=MATCH(85,B1:B10,0) → 85在第几行</td>
+      </tr>
+      <tr>
+        <td><span class="kw">INDEX+MATCH组合</span></td>
+        <td><span class="kw">VLOOKUP的升级替代</span>：MATCH查找列号，INDEX返回对应值；优势：可<span class="kw">向左查找</span>（VLOOKUP只能向右查找），更灵活</td>
+        <td>=INDEX(C1:C20,MATCH("张三",A1:A20,0))<br>→ 在A列找"张三"的行号，再返回C列对应值（等价于VLOOKUP但可以向左查找）</td>
+      </tr>
+    </table></div>
+    <div class="func-ex">★ SUMPRODUCT多条件公式：条件之间用 <span class="kw">*</span> 连接表示AND，用 <span class="kw">+</span> 连接表示OR。<br>★ INDEX+MATCH组合比VLOOKUP更灵活：不要求查找值在首列，支持向左查找、查找速度更快（大数据量时）。</div>
+  </div>
+
+  <!-- ===================== 4.3 分析数据 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">4.3</span>分析数据——图表与数据透视表</div>
+
+  <div class="module">
+    <div class="module-title">◆ 图表基础</div>
+    <ul class="kp-list">
+      <li><span class="num">27.</span><span class="text">常用图表类型与适用场景：
+        <span class="kw">柱形图</span>（竖着比大小）；<span class="kw">条形图</span>（横着比项目差异）；<span class="kw">折线图</span>（展示时间趋势变化）；<span class="kw">饼图</span>（显示各部分占整体的比例）；<span class="kw">散点图</span>（展示两个变量之间的相关性）。</span></li>
+      <li><span class="num">28.</span><span class="text">创建图表：选中数据（含表头）→ 插入 → 图表 → 选类型 → 确定；默认类型为<span class="kw">柱形图</span>；默认图表名<span class="kw">Chart1</span>。</span></li>
+      <li><span class="num">29.</span><span class="text"><span class="kw">F11快捷键</span>：选中数据区域 → 按F11 → 直接在独立图表工作表中创建柱形图（不嵌入表格）。</span></li>
+      <li><span class="num">30.</span><span class="text"><span class="kw">嵌入式图表</span>：图表与数据在同一张工作表中，一起打印；<span class="kw">图表工作表</span>：独立于数据的工作表，打开时另起一页打印。</span></li>
+      <li><span class="num">31.</span><span class="text">图表元素：图表标题、图例（哪组数据是什么颜色）、坐标轴（X/Y轴）、数据标签（显示具体数值）、趋势线（折线图中添加）。数据源变化时图表<span class="kw">自动更新</span>。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 数据透视表</div>
+    <ul class="kp-list">
+      <li><span class="num">32.</span><span class="text"><span class="kw">创建数据透视表</span>：选中数据 → 插入 → 数据透视表 → 选择放置位置（新工作表/现有工作表）→ 确定。</span></li>
+      <li><span class="num">33.</span><span class="text">数据透视表四区域及作用：
+        <span class="kw">筛选器</span>（页）：对整个透视表进行全局过滤，如选"年级"后可只看某个年级）；
+        <span class="kw">列</span>：将字段放在此区域，每项内容成一列；
+        <span class="kw">行</span>：将字段放在此区域，每项内容成一行（最常用）；
+        <span class="kw">值</span>：放置要汇总计算的数值字段，默认汇总方式为<span class="kw">求和</span>。</span></li>
+      <li><span class="num">34.</span><span class="text">更改汇总方式：右键值区域 → 值字段设置 → 选择<span class="kw">求和/计数/平均值/最大值/最小值</span>等；更改值显示方式：值字段设置 → "值显示方式"选项卡。</span></li>
+      <li><span class="num">35.</span><span class="text">删除数据透视表会<span class="kw">同时删除关联的数据透视图</span>（反过来不影响）；原数据变化后需刷新：右键 → <span class="kw">刷新</span>（或<span class="kw">Alt+F5</span>）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+<div class="module">
+    <div class="module-title">◆ 迷你图与切片器（★新增考点）</div>
+    <ul class="kp-list">
+      <li><span class="num">36.</span><span class="text"><span class="kw">迷你图（Sparkline）</span>：嵌入在<span class="kw">单个单元格</span>中的微型图表，直观展示数据趋势。插入→迷你图→选择类型：折线图（趋势）/柱形图（对比）/盈亏图（正负）。特点：不占用额外空间，适合放在数据旁边辅助阅读。</span></li>
+      <li><span class="num">37.</span><span class="text"><span class="kw">切片器</span>：数据透视表的<span class="kw">可视化筛选工具</span>。插入→切片器→选择要筛选的字段→确定。效果：生成按钮面板，点击不同按钮即可快速筛选数据透视表（比下拉筛选更直观），支持多个切片器联动。也适用于普通表格。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>区别</strong>：迷你图=单元格内的微型趋势图；切片器=透视表的按钮式筛选器（可视化替代下拉菜单）。</div>
+  </div>
+
+  <!-- ===================== 4.4 大数据 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">4.4</span>初识大数据</div>
+
+  <div class="module">
+    <div class="module-title">◆ 大数据基础</div>
+    <ul class="kp-list">
+      <li><span class="num">38.</span><span class="text"><span class="kw">大数据定义</span>：规模超出传统软件处理能力的<span class="kw">大规模或复杂数据集</span>，具有<span class="kw">海量、高速增长和多样化</span>的信息资产特征。</span></li>
+      <li><span class="num">39.</span><span class="text">大数据四大特征（<span class="kw">4V</span>）：<span class="kw">体量大</span>（Volume，数据量可达ZB级）；<span class="kw">类型多</span>（Variety，结构化/半结构化/非结构化）；<span class="kw">速度快</span>（Velocity，产生和处理速度快）；<span class="kw">价值密度低</span>（Value，有价值的信息占比低，需专业技术挖掘）。</span></li>
+      <li><span class="num">40.</span><span class="text">存储单位：<span class="kw">B → KB → MB → GB → TB → PB → EB → ZB → YB</span>；每级之间相差<span class="kw">1024倍</span>（软件层面），硬件上通常简化为1000倍。</span></li>
+      <li><span class="num">41.</span><span class="text">大数据处理四步骤：<span class="kw">采集与预处理</span>（传感器采集 + 清洗去重）→ <span class="kw">存储</span>（分布式文件系统、NoSQL数据库）→ <span class="kw">分析与挖掘</span>（分类、预测、聚类、关联规则）→ <span class="kw">呈现与可视化</span>（图表、仪表盘）。</span></li>
+      <li><span class="num">42.</span><span class="text"><span class="kw">NoSQL数据库</span>（非关系型数据库）：不依赖传统二维表结构；主要三类：面向<span class="kw">高性能读写</span>（键值存储）、面向<span class="kw">文档</span>（JSON格式存储）、面向<span class="kw">分布式计算</span>（列族存储）。</span></li>
+      <li><span class="num">43.</span><span class="text">大数据典型应用场景：<span class="kw">金融</span>（风险评估与反欺诈）；<span class="kw">医疗</span>（药品研发、流行病预测）；<span class="kw">零售</span>（精准营销、销售预测）；<span class="kw">环保</span>（空气质量监测）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== Excel模拟操作题 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">✦</span>Excel模拟操作题——典型考点与标准操作步骤</div>
+
+  <div class="op-block">
+    <div class="otitle">【考点1】单元格格式设置（必会基础操作）</div>
+    <div class="ostep">
+      <div><strong>操作入口：</strong>选中区域 → 右键 → <span class="op-key">设置单元格格式</span>（或直接按 <span class="op-key">Ctrl+1</span>）</div>
+      <div><strong>数字选项卡：</strong>数值（可设小数位数，如2位）；百分比（自动乘100加%）；文本（数字当文字处理，保留前导0）；货币（带¥符号）；日期（可换算天数）；分数（正确输入如1/6需先输0空格）</div>
+      <div><strong>对齐选项卡：</strong>水平对齐（左/中/右）；垂直对齐；<span class="op-key">自动换行</span>（文字超出单元格宽度时自动换行显示）；<span class="op-key">合并单元格</span>（选多个单元格合并为一个，常用于标题行）</div>
+      <div><strong>字体选项卡：</strong>字体、字号、颜色、加粗、斜体、下划线（单/双）</div>
+      <div><strong>边框选项卡：</strong>线型（实线/虚线）、颜色、<span class="op-key">外边框</span>（四边）/ <span class="op-key">内边框</span>（中间线条）</div>
+      <div><strong>填充选项卡：</strong>背景色（纯色底色）；图案颜色与图案样式（斜纹/网格等）</div>
+    </div>
+    <div class="op-note">★ 常考场景：表格标题行合并居中；设置外边框；表头行设深色底纹白字；成绩列设百分比格式保留1位小数；学号列设文本格式保留前导0</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点2】公式与函数录入（核心操作）</div>
+    <div class="ostep">
+      <div><strong>第一步：</strong>选中目标单元格 → 输入 <span class="op-key">=</span> → 输入函数名和参数（不区分大小写） → <span class="op-key">Enter</span> 确认</div>
+      <div><strong>编辑已有公式：</strong>双击单元格 或 选中后按 <span class="op-key">F2</span> 进入编辑模式</div>
+      <div><strong>填充公式（向下/向右复制）：</strong>选中含公式单元格 → 拖动右下角<span class="op-key">填充柄</span>（小方块）；相对引用自动变化，绝对引用固定</div>
+      <div><strong>固定参照（绝对引用）：</strong>在公式中手动输入$符号，或将光标放在单元格引用上按 <span class="op-key">F4</span> 循环切换（相对→绝对→混合）</div>
+      <div><strong>快速求和：</strong>选中区域末尾单元格 → 按 <span class="op-key">Alt+=</span>，自动生成SUM公式</div>
+    </div>
+    <div class="op-note">★ 典型操作链：SUM求总分 → AVERAGE求平均分 → RANK填排名 → IF判断等级（优秀/及格/不及格）</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点3】排序操作</div>
+    <div class="ostep">
+      <div><strong>简单排序：</strong>单击数据区域任意单元格 → 数据选项卡 → 点击 <span class="op-key">升序↑</span>（A→Z/小→大）或 <span class="op-key">降序↓</span>（Z→A/大→小）</div>
+      <div><strong>多重排序（按多个关键字）：</strong>数据 → <span class="op-key">排序</span> → 弹出排序对话框 → 勾选"<span class="op-key">数据包含标题</span>"（防止将表头行排进去！）</div>
+      <div>&nbsp;&nbsp;→ 主关键字：选第一个排序字段（如"总分"）→ 选择排序依据（数值/单元格颜色等）→ 选择次序（升序/降序）</div>
+      <div>&nbsp;&nbsp;→ 点击"<span class="op-key">添加条件</span>"可添加次要关键字（主关键字相同时才比较次要关键字）</div>
+      <div><strong>注意事项：</strong>空白单元格在升序和降序中<span class="kw">始终排在最后</span>；主关键字只能设一个；排序会同时移动整行数据。</div>
+    </div>
+    <div class="op-note">★ 常考：按"总分"降序排列；总分相同时按"姓名"笔画升序（次要关键字）；按"班级"升序+按"成绩"降序</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点4】筛选操作</div>
+    <div class="ostep">
+      <div><strong>开启筛选：</strong>数据 → 筛选（或 <span class="op-key">Ctrl+Shift+L</span>）；列标题出现下拉箭头；再次按Ctrl+Shift+L可关闭筛选</div>
+      <div><strong>基本筛选：</strong>点击列头下拉箭头 → 直接勾选要显示的值（如只勾选"一班"）</div>
+      <div><strong>自定义筛选：</strong>列头下拉 → 数字筛选/文本筛选 → 自定义筛选；可设置<span class="op-key">两个条件</span>，关系选择<span class="op-key">AND</span>（同时满足）或<span class="op-key">OR</span>（满足其一）</div>
+      <div><strong>高级筛选：</strong>① 先在空白单元格区域手工输入<span class="op-key">条件区域</span>（第一行为字段名，第二行起为条件）；② 数据 → 高级 → 列表区域（选原始数据）/ 条件区域（选刚写的条件）/ 复制到（目标位置）；③ <span class="op-key">同行条件=AND（且）</span>，<span class="op-key">不同行条件=OR（或）</span></div>
+    </div>
+    <div class="op-note">★ 常考：筛选成绩≥80且&lt;90的学生（AND条件）；筛选"班级"为"一班"或"二班"的记录（OR条件，两行写条件）</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点5】分类汇总（易错重点）</div>
+    <div class="ostep">
+      <div><span class="kw">【第一步 - 必须先排序】（此步骤绝对不可省略！）</span>选中数据 → 数据 → 排序 → 按分类字段（如"班级"）升序排列</div>
+      <div><span class="kw">【第二步 - 插入分类汇总】</span>数据 → <span class="op-key">分类汇总</span></div>
+      <div>&nbsp;&nbsp;→ 分类字段：选排序用的字段（要与上一步排序字段一致，如"班级"）</div>
+      <div>&nbsp;&nbsp;→ 汇总方式：求和 / 计数 / 平均值 / 最大值 / 最小值（根据题目要求选）</div>
+      <div>&nbsp;&nbsp;→ 选定汇总项：勾选需要汇总的数值字段（如"总分"、"平均分"）</div>
+      <div><strong>查看汇总结果：</strong>分类汇总后在左侧出现<span class="op-key">分级按钮</span>：<span class="op-key">[1]</span>=只显示总计行；<span class="op-key">[2]</span>=显示分类合计，隐藏该分类下的明细行；<span class="op-key">[3]</span>=显示全部明细行</div>
+      <div><strong>删除分类汇总：</strong>数据 → 分类汇总 → <span class="op-key">全部删除</span></div>
+    </div>
+    <div class="op-note">★ 常考：按"班级"分类，汇总各班"总分"的平均值和学生人数（ COUNT计数 + AVERAGE求平均）</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点6】条件格式（数据可视化）</div>
+    <div class="ostep">
+      <div><strong>入口：</strong>选中数据区域 → 开始 → <span class="op-key">条件格式</span></div>
+      <div>• <span class="op-key">突出显示单元格规则</span>：大于/小于/介于/等于/文本包含/重复值 → 满足条件的单元格自动格式化</div>
+      <div>• <span class="op-key">项目选取规则</span>：前10项、后10项、高于平均值、低于平均值</div>
+      <div>• <span class="op-key">数据条</span>（渐变填充/实色填充）：在单元格内以条形长短显示数值大小</div>
+      <div>• <span class="op-key">色阶</span>：三色刻度/双色刻度，以颜色深浅表示数值高低（通常绿→黄→红）</div>
+      <div>• <span class="op-key">图标集</span>：方向（↑↓→）/ 形状（五角星到一星）/ 等级（3色箭头/4色灯泡等）</div>
+      <div><strong>管理/清除：</strong>条件格式 → <span class="op-key">管理规则</span>（编辑/删除/新建规则）→ 清除规则（可清除所选单元格或整张表的规则）</div>
+    </div>
+    <div class="op-note">★ 常考：将成绩&lt;60的单元格设为红色填充白色字；用数据条直观展示各学生成绩高低</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点7】数据验证（输入控制）</div>
+    <div class="ostep">
+      <div><strong>入口：</strong>选中区域 → 数据 → <span class="op-key">数据验证</span></div>
+      <div><strong>设置选项卡：</strong>允许类型可选：<span class="op-key">整数</span>（范围如0~100）、<span class="op-key">小数</span>、<span class="op-key">序列</span>（下拉菜单）、<span class="op-key">日期</span>、<span class="op-key">文本长度</span>、自定义公式</div>
+      <div><strong>序列（下拉菜单）设置：</strong>允许选"序列" → 来源处输入 <span class="op-key">男,女</span>（注意：逗号为英文逗号，不能用中文逗号）→ 勾选"提供下拉箭头"→ 单元格右侧出现下拉按钮</div>
+      <div><strong>输入信息选项卡：</strong>选中单元格时显示提示文字（如"请输入0-100的整数"）</div>
+      <div><strong>出错警告选项卡：</strong>样式可选：<span class="op-key">停止</span>（禁止输入，最严格）/ <span class="op-key">警告</span>（提示但可强行输入）/ <span class="op-key">信息</span>（仅提示）</div>
+      <div><strong>清除验证：</strong>选中区域 → 数据 → 数据验证 → 全部清除</div>
+    </div>
+    <div class="op-note">★ 常考：设"性别"列只允许选择男/女（序列）；设"成绩"列只允许输入0-100之间的整数（整数）；设"出生日期"列为有效日期格式</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点8】图表创建与编辑</div>
+    <div class="ostep">
+      <div><strong>创建图表：</strong>选中数据区域（含表头）→ 插入 → 图表 → 选择图表类型（柱形/折线/饼图等）→ 确定</div>
+      <div><strong>F11快捷创图表：</strong>选中数据 → 按 <span class="op-key">F11</span> → 直接在独立图表工作表中创建柱形图</div>
+      <div><strong>更改图表类型：</strong>点击图表 → 右键 → <span class="op-key">更改图表类型</span> → 选择新类型</div>
+      <div><strong>添加图表元素：</strong>点击图表 → 右上角"+"按钮 → 勾选：<span class="op-key">图表标题</span>（双击文字修改内容）、<span class="op-key">数据标签</span>（显示数值）、<span class="op-key">图例</span>、坐标轴标题</div>
+      <div><strong>移动图表：</strong>图表工具 → 设计 → <span class="op-key">移动图表</span> → 选"新工作表"（图表独立为一张表）或"对象位于"（放在现有工作表中）</div>
+      <div><strong>编辑数据：</strong>右键图表 → <span class="op-key">选择数据</span> → 可调整数据源区域和图例项/水平轴标签</div>
+    </div>
+    <div class="op-note">★ 常考：创建折线图展示成绩趋势 → 添加图表标题"各班成绩对比" → 显示数据标签 → 移动到新工作表</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点9】数据透视表</div>
+    <div class="ostep">
+      <div><strong>第一步 - 创建：</strong>选中数据区域 → 插入 → <span class="op-key">数据透视表</span> → 选择放置位置（新工作表/现有工作表的位置） → 确定</div>
+      <div><strong>第二步 - 布局（拖拽字段）：</strong>在右侧字段列表窗格中，将字段拖到对应区域：</div>
+      <div>&nbsp;&nbsp;• <span class="op-key">行</span>区域：放置分类字段（如"班级"），每项内容在表中占一行（必选）</div>
+      <div>&nbsp;&nbsp;• <span class="op-key">值</span>区域：放置要汇总的数值字段（如"总分"），默认汇总方式为求和，可右键改其他方式</div>
+      <div>&nbsp;&nbsp;• <span class="op-key">列</span>区域：放置次分类字段（如"性别"），每项内容成一列</div>
+      <div>&nbsp;&nbsp;• <span class="op-key">筛选器</span>区域：放置全局过滤字段（如"年级"），会在表上方出现筛选下拉框</div>
+      <div><strong>第三步 - 更改汇总方式：</strong>右键值区域字段 → <span class="op-key">值字段设置</span> → 选择求和/计数/平均值/最大值/最小值 → 确定</div>
+      <div><strong>第四步 - 刷新数据：</strong>原数据表变化后，右键透视表 → <span class="op-key">刷新</span>（或按 <span class="op-key">Alt+F5</span>）</div>
+    </div>
+    <div class="op-note">★ 常考：以"班级"为行，统计各班"总分"的平均值和学生人数（平均值汇总 + 计数汇总）；透视表删除后会影响关联的透视图（反过来不影响）</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点10】页面设置与打印</div>
+    <div class="ostep">
+      <div><strong>页面布局选项卡：</strong>依次设置以下各项</div>
+      <div>• <span class="op-key">纸张方向</span>：纵向（列少时）/ 横向（列多时，超出页面宽度时选横向）</div>
+      <div>• <span class="op-key">纸张大小</span>：A4 / A3 等</div>
+      <div>• <span class="op-key">打印标题（重要！多页打印必考）</span>：页面布局 → 标题 → 顶端标题行 → 选中表格表头行 → 确定。这样打印多页时每页都会重复打印表头</div>
+      <div>• <span class="op-key">缩放打印</span>：调整为1页宽×1页高（强制将所有内容缩放至一页，适合表格整体查看）</div>
+      <div>• <span class="op-key">打印区域</span>：选中要打印的单元格区域 → 页面布局 → 打印区域 → 设置打印区域（只打印选中部分）</div>
+      <div>• <span class="op-key">打印预览：</strong>文件 → 打印（或Ctrl+P）→ 在预览中确认格式无误后再打印</div>
+    </div>
+    <div class="op-note">★ 常考：设横向打印 + 顶端标题行重复（保证每页都有表头）；强制调整为1页宽1页高适应A4纸</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- 快捷键汇总 -->
+  <div class="module">
+    <div class="module-title">◆ Excel/WPS表格常用快捷键速查表（必背）</div>
+    <div class="table-wrapper"><table class="quick-table">
+      <tr><th>快捷键</th><th>功能说明</th><th>快捷键</th><th>功能说明</th></tr>
+      <tr><td><span class="qk">Ctrl+1</span></td><td>打开单元格格式对话框</td><td><span class="qk">F2</span></td><td>编辑单元格内容</td></tr>
+      <tr><td><span class="qk">Ctrl+S</span></td><td>保存工作簿</td><td><span class="qk">F4</span></td><td>切换引用方式（相对→绝对→混合）</td></tr>
+      <tr><td><span class="qk">Ctrl+Z</span></td><td>撤销上一步操作</td><td><span class="qk">F11</span></td><td>选中数据后按F11，创建独立图表工作表</td></tr>
+      <tr><td><span class="qk">Ctrl+;</span></td><td>输入当前系统日期</td><td><span class="qk">Alt+F5</span></td><td>刷新数据透视表</td></tr>
+      <tr><td><span class="qk">Ctrl+Shift+L</span></td><td>开启或关闭自动筛选</td><td><span class="qk">Alt+=</span></td><td>快速在单元格插入SUM公式求和</td></tr>
+      <tr><td><span class="qk">Ctrl+Shift+Enter</span></td><td>输入数组公式（旧版Excel需三键）</td><td><span class="qk">Ctrl+0</span></td><td>隐藏当前列</td></tr>
+      <tr><td><span class="qk">Ctrl+9</span></td><td>隐藏当前行</td><td><span class="qk">Ctrl+Shift++</span></td><td>插入行/列/单元格</td></tr>
+    </table></div>
+  </div>
+
+  <div class="tip-box">
+    <strong>【第四单元高频易错汇总】</strong><br>
+    ① 输入1/6→显示1月6日（正确输入分数：先输入0空格再输1/6）<br>
+    ② INT(-3.2)=<span class="kw">-4</span>（向下取整，往更小的整数走，不是截断！）<br>
+    ③ RANK填充时ref区域<span class="kw">必须绝对引用$A$2:$A$20</span>，否则排名范围跑偏<br>
+    ④ COUNTIF/SUMIF的条件表达式必须加<span class="kw">双引号</span>：">=60"、"男"<br>
+    ⑤ 分类汇总前<span class="kw">必须先排序</span>，否则汇总无意义<br>
+    ⑥ 高级筛选：同行写条件=AND（且），不同行=OR（或）<br>
+    ⑦ VLOOKUP查找值必须在table_array的<span class="kw">第一列</span>，区域要绝对引用<br>
+    ⑧ SUMIFS支持<span class="kw">多条件</span>求和，且先写求和区域；SUMIF只支持单条件<br>
+    ⑨ IFERROR(VLOOKUP(...),"未找到") 可避免VLOOKUP查不到时显示错误值
+  </div>
+    <div class="footer">第四单元 · 数据处理（Excel）（4.1～4.4）· 江西省单招·对口升学信息技术专用</div>
+  </div>
+  <!-- ==================== 第五单元 ==================== -->
+  <div class="unit-section" id="unit5" style="page-break-before:always;">
+    <div class="unit-banner">
+      <div class="main-title">◎ 第五单元 · 程序设计入门</div>
+      <div class="sub-title">5.1～5.3｜江西省单招·对口升学专用</div>
+    </div>
+<!-- ===================== 5.1 初识程序设计 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">5.1</span>初识程序设计</div>
+
+  <div class="module">
+    <div class="module-title">◆ 程序设计基础（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">1.</span><span class="text"><span class="kw">程序设计</span>：把要解决的问题转换为<span class="kw">计算机可以执行的程序</span>的过程。四步骤：<span class="kw">分析问题 → 设计算法 → 编写程序 → 调试运行</span>。</span></li>
+      <li><span class="num">2.</span><span class="text"><span class="kw">算法</span>定义：按照一定规则解决某一类问题的<span class="kw">明确而有限的步骤</span>。即解决问题的方法和步骤。</span></li>
+      <li><span class="num">3.</span><span class="text"><span class="kw">算法五大特征</span>（必背！）：<span class="kw">确定性</span>（每步含义明确无歧义）；<span class="kw">有限性</span>（有限步骤后一定终止）；<span class="kw">输入项</span>（可以有0个或多个输入）；<span class="kw">输出项</span>（<span class="kw">至少1个输出</span>，没有输出的算法无意义）；<span class="kw">可行性</span>（每步都可以通过基本操作实现）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 算法描述方式 & 程序语言分类</div>
+    <ul class="kp-list">
+      <li><span class="num">4.</span><span class="text">算法描述三种方式：<span class="kw">自然语言</span>（用日常语言描述，易懂但不严谨）；<span class="kw">流程图</span>（用标准图形符号描述，菱形=判断框，矩形=处理框，平行四边形=输入输出）；<span class="kw">伪代码</span>（类程序设计语言的描述，介于自然语言和真实代码之间）。</span></li>
+      <li><span class="num">5.</span><span class="text">程序设计语言三类（按发展层次）：<span class="kw">机器语言</span>（二进制0/1，计算机直接识别，执行最快，但难写难读）；<span class="kw">汇编语言</span>（用助记符如ADD/MOV代替二进制，需汇编器转换，面向硬件）；<span class="kw">高级语言</span>（接近自然语言和数学表达式，通用性强，需编译或解释执行，如C/C++/Java/Python）。</span></li>
+      <li><span class="num">6.</span><span class="text">高级语言两种执行方式：<span class="kw">编译型</span>（如C/C++，先整体编译成机器码生成exe文件，执行快）；<span class="kw">解释型</span>（如Python/JavaScript，边解释边执行，跨平台好但执行慢）。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>助记</strong>：算法五大特征 = <span class="kw">确定、有限、0或多输入、至少1输出、可行</span>。常考：算法可以没有输入（0个），但<span class="kw">必须有输出</span>！</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 5.2 设计简单程序 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">5.2</span>设计简单程序（Python基础）</div>
+
+  <div class="module">
+    <div class="module-title">◆ Python语言特点（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">7.</span><span class="text">Python主要特点：<span class="kw">开源免费</span>（可自由使用和分发）；<span class="kw">跨平台</span>（Windows/Linux/macOS均可运行）；<span class="kw">解释型</span>（无需编译，边解释边执行）；<span class="kw">面向对象</span>；语法简洁优雅，接近自然语言，适合初学者。</span></li>
+      <li><span class="num">8.</span><span class="text">Python应用领域：<span class="kw">人工智能/机器学习</span>（最热门）；<span class="kw">数据分析/大数据</span>；Web开发（Django/Flask）；自动化运维/爬虫/科学计算等。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ Python基础语法（必背·高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">9.</span><span class="text"><span class="kw">变量赋值</span>：Python变量<span class="kw">无需声明类型</span>，直接赋值即创建；三种赋值方式：<span class="kw">单变量赋值</span> a = 1；<span class="kw">多重赋值</span> a = b = c = 1（三个变量指向同一值）；<span class="kw">多元赋值</span> a, b, c = 1, 2, 3（一次性给多个变量赋值）。</span></li>
+      <li><span class="num">10.</span><span class="text"><span class="kw">Python基本数据类型</span>：<span class="kw">int</span>（整数，如10、-3）；<span class="kw">float</span>（浮点数，如3.14）；<span class="kw">str</span>（字符串，用单/双/三引号，如"hello"）；<span class="kw">bool</span>（布尔值，True/False）；<span class="kw">list</span>（列表，如[1,2,3]，可修改）；<span class="kw">tuple</span>（元组，如(1,2,3)，不可修改）；<span class="kw">dict</span>（字典，如{"name":"张三"}，键值对）；<span class="kw">set</span>（集合，如{1,2,3}，无重复）。</li>
+      <li><span class="num">11.</span><span class="text"><span class="kw">标识符命名规则</span>：由<span class="kw">字母（大小写）、数字、下划线</span>组成；<span class="kw">不能以数字开头</span>；<span class="kw">区分大小写</span>（Age和age是两个不同变量）；<span class="kw">不能使用Python关键字</span>（如if/for/while/def等）；见名知义。</span></li>
+      <li><span class="num">12.</span><span class="text"><span class="kw">输入输出函数</span>：<span class="kw">input()</span>（从键盘接收用户输入，返回值为<span class="kw">字符串</span>类型，需int()/float()转换数字）；<span class="kw">print()</span>（输出内容到屏幕，可输出多个值用逗号分隔）。</li>
+      <li><span class="num">13.</span><span class="text"><span class="kw">Python关键字</span>（35个，无需全背但要有印象）：<span class="kw">if</span>、<span class="kw">elif</span>、<span class="kw">else</span>、<span class="kw">for</span>、<span class="kw">while</span>、<span class="kw">break</span>、<span class="kw">continue</span>、<span class="kw">def</span>、<span class="kw">return</span>、<span class="kw">class</span>、<span class="kw">import</span>、<span class="kw">from</span>、<span class="kw">as</span>、<span class="kw">try</span>、<span class="kw">except</span>、<span class="kw">finally</span>、<span class="kw">with</span>、<span class="kw">lambda</span>、<span class="kw">and</span>、<span class="kw">or</span>、<span class="kw">not</span>、<span class="kw">is</span>、<span class="kw">in</span>、<span class="kw">True</span>、<span class="kw">False</span>、<span class="kw">None</span>、<span class="kw">yield</span>、<span class="kw">global</span>、<span class="kw">nonlocal</span>、<span class="kw">assert</span>、<span class="kw">pass</span>、<span class="kw">raise</span>…命名标识符时不能用这些词。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ Python运算符（必背·考试重点）</div>
+    <ul class="kp-list">
+      <li><span class="num">14.</span><span class="text"><span class="kw">算术运算符</span>：<span class="kw">+</span>（加）；<span class="kw">-</span>（减）；<span class="kw">*</span>（乘）；<span class="kw">/</span>（除，结果为浮点数）；<span class="kw">//</span>（取整除，只保留整数部分）；<span class="kw">%</span>（取余数）；<span class="kw">**</span>（幂运算，如2**3=8）。</span></li>
+      <li><span class="num">15.</span><span class="text"><span class="kw">算术运算符优先级</span>：<span class="kw">**</span>（最高，幂运算）> <span class="kw">正负号</span>（+x/-x）> <span class="kw">* / % //</span> > <span class="kw">+ -</span>（最低）。括号()可改变优先级。</span></li>
+      <li><span class="num">16.</span><span class="text"><span class="kw">关系（比较）运算符</span>：<span class="kw">==</span>（等于，注意是双等号）；<span class="kw">!=</span>（不等于，Python2也可用&lt;&gt;但Python3已废弃）；<span class="kw">&gt;</span>（大于）；<span class="kw">&lt;</span>（小于）；<span class="kw">&gt;=</span>（大于等于）；<span class="kw">&lt;=</span>（小于等于）。比较运算结果返回<span class="kw">True或False</span>。</span></li>
+      <li><span class="num">17.</span><span class="text"><span class="kw">逻辑运算符</span>（优先级：<span class="kw">not > and > or</span>）：<span class="kw">and</span>（且，两边都为True结果才为True）；<span class="kw">or</span>（或，任一边为True结果即为True）；<span class="kw">not</span>（非，取反）。</span></li>
+    </ul>
+    <div class="code-block"># Python代码示例<br>a = 10<br>b = 3<br>print(a ** 2) &nbsp;&nbsp; # 输出 100（10的平方）<br>print(a // b) &nbsp;&nbsp;# 输出 3（取整除）<br>print(a % b) &nbsp;&nbsp; # 输出 1（余数）<br>print(a >= 5 and b < 5) &nbsp;&nbsp;# 输出 True</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 程序三大结构（必背·必考）</div>
+    <ul class="kp-list">
+      <li><span class="num">18.</span><span class="text"><span class="kw">顺序结构</span>：代码从头到尾<span class="kw">依次执行</span>，不发生跳转，最基础的结构。</span></li>
+      <li><span class="num">19.</span><span class="text"><span class="kw">选择结构（分支结构）</span>：根据条件判断决定执行哪段代码。Python中用 <span class="kw">if...elif...else...</span> 实现。注意：Python用<span class="kw">缩进</span>（通常4个空格）代替其他语言的大括号{}，缩进不正确会报错！</span></li>
+      <li><span class="num">20.</span><span class="text"><span class="kw">循环结构</span>：重复执行某段代码。Python提供两种：<span class="kw">for循环</span>（已知循环次数，遍历序列）；<span class="kw">while循环</span>（未知循环次数，条件为真时持续循环）。</span></li>
+      <li><span class="num">21.</span><span class="text"><span class="kw">循环控制语句</span>：<span class="kw">break</span>（立即跳出<span class="kw">本层</span>循环，不再执行循环中剩余语句）；<span class="kw">continue</span>（跳过本次循环中剩余语句，<span class="kw">继续下一次</span>循环）；<span class="kw">pass</span>（空语句，什么也不做，用作占位符）。</span></li>
+    </ul>
+    <div class="code-block"># if选择结构示例<br>score = 85<br>if score >= 90:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("优秀")<br>elif score >= 60:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("及格")<br>else:<br>&nbsp;&nbsp;&nbsp;&nbsp;print("不及格")</div>
+    <div class="code-block"># for和while循环示例<br>for i in range(5): &nbsp;&nbsp;# range(5)生成0~4<br>&nbsp;&nbsp;&nbsp;&nbsp;print(i)<br><br>n = 1<br>while n <= 5: &nbsp;&nbsp;# 条件为真时循环<br>&nbsp;&nbsp;&nbsp;&nbsp;print(n)<br>&nbsp;&nbsp;&nbsp;&nbsp;n = n + 1</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 函数与模块（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">22.</span><span class="text"><span class="kw">函数定义</span>：用 <span class="kw">def</span> 关键字定义函数：<span class="kw">def 函数名(参数1, 参数2):</span> 函数体（注意缩进）。</span></li>
+      <li><span class="num">23.</span><span class="text"><span class="kw">函数调用</span>：函数名后加括号并传入实参，如 <span class="kw">result = add(3, 5)</span>。</span></li>
+      <li><span class="num">24.</span><span class="text"><span class="kw">返回值</span>：用 <span class="kw">return</span> 语句返回结果；若无return语句，函数默认返回 <span class="kw">None</span>。</span></li>
+      <li><span class="num">25.</span><span class="text"><span class="kw">lambda匿名函数</span>：用 lambda 关键字定义简单函数，格式：<span class="kw">lambda 参数: 表达式</span>，如 f = lambda x: x*x，则 f(5) 返回25。</span></li>
+      <li><span class="num">26.</span><span class="text"><span class="kw">模块导入</span>：<span class="kw">import 模块名</span>（导入整个模块）；<span class="kw">from 模块名 import 函数名</span>（导入指定函数，调用时无需模块名前缀）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+<div class="module">
+    <div class="module-title">◆ Python列表操作（★高频考点）</div>
+    <ul class="kp-list">
+      <li><span class="num">27.</span><span class="text"><span class="kw">列表切片</span>：格式 <span class="kw">list[start:end:step]</span>（左闭右开，start省略=0，end省略=末尾，step省略=1）。</span></li>
+      <li><span class="num">28.</span><span class="text">切片示例：<span class="kw">a=[10,20,30,40,50]</span> → a[1:3]=[20,30]（索引1到2）→ a[:3]=[10,20,30]（从头到索引2）→ a[2:]=[30,40,50]（索引2到末尾）→ a[::-1]=[50,40,30,20,10]（<span class="kw">反转列表</span>）→ a[::2]=[10,30,50]（隔一个取一个）。</span></li>
+      <li><span class="num">29.</span><span class="text"><span class="kw">列表常用方法</span>：append(x)（末尾添加元素）；insert(i,x)（在位置i插入）；remove(x)（删除第一个值为x的元素）；pop(i)（删除并返回位置i的元素，默认最后一个）；sort()（原列表排序）；reverse()（原列表反转）；len(list)（返回长度）。</span></li>
+    </ul>
+    <div class="code-block">a = [3, 1, 4, 1, 5]<br>a.append(9)    # a = [3, 1, 4, 1, 5, 9]<br>a.sort()       # a = [1, 1, 3, 4, 5, 9]（升序）<br>a.reverse()    # a = [9, 5, 4, 3, 1, 1]<br>print(a[1:4])  # 输出 [5, 4, 3]<br>print(len(a))  # 输出 6</div>
+  </div>
+
+<div class="module">
+    <div class="module-title">◆ Python字符串操作（★高频考点）</div>
+    <ul class="kp-list">
+      <li><span class="num">30.</span><span class="text"><span class="kw">字符串方法</span>：<span class="kw">split(分隔符)</span>（按分隔符拆分为列表，默认按空格拆分）；<span class="kw">join(列表)</span>（将列表用指定字符连接为字符串）；<span class="kw">replace(旧,新)</span>（替换所有匹配子串）；<span class="kw">find(子串)</span>（查找子串位置，找不到返回-1）；<span class="kw">upper()/lower()</span>（转大写/小写）；<span class="kw">strip()</span>（去除首尾空白字符）。</span></li>
+      <li><span class="num">31.</span><span class="text">示例：<span class="kw">"a-b-c".split("-") → ["a","b","c"]</span>；<span class="kw">"-".join(["a","b","c"]) → "a-b-c"</span>；<span class="kw">"hello".replace("l","x") → "hexxo"</span>；<span class="kw">"hello world".find("world") → 6</span>。</span></li>
+      <li><span class="num">32.</span><span class="text"><span class="kw">格式化输出三种方式</span>：① <span class="kw">f-string</span>（推荐，Python 3.6+）：f"姓名：{name}，成绩：{score}"；② <span class="kw">format方法</span>："姓名：{}，成绩：{}".format(name,score)；③ <span class="kw">%格式化</span>（旧式）："姓名：%s，成绩：%d" % (name,score)。</span></li>
+    </ul>
+    <div class="code-block">name = "张三"<br>score = 95<br># f-string（推荐）<br>print(f"姓名：{name}，成绩：{score}")  # 姓名：张三，成绩：95<br>print(f"成绩等级：{'优秀' if score>=90 else '及格'}")<br><br># 字符串操作<br>s = "hello world"<br>print(s.split())      # ['hello', 'world']<br>print("-".join(s.split()))  # 'hello-world'<br>print(s.replace("world","Python"))  # 'hello Python'</div>
+  </div>
+
+  <!-- ===================== 5.3 运用典型算法 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">5.3</span>运用典型算法</div>
+
+  <div class="module">
+    <div class="module-title">◆ 常见排序算法（必背·高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">33.</span><span class="text"><span class="kw">冒泡排序（Bubble Sort）</span>：反复比较<span class="kw">相邻元素</span>，若顺序错误则交换；每轮将最大（或最小）元素"冒"到末尾。特点：<span class="kw">算法简单但效率低</span>，适合小规模数据；时间复杂度O(n²)。</span></li>
+      <li><span class="num">34.</span><span class="text"><span class="kw">选择排序（Selection Sort）</span>：每轮从未排序部分<span class="kw">选择最小（或最大）元素</span>，放到已排序部分末尾。特点：<span class="kw">不占用额外内存</span>（原地排序），但效率也不高；时间复杂度O(n²)。</span></li>
+      <li><span class="num">35.</span><span class="text"><span class="kw">插入排序（Insertion Sort）</span>：将未排序元素<span class="kw">逐个插入</span>到已排序序列的正确位置（类似理扑克牌）。特点：<span class="kw">数据量小或部分已排序时效率高</span>；时间复杂度O(n²)，但常数因子小，实际比冒泡快。</span></li>
+      <li><span class="num">36.</span><span class="text"><span class="kw">快速排序（Quick Sort）</span>：分治法思想，选一个<span class="kw">基准（pivot）</span>，将数组分为比基准小和比基准大的两部分，递归处理。特点：<span class="kw">平均速度快</span>（O(n log n)），但最坏情况（已排序数组）退化到O(n²)；实际中最常用。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>四种排序对比</strong>：冒泡（简单慢）/ 选择（不占内存）/ 插入（小数据快）/ 快速（平均最快）。考试常让你<span class="kw">写出排序过程的中间结果</span>！</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 冒泡排序比较次数（★常考计算）</div>
+    <ul class="kp-list">
+      <li><span class="num">37.</span><span class="text"><span class="kw">冒泡排序比较次数</span>：n个元素冒泡排序，最坏情况下（数据完全逆序）比较次数 = <span class="kw">n(n-1)/2</span>。例如：5个元素最坏比较 = 5×4/2 = <span class="kw">10次</span>；10个元素最坏比较 = 10×9/2 = <span class="kw">45次</span>。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>常考题型</strong>：给出n个数据，问冒泡排序最多需要比较多少次？答案 = <span class="kw">n(n-1)/2</span>。</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 常见查找算法（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">38.</span><span class="text"><span class="kw">线性查找（顺序查找）</span>：从头到尾逐个比较，找到目标或遍历完停止。优点：<span class="kw">适用范围广</span>（无需数据有序）；缺点：<span class="kw">速度慢</span>，时间复杂度O(n)。</span></li>
+      <li><span class="num">39.</span><span class="text"><span class="kw">二分查找（折半查找）</span>：每次将查找范围<span class="kw">减半</span>。前提：<span class="kw">数据必须已排好序</span>！优点：<span class="kw">速度快</span>，时间复杂度O(log n)；缺点：仅适用于有序数组。猜数字游戏（1~100猜数字）就是二分思想。</span></li>
+    </ul>
+    <div class="code-block"># 二分查找Python实现（必背！）<br>def binary_search(arr, target):<br>&nbsp;&nbsp;&nbsp;&nbsp;left, right = 0, len(arr) - 1<br>&nbsp;&nbsp;&nbsp;&nbsp;while left <= right:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mid = (left + right) // 2<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if arr[mid] == target:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return mid<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elif arr[mid] < target:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;left = mid + 1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;right = mid - 1<br>&nbsp;&nbsp;&nbsp;&nbsp;return -1  # 没找到</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ Python常用标准库（★常考）</div>
+    <ul class="kp-list">
+      <li><span class="num">40.</span><span class="text"><span class="kw">math库</span>（数学函数）：<span class="kw">math.sqrt(x)</span>（平方根）；<span class="kw">math.pow(x,y)</span>（x的y次幂）；<span class="kw">math.fabs(x)</span>（绝对值）；<span class="kw">math.ceil(x)</span>（向上取整）；<span class="kw">math.floor(x)</span>（向下取整）；<span class="kw">math.pi</span>（π常量）。</span></li>
+      <li><span class="num">41.</span><span class="text"><span class="kw">random库</span>（随机数）：<span class="kw">random.randint(a,b)</span>（生成[a,b]范围内的随机整数）；<span class="kw">random.choice(seq)</span>（从序列中随机选一个元素）；<span class="kw">random.shuffle(lst)</span>（将列表随机打乱顺序）。</span></li>
+      <li><span class="num">42.</span><span class="text"><span class="kw">datetime库</span>（日期时间）：<span class="kw">datetime.datetime.now()</span>（获取当前日期时间）；<span class="kw">datetime.date(2024,1,15)</span>（创建指定日期）。</span></li>
+      <li><span class="num">43.</span><span class="text"><span class="kw">os库</span>（操作系统接口）：<span class="kw">os.getcwd()</span>（获取当前工作目录）；<span class="kw">os.listdir(path)</span>（列出目录内容）；<span class="kw">os.path.exists(path)</span>（判断路径是否存在）。</span></li>
+      <li><span class="num">44.</span><span class="text"><span class="kw">sys库</span>（Python解释器相关）：<span class="kw">sys.argv</span>（命令行参数列表）；<span class="kw">sys.version</span>（Python版本信息）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ Python常用第三方库（了解即可）</div>
+    <ul class="kp-list">
+      <li><span class="num">45.</span><span class="text">机器学习：<span class="kw">scikit-learn</span>；深度学习：<span class="kw">TensorFlow / PyTorch</span></span></li>
+      <li><span class="num">46.</span><span class="text">Web开发：<span class="kw">Django</span>（全功能）/ <span class="kw">Flask</span>（轻量）</span></li>
+      <li><span class="num">47.</span><span class="text">数据科学：<span class="kw">NumPy</span>（数组）/ <span class="kw">Pandas</span>（分析）/ <span class="kw">Matplotlib</span>（可视化）</span></li>
+      <li><span class="num">48.</span><span class="text">其他：<span class="kw">OpenCV</span>（图像）/ <span class="kw">Requests</span>（网络）/ <span class="kw">Pillow</span>（图像处理）</span></li>
+    </ul>
+    <div class="tip-box">
+    <strong>【第五单元高频易错汇总】</strong><br>
+    ① 算法可以0个输入，但<span class="kw">至少1个输出</span>（常考判断题）<br>
+    ② Python中 <span class="kw">缩进就是语法</span>，不是格式问题（其他语言用{}，Python用缩进）<br>
+    ③ <span class="kw">==</span> 是等于比较，<span class="kw">=</span> 是赋值，别搞混<br>
+    ④ 二分查找<span class="kw">前提：数据已排序</span>，否则结果错误<br>
+    ⑤ <span class="kw">break</span>跳出本层循环，<span class="kw">continue</span>跳过本次继续下一轮
+  </div>
+  </div>
+    <div class="footer">第五单元 · 程序设计入门（5.1～5.3）· 江西省单招·对口升学信息技术专用</div>
+  </div>
+  <!-- ==================== 第六单元 ==================== -->
+  <div class="unit-section" id="unit6" style="page-break-before:always;">
+    <div class="unit-banner">
+      <div class="main-title">◎ 第六单元 · 数字媒体技术</div>
+      <div class="sub-title">6.1～6.4｜江西省单招·对口升学专用</div>
+    </div>
+<!-- ===================== 6.1 感知数字媒体技术 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">6.1</span>感知数字媒体技术</div>
+
+  <div class="module">
+    <div class="module-title">◆ 数字媒体技术基础（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">1.</span><span class="text"><span class="kw">数字媒体技术</span>：采用<span class="kw">二进制（0和1）</span>形式，通过计算机存储、处理及传播<span class="kw">文字、图像、声音、动画、视频</span>等信息的技术。</span></li>
+      <li><span class="num">2.</span><span class="text">数字媒体技术五大特点：<span class="kw">数字化</span>（最大特点，二进制存储）；<span class="kw">多样性</span>（信息类型丰富）；<span class="kw">集成性</span>（多种媒体融合）；<span class="kw">交互性</span>（用户可参与控制）；<span class="kw">艺术性</span>（与技术结合创造美）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 图像基础知识（必背·高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">3.</span><span class="text"><span class="kw">位图（点阵图/栅格图像）</span>：由<span class="kw">像素点阵</span>组成，每个像素记录颜色信息；放大失真（出现锯齿）；常见格式：<span class="kw">BMP</span>（无压缩，质量最高但文件大）；<span class="kw">JPG/JPEG</span>（有损压缩，压缩比高，适合照片）；<span class="kw">PNG</span>（无损压缩，支持透明背景，适合图标）；<span class="kw">GIF</span>（支持动画和透明，最多256色）；<span class="kw">PSD</span>（Photoshop专用，含图层信息）。</span></li>
+      <li><span class="num">4.</span><span class="text"><span class="kw">矢量图（向量图）</span>：由<span class="kw">数学公式描述的线条和形状</span>组成；放大/缩小<span class="kw">不失真</span>；常见格式：<span class="kw">CDR</span>（CorelDRAW）；<span class="kw">AI</span>（Adobe Illustrator）；<span class="kw">SVG</span>（可缩放矢量图形，Web常用）。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>区别</strong>：位图=像素点阵，放大失真（照片）；矢量图=数学公式，放大不失真（图标/标志）</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 色彩三要素（★常考）</div>
+    <ul class="kp-list">
+      <li><span class="num">5.</span><span class="text"><span class="kw">色相</span>（Hue，颜色的种类，如红、橙、黄、绿、蓝、紫）；<span class="kw">明度</span>（Brightness，颜色的明暗程度，明度高=亮，明度低=暗）；<span class="kw">纯度/饱和度</span>（Saturation，颜色的鲜艳程度，纯度高=鲜艳，纯度低=灰暗）。</span></li>
+    </ul>
+  </div>
+
+<div class="module">
+    <div class="module-title">◆ RGB与CMYK色彩模式（★高频）</div>
+    <div class="table-wrapper"><table>
+      <tr><th style="width:18%">模式</th><th style="width:25%">全称</th><th style="width:22%">原理</th><th>应用场景</th></tr>
+      <tr><td><span class="kw">RGB</span></td><td>Red Green Blue（加色模式）</td><td>三原色光混合，数值越大越<span class="kw">亮</span></td><td>屏幕显示（显示器/手机/电视）</td></tr>
+      <tr><td><span class="kw">CMYK</span></td><td>Cyan Magenta Yellow Key（减色模式）</td><td>四色油墨混合，数值越大越<span class="kw">暗</span></td><td>彩色印刷（打印机/印刷厂）</td></tr>
+    </table></div>
+    <ul class="kp-list">
+      <li><span class="num">6.</span><span class="text"><span class="kw">RGB值示例</span>：纯红=(255,0,0)，纯绿=(0,255,0)，纯蓝=(0,0,255)，纯白=(255,255,255)，纯黑=(0,0,0)，黄色=(255,255,0)（红+绿），青色=(0,255,255)（绿+蓝）。<span class="kw">RGB值越大越亮，CMYK值越大越暗</span>。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>助记</strong>：RGB用于屏幕（发光→越加越亮→白光=R=255,G=255,B=255）；CMYK用于印刷（反光→越加越暗→黑=K=100）。</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 音频基础知识（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">7.</span><span class="text">声音三要素：<span class="kw">音调</span>（频率决定，Hz，声音高低）；<span class="kw">音量</span>（振幅决定，声音强弱）；<span class="kw">音色</span>（波形特性，不同乐器同一音调音高但音色不同）。人耳可听频率范围：<span class="kw">20Hz～20kHz</span>。</span></li>
+      <li><span class="num">8.</span><span class="text">音频数字化三步骤：<span class="kw">采样</span>（按一定时间间隔取声音振幅值）→<span class="kw">量化</span>（将采样值转换为数字）→<span class="kw">编码</span>（将数字信号组织存储，模数转换A/D）。最常用采样频率：<span class="kw">44.1kHz</span>（CD音质标准，每秒采样44100次）。</span></li>
+      <li><span class="num">9.</span><span class="text">常见音频格式：<span class="kw">WAV</span>（微软标准，无压缩，不失真，文件大）；<span class="kw">MP3</span>（有损压缩，压缩比约1:12，广泛使用）；<span class="kw">WMA</span>（微软高保真，压缩比高）；<span class="kw">FLAC/APE</span>（无损压缩，保留所有细节，文件比WAV小）；<span class="kw">MIDI</span>（不是音频，是音乐数据指令文件，极小体积）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 视频与动画基础知识（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">10.</span><span class="text"><span class="kw">帧率（FPS）</span>：每秒显示的<span class="kw">帧数</span>，帧率越高越流畅；主流网络视频<span class="kw">29.97帧/秒</span>；二维动画标准<span class="kw">24帧/秒</span>（电影标准）；高速摄像可达上千帧。</span></li>
+      <li><span class="num">11.</span><span class="text"><span class="kw">分辨率</span>：如<span class="kw">1920×1080</span>表示水平1920个像素×垂直1080像素；分辨率越高图像越清晰，但文件越大。<span class="kw">位图</span>分辨率越高越清晰；<span class="kw">矢量图</span>分辨率不影响清晰度（无限缩放）。</span></li>
+      <li><span class="num">12.</span><span class="text">常见视频格式：<span class="kw">AVI</span>（微软，音视频交错，质量好但文件大）；<span class="kw">WMV</span>（微软流媒体，可边下边播）；<span class="kw">MP4/MPEG</span>（国际标准，高清晰度，兼容性最好）；<span class="kw">RM/RMVB</span>（RealNetworks流媒体，RMVB为可变码率，清晰度更高）；<span class="kw">MOV</span>（苹果QuickTime）。</span></li>
+      <li><span class="num">13.</span><span class="text">动画文件格式：<span class="kw">SWF</span>（Flash，流式播放，不失真）；<span class="kw">FLV</span>（网络流媒体，文件小）；<span class="kw">MAX</span>（3ds Max三维动画项目文件）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 音视频文件大小计算（必背·常考）</div>
+    <ul class="kp-list">
+      <li><span class="num">14.</span><span class="text"><span class="kw">无损压缩</span>：压缩后可以完全还原，不丢失任何信息；压缩比通常1/2~1/5；典型算法：<span class="kw">LZW/DEFLATE</span>（WinRAR/ZIP/winrar使用）。</span></li>
+      <li><span class="num">15.</span><span class="text"><span class="kw">音频文件大小公式</span>（秒）：文件大小 = <span class="kw">采样频率(Hz) × 量化位数(bit) × 声道数 × 时间(秒) ÷ 8</span>（结果单位：字节）。<br>例：CD音质44100Hz×16bit×2声道×60秒÷8 = <span class="kw">10,584,000字节 ≈ 10.1MB</span>（每分钟）。</li>
+      <li><span class="num">16.</span><span class="text"><span class="kw">视频文件大小估算</span>：文件大小 ≈ <span class="kw">水平像素 × 垂直像素 × 帧率 × 时间(秒) × 每像素位数 ÷ 8</span>（未压缩，实际经压缩后远小于此值）。</li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 数据压缩（必背·常考）</div>
+    <ul class="kp-list">
+      <li><span class="num">17.</span><span class="text"><span class="kw">有损压缩</span>：压缩后无法完全还原，会丢失部分信息；压缩比高（10倍以上）；典型：<span class="kw">JPEG</span>（图片）/ <span class="kw">MP3</span>（音频）/ <span class="kw">MP4/H.264</span>（视频）。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>助记</strong>：无损=可完全还原（ZIP/RAR压缩包）；有损=丢信息换体积小（JPG/MP3）</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 6.2 制作数字媒体作品 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">6.2</span>制作数字媒体作品</div>
+
+  <div class="module">
+    <div class="module-title">◆ 图像处理与构图（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">18.</span><span class="text">常用图像处理软件：<span class="kw">美图秀秀</span>（简单易用，适合日常）；<span class="kw">Photoshop</span>（专业，功能最强）；<span class="kw">CorelDRAW/Illustrator</span>（矢量图形）；<span class="kw">光影魔术手</span>（批量处理）。</span></li>
+      <li><span class="num">19.</span><span class="text">构图美学三法则：<span class="kw">黄金分割法</span>（0.618比例，画面最美分割）；<span class="kw">三分法</span>（横竖各三等份，主体放交叉点/线上）；<span class="kw">均衡法</span>（对称均衡/非对称均衡，画面平衡）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 动画与视频制作（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">20.</span><span class="text">动画分类：<span class="kw">平面动画</span>（手绘，如《大闹天宫》）；<span class="kw">立体动画</span>（木偶，如《阿凡提》）；<span class="kw">计算机动画</span>（用软件制作，如Animate/3ds Max）。</span></li>
+      <li><span class="num">21.</span><span class="text">短视频制作流程：<span class="kw">脚本创作</span>（构思内容）→<span class="kw">拍摄素材</span>（获取原始视频）→<span class="kw">视频剪辑</span>（拼接/剪切/特效/配音）。常用剪辑软件：<span class="kw">Premiere Pro</span>（Adobe，专业）；<span class="kw">会声会影</span>（入门级）；<span class="kw">剪映</span>（字节跳动，简单易用，手机也能剪）。</span></li>
+      <li><span class="num">22.</span><span class="text">景别五类：<span class="kw">远景</span>（全貌/环境）；<span class="kw">全景</span>（人物全身）；<span class="kw">中景</span>（膝盖以上）；<span class="kw">近景</span>（胸部以上）；<span class="kw">特写</span>（局部，如脸部/物品细节）。</span></li>
+      <li><span class="num">23.</span><span class="text">镜头运动六方式：<span class="kw">推</span>（镜头靠近主体，画面变大）；<span class="kw">拉</span>（镜头远离，画面变小）；<span class="kw">摇</span>（镜头原地旋转）；<span class="kw">移</span>（镜头水平移动）；<span class="kw">升</span>（镜头上升）；<span class="kw">降</span>（镜头下降）。</span></li>
+      <li><span class="num">24.</span><span class="text">镜头组接规律：<span class="kw">动接动</span>（运动镜头接运动镜头，衔接流畅）；<span class="kw">静接静</span>（静止镜头接静止镜头，避免跳跃感）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 6.3 设计演示文稿 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">6.3</span>设计演示文稿（PPT）</div>
+
+  <div class="module">
+    <div class="module-title">◆ PPT基础概念（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">25.</span><span class="text">常用演示文稿软件：<span class="kw">PowerPoint</span>（微软Office，最主流）；<span class="kw">WPS演示</span>（金山，兼容PPT格式）；<span class="kw">Focusky</span>（逻辑大纲式演示）。宽屏设备（如投影/大屏）推荐使用<span class="kw">16:9</span>比例；传统屏幕用<span class="kw">4:3</span>比例。</span></li>
+      <li><span class="num">26.</span><span class="text">四种视图模式：<span class="kw">普通视图</span>（默认编辑视图，左侧大纲+右侧幻灯片）；<span class="kw">幻灯片浏览视图</span>（缩略图模式，查看所有幻灯片整体布局）；<span class="kw">阅读视图</span>（适合阅读文档内容）；<span class="kw">幻灯片放映视图</span>（全屏放映，F5开始）。</span></li>
+      <li><span class="num">27.</span><span class="text"><span class="kw">模板（.potx/.potm）</span>：预先设计好的演示文稿框架，包含背景/配色/字体/页脚等，用户只需填入内容；基于模板新建可保证风格统一。<span class="kw">主题</span>：软件内置的标准化配色+字体+效果方案，比模板更轻量，一键套用美化PPT。</span></li>
+      <li><span class="num">28.</span><span class="text">保存格式：<span class="kw">.pptx</span>（默认，压缩格式）；<span class="kw">.ppsx</span>（PowerPoint Show，直接放映格式，双击即放映）；<span class="kw">.pptm</span>（启用宏的演示文稿）；<span class="kw">.pdf</span>（固定排版，不可编辑）；可打包成CD或导出为视频（.mp4）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 动画类型（必背·高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">29.</span><span class="text"><span class="kw">页面动画（对象动画）</span>：针对单个对象设置的动画，添加到对象后播放该页时触发。四类：
+        <span class="kw">进入动画</span>（对象如何出现，如飞入/淡入/缩放）；
+        <span class="kw">强调动画</span>（对象出现后如何吸引注意，如放大/颜色变化/脉冲）；
+        <span class="kw">退出动画</span>（对象如何消失，如飞出/淡出）；
+        <span class="kw">动作路径动画</span>（对象沿自定义路径移动，如画出线条/圆形轨迹）。</span></li>
+      <li><span class="num">30.</span><span class="text"><span class="kw">换片动画（幻灯片切换效果）</span>：控制<span class="kw">从一张幻灯片切换到下一张</span>时的过渡效果，如淡出、推入、溶解、随机等。可设切换速度（慢/中/快）和换片方式（单击鼠标换/定时自动换）。</span></li>
+      <li><span class="num">31.</span><span class="text">动画窗格：动画选项卡→动画窗格（显示所有动画的顺序列表）；可调整动画<span class="kw">顺序</span>（上下拖动）；可设置<span class="kw">触发方式</span>（单击时/与上一动画同时/上一动画之后）；<span class="kw">持续时间</span>和<span class="kw">延迟</span>可精确设置。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 放映方式（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">32.</span><span class="text">三种放映类型：<span class="kw">演讲者放映</span>（全屏，演讲者有控制权，可看备注/切换幻灯片）；<span class="kw">观众自行浏览</span>（在窗口中运行，观众自己翻页）；<span class="kw">在展台浏览</span>（全屏循环放映，无控制按钮，适合展览自动播放）。</span></li>
+      <li><span class="num">33.</span><span class="text">放映快捷键：<span class="kw">F5</span>（从头开始放映）；<span class="kw">Shift+F5</span>（从当前页开始放映）；<span class="kw">ESC</span>（退出放映）；<span class="kw">←/→</span>或<span class="kw">空格</span>（前进/后退幻灯片）；<span class="kw">B</span>（黑屏）；<span class="kw">W</span>（白屏）；<span class="kw">Ctrl+P</span>（打开激光笔/画笔）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 6.4 VR与AR ===================== -->
+  <div class="chapter-title"><span class="chapter-num">6.4</span>初识虚拟现实与增强现实</div>
+
+  <div class="module">
+    <div class="module-title">◆ VR虚拟现实（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">34.</span><span class="text"><span class="kw">VR（Virtual Reality）</span>：利用计算机仿真系统，创建<span class="kw">纯虚拟的三维数字环境</span>，让用户产生身临其境的沉浸感。</span></li>
+      <li><span class="num">35.</span><span class="text">VR三大特征：<span class="kw">沉浸感</span>（用户完全沉浸在虚拟环境中）；<span class="kw">交互性</span>（用户可与虚拟环境中的对象实时交互）；<span class="kw">想象性</span>（可在虚拟世界中实现现实中难以实现的情景）。</span></li>
+      <li><span class="num">36.</span><span class="text">VR四大要素：<span class="kw">模拟环境</span>（计算机生成的虚拟世界）；<span class="kw">感知</span>（视觉/听觉/触觉等多感官模拟）；<span class="kw">自然技能</span>（用户可用自然方式操作）；<span class="kw">专用设备</span>（数据手套/头戴式显示器HMD/3D扫描仪等）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ AR增强现实 & VR/AR区别（必背·高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">37.</span><span class="text"><span class="kw">AR（Augmented Reality）增强现实</span>：将<span class="kw">虚拟信息叠加融合到真实环境中</span>，增强用户对现实世界的感知。典型应用：手机AR测距尺/量角器、博物馆AR导览、游戏Pokemon GO。</span></li>
+      <li><span class="num">38.</span><span class="text">AR三大特点：<span class="kw">现实与虚拟集成</span>（虚实结合）；<span class="kw">实时交互</span>（用户与虚拟对象实时互动）；<span class="kw">三维空间定位</span>（虚拟物体在三维空间中与真实物体对齐）。</span></li>
+      <li><span class="num">39.</span><span class="text"><span class="kw">VR vs AR核心区别</span>：VR=完全<span class="kw">沉浸于虚拟世界</span>（隔绝真实）；AR=将虚拟<span class="kw">叠加到真实世界</span>（虚实融合）。比喻：VR是"做梦"，AR是"做梦中的东西出现在真实房间里"。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>助记</strong>：VR（Virtual）=纯虚拟，全沉浸；AR（Augmented）=真实+虚拟混合。VR=戴上眼罩进入虚拟世界，AR=用手机看真实世界+叠加虚拟物品</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== PPT模拟操作题 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">✦</span>PPT模拟操作题——典型考点与标准操作步骤</div>
+
+  <div class="op-block">
+    <div class="otitle">【考点1】演示文稿基本操作</div>
+    <div class="ostep">
+      <div><strong>新建演示文稿：</strong>文件→新建→选择模板；或 <span class="op-key">Ctrl+N</span> 新建空白演示文稿</div>
+      <div><strong>保存/另存为：</strong><span class="op-key">Ctrl+S</span> 保存；<span class="op-key">F12</span> 另存为（可改文件类型：.pptx/.ppsx/.pdf/导出视频.mp4）</div>
+      <div><strong>插入新幻灯片：</strong><span class="op-key">Ctrl+M</span>（在当前位置插入）；开始→新建幻灯片（下拉箭头可选版式）</div>
+      <div><strong>复制/删除幻灯片：</strong>选中幻灯片缩略图→<span class="op-key">Ctrl+D</span> 复制；<span class="op-key">Delete</span> 删除</div>
+      <div><strong>幻灯片放映：</strong><span class="op-key">F5</span>（从头放映）；<span class="op-key">Shift+F5</span>（从当前页放映）；ESC退出</div>
+    </div>
+    <div class="op-note">★ 常考：将.pptx另存为.ppsx（直接放映格式）；将演示文稿导出为.mp4视频；Ctrl+M快速插入多张空白幻灯片</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点2】幻灯片版式与模板（高频！）</div>
+    <div class="ostep">
+      <div><strong>设置幻灯片版式：</strong>开始→<span class="op-key">版式</span>→选择预设版式（标题幻灯片/标题和内容/两栏内容/空白等）</div>
+      <div><strong>更改幻灯片尺寸：</strong>设计→<span class="op-key">幻灯片大小</span>→宽屏16:9/标准4:3/自定义大小</div>
+      <div><strong>应用主题（快速美化）：</strong>设计→<span class="op-key">主题</span>组→选择内置主题（悬停预览，单击应用）；可右键更改主题颜色/字体/效果</div>
+      <div><strong>使用模板：</strong>文件→新建→搜索联机模板/从模板新建；或下载.potx模板文件，双击打开自动创建基于该模板的新演示文稿</div>
+      <div><strong>设置幻灯片背景：</strong>设计→<span class="op-key">设置背景格式</span>→纯色填充/渐变填充/图片或纹理填充/图案填充；可应用到全部或当前幻灯片</div>
+    </div>
+    <div class="op-note">★ 常考：设16:9宽屏；套用内置主题使PPT风格统一；将某页背景设为纯蓝色渐变</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点3】文本编辑与格式化</div>
+    <div class="ostep">
+      <div><strong>输入文本：</strong>直接单击占位符输入；或插入→<span class="op-key">文本框</span>→在任意位置绘制文本框输入</div>
+      <div><strong>文本框操作：</strong>文本框有八个控制点（拖动改变大小）；旋转手柄（拖动旋转）；拖动边框移动位置</div>
+      <div><strong>字体格式：</strong>开始→字体组（字体/字号/颜色/加粗B/倾斜I/下划线U）；或选中后右键→字体（可设字符间距）</div>
+      <div><strong>段落格式：</strong>开始→段落组（左对齐/居中/右对齐/两端对齐；项目符号/编号；行距）</div>
+      <div><strong>查找替换文本：</strong><span class="op-key">Ctrl+H</span> 打开查找替换（替换所有幻灯片中的相同文字）</div>
+    </div>
+    <div class="op-note">★ 常考：标题设为黑体44号红色居中；正文设为微软雅黑28号；用文本框添加备注说明文字</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点4】插入图片、形状与SmartArt</div>
+    <div class="ostep">
+      <div><strong>插入图片：</strong>插入→<span class="op-key">图片</span>→选择图片文件；可裁剪（图片格式→裁剪）；可压缩（图片格式→压缩图片，减小文件体积）</div>
+      <div><strong>插入形状：</strong>插入→<span class="op-key">形状</span>→选择线条/矩形/箭头/流程图符号等；可填充颜色/设置轮廓/添加阴影</div>
+      <div><strong>组合与取消组合：</strong>选中多个对象→右键→<span class="op-key">组合</span>（整体移动/缩放）；已组合对象可右键→取消组合打散</div>
+      <div><strong>插入SmartArt：</strong>插入→<span class="op-key">SmartArt</span>→选择图形类型：列表（项目符号列表）/流程（步骤流程）/循环（环形流程）/层次结构（组织结构图）/关系/矩阵/棱锥图</div>
+      <div><strong>编辑SmartArt：</strong>点击SmartArt左侧<span class="op-key">文本窗格</span>可直接编辑文字；设计→添加形状（增加项目）；可更改颜色和样式</div>
+    </div>
+    <div class="op-note">★ 常考：用SmartArt制作组织结构图；插入产品图片并裁剪为圆形；将多个形状组合成一个整体</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点5】动画设置（高频！重点！）</div>
+    <div class="ostep">
+      <div><strong>添加页面动画：</strong>选中对象→动画→选择动画类型（<span class="op-key">进入</span>/<span class="op-key">强调</span>/<span class="op-key">退出</span>/<span class="op-key">动作路径</span>）；每类有多种效果可选（飞入/淡入/缩放/弹跳等）</div>
+      <div><strong>设置动画顺序：</strong>动画→<span class="op-key">动画窗格</span>（显示所有动画列表）；上下拖动调整顺序</div>
+      <div><strong>设置触发方式：</strong>动画窗格→选中动画→<span class="op-key">触发</span>→单击时/与上一动画同时/上一动画之后</div>
+      <div><strong>设置时间：</strong>动画窗格→选中动画→<span class="op-key">持续时间</span>（动画播放时长）；<span class="op-key">延迟</span>（动画开始前的等待时间）；可与下一动画自动衔接（无延迟+与上一动画同时）</div>
+      <div><strong>复制动画：</strong>选中已设置动画的对象→<span class="op-key">格式刷</span>→单击目标对象（一键复制动画）</div>
+    </div>
+    <div class="op-note">★ 常考：给所有项目符号设置"淡入"动画并依次出现（每个延迟0.5秒）；给标题设置"飞入"动画；删除/关闭某对象的动画</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点6】幻灯片切换效果</div>
+    <div class="ostep">
+      <div><strong>设置切换效果：</strong>选中幻灯片→<span class="op-key">切换</span>→选择切换样式（淡出/推入/溶解/百叶窗/随机等）</div>
+      <div><strong>设置切换速度：</strong>切换→效果选项→慢/中/快</div>
+      <div><strong>设置换片方式：</strong>切换→勾选"<span class="op-key">单击鼠标时</span>"（单击换页）；勾选"<span class="op-key">设置自动换片时间</span>"（定时自动切换，如3秒）</div>
+      <div><strong>应用到全部幻灯片：</strong>切换→<span class="op-key">全部应用</span>（所有幻灯片使用相同切换效果）</div>
+    </div>
+    <div class="op-note">★ 常考：全部幻灯片设"淡出"切换；设"推入"效果，方向"从左"；设自动换片时间5秒（展览自动播放模式）</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点7】母版视图与页眉页脚</div>
+    <div class="ostep">
+      <div><strong>进入母版视图：</strong>视图→<span class="op-key">幻灯片母版</span>（左侧显示母版列表，第一张是<span class="op-key">幻灯片母版</span>，后面是<span class="op-key">版式</span>）</div>
+      <div><strong>编辑母版：</strong>在母版视图中，修改背景/字体/颜色/页脚占位符；所有应用该母版的幻灯片自动更新</div>
+      <div><strong>添加页眉页脚：</strong>插入→<span class="op-key">页眉和页脚</span>→勾选"日期和时间"/"幻灯片编号"/"页脚"；可设"标题幻灯片中不显示"</div>
+      <div><strong>退出母版视图：</strong>母版工具→关闭→关闭母版视图；或点击"幻灯片母版"标签退出</div>
+    </div>
+    <div class="op-note">★ 常考：在母版中统一设置每页底部的页脚文字（如"企业内部培训资料"）；设所有幻灯片右下角显示页码；首页不显示页眉页脚</div>
+  </div>
+
+  <div class="op-block">
+    <div class="otitle">【考点8】放映设置与导出</div>
+    <div class="ostep">
+      <div><strong>排练计时：</strong>幻灯片放映→<span class="op-key">排练计时</span>（模拟放映，记录每张幻灯片停留时间）；保存后可选择"使用排练计时"自动播放</div>
+      <div><strong>设置放映方式：</strong>幻灯片放映→设置幻灯片放映；可设<span class="op-key">放映类型</span>（演讲者放映/观众自行浏览/在展台浏览）；可设<span class="op-key">放映幻灯片范围</span>（全部/指定页，如3-7）</div>
+      <div><strong>隐藏幻灯片：</strong>右键幻灯片缩略图→<span class="op-key">隐藏幻灯片</span>（放映时不显示，但可从列表中取消隐藏）</div>
+      <div><strong>导出为视频：</strong>文件→导出→创建视频→选择质量（高/中/低）→设置每张幻灯片播放时间→创建视频（.mp4）</div>
+      <div><strong>打印设置：</strong>文件→打印；可选择打印范围（全部/当前/选中的幻灯片）；打印布局（1/2/3/4/6/9张每页）；讲义打印（一页多张幻灯片，方便 handout）</div>
+    </div>
+    <div class="op-note">★ 常考：导出为.mp4视频用于分享；设放映第3~8张（不包括第5张，可用隐藏）；排练计时后自动放映</div>
+  </div>
+  <div class="tip-box">
+    <strong>【第六单元高频易错汇总】</strong><br>
+    ① 位图放大失真，矢量图放大不失真（常考判断题）<br>
+    ② MP3是有损压缩，FLAC是无损压缩（易混淆）<br>
+    ③ 44.1kHz是CD采样频率（常考填空）<br>
+    ④ VR沉浸式（全虚拟）vs AR增强式（虚实融合）<br>
+    ⑤ 动画=24帧/秒，电影=24帧/秒（人眼平滑感知下限）<br>
+    ⑥ 音频大小 = <span class="kw">采样频率×量化位数×声道数×时间÷8</span>（字节）
+  </div>
+    <div class="footer">第六单元 · 数字媒体技术（6.1～6.4）· 江西省单招·对口升学信息技术专用</div>
+  </div>
+  <!-- ==================== 第七单元 ==================== -->
+  <div class="unit-section" id="unit7" style="page-break-before:always;">
+    <div class="unit-banner">
+      <div class="main-title">◎ 第七单元 · 信息安全基础</div>
+      <div class="sub-title">7.1～7.2｜江西省单招·对口升学专用</div>
+    </div>
+<!-- ===================== 7.1 了解信息安全常识 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">7.1</span>了解信息安全常识</div>
+
+  <div class="module">
+    <div class="module-title">◆ 信息安全基本概念（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">1.</span><span class="text"><span class="kw">信息安全</span>：保护信息系统的硬件、软件及数据不遭受<span class="kw">破坏、更改、泄露</span>，保证系统<span class="kw">连续、可靠、正常运行</span>，服务不中断。核心是保护信息的<span class="kw">机密性、完整性、可用性</span>。</span></li>
+      <li><span class="num">2.</span><span class="text">信息安全五大基本属性（必背！）：<span class="kw">完整性</span>（信息不被篡改、破坏，最基本的属性）；<span class="kw">保密性</span>（信息不泄露给未授权的实体）；<span class="kw">可用性</span>（授权者在需要时可以正常访问和使用）；<span class="kw">可控性</span>（能对信息传播范围和内容进行有效控制）；<span class="kw">不可否认性</span>（参与者的身份真实，所有操作可追溯）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 安全风险来源与攻击类型（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">3.</span><span class="text">信息系统安全风险来源三类：<span class="kw">自然灾害</span>（火灾、洪水、雷电、地震、台风等，不可控但可预防，如建设机房时做好防护）；<span class="kw">系统漏洞和故障</span>（软件缺陷/硬件故障导致的安全隐患，如SQL注入漏洞、弱口令）；<span class="kw">人为因素</span>（最大威胁，包括恶意攻击和人为失误，如打开钓鱼邮件附件、密码泄露）。</span></li>
+      <li><span class="num">4.</span><span class="text">恶意攻击三类：<span class="kw">被动攻击</span>（窃听/监听信息内容，不修改数据，如网络嗅探）；<span class="kw">主动攻击</span>（篡改数据、伪造身份、拒绝服务，如DoS攻击）；<span class="kw">物理破坏</span>（直接破坏物理基础设施，如盗走服务器）。</span></li>
+      <li><span class="num">5.</span><span class="text">常见网络威胁：<span class="kw">网络谣言</span>（传播虚假信息，扰乱社会秩序）；<span class="kw">网络诈骗</span>（以非法占有为目的骗取财物）；<span class="kw">网络暴力</span>（在网络上发表诽谤、侮辱性言论）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 个人信息保护与法律（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">6.</span><span class="text"><span class="kw">个人信息</span>包括：姓名、身份证号码、家庭住址、电话号码、电子邮箱、健康信息、行踪轨迹、银行卡号等。<span class="kw">不随意连接来源不明的Wi-Fi网络</span>（可能被窃取信息）；废弃电子设备需<span class="kw">彻底清除数据</span>后再处理。</span></li>
+      <li><span class="num">7.</span><span class="text"><span class="kw">《中华人民共和国网络安全法》</span>是我国网络空间治理的基础性法律。网络空间不是法外之地，在网上发表言论、传播信息同样<span class="kw">需要承担法律责任</span>。</span></li>
+      <li><span class="num">8.</span><span class="text"><span class="kw">自主可控三层面</span>：<span class="kw">知识产权自主可控</span>（拥有自主知识产权，不受制于人）；<span class="kw">能力自主可控</span>（具备独立研发和生产能力）；<span class="kw">发展自主可控</span>（掌握核心技术和未来发展方向）。</span></li>
+    </ul>
+
+    <div class="tip-box">⚡ <strong>助记</strong>：信息安全五大属性 = <span class="kw">完（完整性）保（保密性）可（可用性）控（可控性）否（不可否认性）</span>；最基本属性是<span class="kw">完整性</span>（不被篡改/破坏）；最大威胁是<span class="kw">人为因素</span>。</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 7.2 防范信息系统恶意攻击 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">7.2</span>防范信息系统恶意攻击</div>
+
+  <div class="module">
+    <div class="module-title">◆ 常见攻击手段（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">9.</span><span class="text"><span class="kw">口令攻击（密码攻击）</span>：黑客最常用的入侵方法，通过<span class="kw">破解账号密码</span>获取系统访问权限。常见方式：暴力破解（穷举尝试所有组合）、字典攻击（使用常见密码字典）、社会工程学（骗取密码）。破解账号后可随意窃取/破坏/篡改目标系统信息。</span></li>
+      <li><span class="num">10.</span><span class="text"><span class="kw">SQL注入攻击</span>：通过在用户输入中插入SQL语句片段，绕过登录验证或获取数据库数据。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 恶意代码类型（必背·高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">11.</span><span class="text"><span class="kw">木马（Trojan）</span>：伪装成正常程序，实际执行恶意功能；典型危害：<span class="kw">盗取用户信息/远程控制</span>被植入木马的计算机（"肉鸡"）；木马需要用户配合运行，不会自我复制。</span></li>
+      <li><span class="num">12.</span><span class="text"><span class="kw">僵尸程序（Bot）</span>：入侵计算机后将其变成可被远程控制的"僵尸主机"；大量僵尸主机组成<span class="kw">僵尸网络（Botnet）</span>，用于发起大规模DDoS攻击、发送垃圾邮件等。</span></li>
+      <li><span class="num">13.</span><span class="text"><span class="kw">蠕虫（Worm）</span>：能<span class="kw">自我复制并自动传播</span>的恶意程序；通过漏洞/邮件/网络共享传播；典型危害：<span class="kw">大量消耗网络带宽和系统资源</span>，导致系统瘫痪（如"熊猫烧香"蠕虫）。</span></li>
+      <li><span class="num">14.</span><span class="text"><span class="kw">计算机病毒（Virus）</span>：依附于其他程序，<span class="kw">感染文件</span>并自我复制传播；具有<span class="kw">传播性、隐蔽性、感染性、潜伏性、可激发性、破坏性</span>六大特征。<span class="kw">注意：计算机病毒没有"免疫性"（感染后不代表不会再感染）</span>。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ DoS攻击 & 防御手段（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">15.</span><span class="text"><span class="kw">拒绝服务攻击（DoS）</span>：向目标系统发送大量请求或攻击包，耗尽其资源，<span class="kw">使正常用户无法获得服务</span>。<span class="kw">DDoS</span>（分布式DoS）=多个来源同时发起，更难防御。</span></li>
+      <li><span class="num">16.</span><span class="text"><span class="kw">身份验证</span>：信息安全第一道防线。方式：静态密码（最常用但最不安全）；动态口令（一次性密码）；生物识别（指纹/人脸/虹膜/声纹）。<span class="kw">双因子验证</span>（组合两种验证方式，如密码+手机验证码）安全性更高。</span></li>
+      <li><span class="num">17.</span><span class="text"><span class="kw">数据加密</span>：通过加密算法将<span class="kw">明文转换为密文</span>，防止未授权者读取。我国密码分类：<span class="kw">核心密码</span>（国家核心机密）、<span class="kw">普通密码</span>（政府机关）、<span class="kw">商用密码</span>（商业领域，企业和个人使用）。加密方式分两类：<span class="kw">对称加密</span>（加密和解密用同一密钥，如AES/DES，速度快但密钥分发困难）；<span class="kw">非对称加密</span>（公钥加密/私钥解密，如RSA，密钥分发安全但速度慢）。我国<span class="kw">量子加密技术</span>世界领先。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 防火墙与等级保护（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">18.</span><span class="text"><span class="kw">防火墙（Firewall）</span>：部署在<span class="kw">内部网络与外部网络之间</span>的边界安全系统，监控和控制进出网络的通信，阻挡非法访问和入侵。类型：<span class="kw">软件防火墙</span>（个人/家庭电脑，Windows Defender/360等）；<span class="kw">硬件防火墙</span>（企业级，专用设备，处理能力强）。防火墙三大功能：限制未授权访问、防止外部入侵、限制内部用户访问特殊站点。</span></li>
+      <li><span class="num">19.</span><span class="text"><span class="kw">网络安全等级保护（等保）</span>五级：<span class="kw">第一级</span>（用户自主保护）；<span class="kw">第二级</span>（系统审计）；<span class="kw">第三级</span>（安全标记）；<span class="kw">第四级</span>（结构化保护）；<span class="kw">第五级</span>（访问验证，最高等级）。等级越高，安全保护要求越严格。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 数据备份 & 安全使用原则（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">20.</span><span class="text">数据备份三策略：<span class="kw">完全备份</span>（某时间点完整备份所有数据，恢复最简单但最耗时/占空间）；<span class="kw">增量备份</span>（只备份<span class="kw">新增或修改过的数据</span>，速度最快，空间最少，但恢复需按顺序恢复所有增量）；<span class="kw">差量备份</span>（备份与首次完全备份之间的差异，介于完全和增量之间）。</span></li>
+      <li><span class="num">21.</span><span class="text">安全使用原则：<span class="kw">从官方渠道</span>下载软件；开启系统<span class="kw">自动更新</span>及时修复漏洞；不随意扫描来源不明的二维码；不打开可疑邮件的附件和链接；不使用<span class="kw">USB调试模式</span>在手机上安装未知来源应用；为账户设置<span class="kw">强密码</span>（大小写字母+数字+符号，长度8位以上）。</span></li>
+    </ul>
+
+    <div class="tip-box">
+    <strong>【第七单元高频易错汇总】</strong><br>
+    ① 信息安全<span class="kw">最基本属性</span>是完整性（不被篡改/破坏）<br>
+    ② 信息安全<span class="kw">最大威胁</span>是人为因素（不是自然灾害或系统漏洞）<br>
+    ③ 计算机病毒<span class="kw">没有免疫性</span>（感染后不代表不会再感染）<br>
+    ④ 防火墙企业用<span class="kw">硬件</span>，个人用<span class="kw">软件</span><br>
+    ⑤ 打开不安全附件属于<span class="kw">人为失误</span>，不是恶意攻击（但可能引发恶意代码）<br>
+    ⑥ 木马需要用户配合运行，不会自我复制；蠕虫可以自我复制并自动传播<br>
+    ⑦ <span class="kw">对称加密</span>（如AES）加密解密用<span class="kw">同一密钥</span>，速度快；<span class="kw">非对称加密</span>（如RSA）用<span class="kw">公钥加密、私钥解密</span>，更安全
+  </div>
+  </div>
+    <div class="footer">第七单元 · 信息安全基础（7.1～7.2）· 江西省单招·对口升学信息技术专用</div>
+  </div>
+  <!-- ==================== 第八单元 ==================== -->
+  <div class="unit-section" id="unit8" style="page-break-before:always;">
+    <div class="unit-banner">
+      <div class="main-title">◎ 第八单元 · 人工智能初步</div>
+      <div class="sub-title">8.1～8.2｜江西省单招·对口升学专用</div>
+    </div>
+<!-- ===================== 8.1 初识人工智能 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">8.1</span>初识人工智能</div>
+
+  <div class="module">
+    <div class="module-title">◆ 人工智能基础概念（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">1.</span><span class="text"><span class="kw">人工智能（AI，Artificial Intelligence）</span>：研究、开发用于<span class="kw">模拟、延伸和扩展人的智能</span>的理论、方法、技术及应用系统的科学。融合了<span class="kw">计算机科学、统计学、脑神经科学、数学、心理学</span>等多学科。</span></li>
+      <li><span class="num">2.</span><span class="text"><span class="kw">图灵测试</span>：1950年，<span class="kw">艾伦·图灵</span>在论文《计算机器与智能》中提出。测试方法：让人类通过键盘和屏幕与机器对话，若机器在<span class="kw">超过30%</span>的回答中让人类无法判断是机器还是人类，则认为机器通过了测试。</span></li>
+      <li><span class="num">3.</span><span class="text"><span class="kw">人工智能的诞生</span>：<span class="kw">1956年，达特茅斯会议</span>（美国），"人工智能"一词正式提出，标志AI作为独立学科诞生。<span class="kw">图灵</span>被尊称为"人工智能之父"。</span></li>
+      <li><span class="num">4.</span><span class="text"><span class="kw">强AI vs 弱AI</span>：<span class="kw">弱AI（专用AI）</span>只能完成特定任务（如AlphaGo下棋、人脸识别、语音助手）；<span class="kw">强AI（通用AI）</span>具有人类级别智能，能完成任何智力任务（目前尚未实现）。</li>
+      <li><span class="num">5.</span><span class="text"><span class="kw">AI发展三阶段</span>：<span class="kw">符号推理时代</span>（1950s-1970s，计算智能阶段，解决逻辑推理问题）；<span class="kw">专家系统时代</span>（1980年代，将领域专家知识编码进程序）；<span class="kw">深度学习时代</span>（2010s至今，数据驱动，大数据+云计算+GPU算力支撑）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 机器学习（AI核心，必背·高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">6.</span><span class="text"><span class="kw">机器学习</span>是人工智能的<span class="kw">核心内容和基础原理</span>：让计算机从数据中自动学习规律，无需手工编写明确规则。</span></li>
+      <li><span class="num">7.</span><span class="text"><span class="kw">有监督学习</span>：给计算机大量<span class="kw">带标签的数据</span>（输入+正确答案）进行训练，学习输入到输出的映射规律。应用：垃圾邮件分类（标签：垃圾/正常）；房价预测（标签：实际房价）。需要人工标注数据，成本较高。</span></li>
+      <li><span class="num">8.</span><span class="text"><span class="kw">无监督学习</span>：计算机<span class="kw">自动发现数据中的联系和规律</span>，无需人工定义特征和标签。应用：客户分群（自动发现不同类型客户）；异常检测。<span class="kw">强化学习</span>通过与环境交互获得反馈来学习策略，如AlphaGo下棋。需要<span class="kw">大数据+云计算+强算力GPU</span>支撑。</span></li>
+      <li><span class="num">9.</span><span class="text"><span class="kw">半监督学习</span>：介于有监督和无监督之间，利用<span class="kw">少量带标签数据 + 大量无标签数据</span>进行训练，兼顾标注成本和学习效果。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>助记</strong>：有监督=有"标准答案"（标签）教机器学习；无监督=机器自己发现规律；深度学习=基于<span class="kw">多层人工神经网络</span>，可用有监督/无监督/强化学习，需要大数据+GPU支撑</div>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ AI典型应用（必背·高频）</div>
+    <ul class="kp-list">
+      <li><span class="num">10.</span><span class="text">AI应用领域：
+        <span class="kw">智慧交通</span>（感知人车物，自动驾驶/智能红绿灯/车辆识别）；
+        <span class="kw">智能客服</span>（自然语言识别，自动问答，24小时服务）；
+        <span class="kw">智慧物流</span>（无人驾驶配送车/智能仓储/路径规划）；
+        <span class="kw">智慧医疗</span>（医学影像分析/智能辅助诊断/手术机器人）；
+        <span class="kw">智能教育</span>（个性化学习推荐/智能批改作业）；
+        <span class="kw">智能制造</span>（工业机器人/质量检测/预测性维护）。</span></li>
+      <li><span class="num">11.</span><span class="text">AI典型应用举例（常考分类）：
+        <span class="kw">机器翻译</span>（Google翻译/百度翻译/DeepL）；
+        <span class="kw">模式识别</span>（手写识别/车牌识别/人脸识别/图像识别）；
+        <span class="kw">自然语言处理</span>（NLP，ChatGPT/小爱同学/智能客服）；
+        <span class="kw">语音识别</span>（微信语音转文字/搜狗输入法语音输入）；
+        <span class="kw">自动工程</span>（自动驾驶/无人机）；
+        <span class="kw">推荐系统</span>（抖音/淘宝/Netflix个性化推荐）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ AI的机遇与挑战（了解）</div>
+    <ul class="kp-list">
+      <li><span class="num">12.</span><span class="text"><span class="kw">机遇</span>：AI带来更便捷的生活体验，推动新兴领域（智能制造/智慧医疗/智慧城市）市场扩大，创造新的就业岗位（AI训练师/数据标注员/算法工程师）。</span></li>
+      <li><span class="num">13.</span><span class="text"><span class="kw">挑战</span>：<span class="kw">传统行业就业冲击</span>（部分重复性工作被自动化取代）；<span class="kw">隐私和安全问题</span>（人脸数据滥用/算法歧视）；<span class="kw">伦理问题</span>（算法决策的公平性/责任归属）；需警惕机器产生<span class="kw">自主意识</span>的风险（目前AI仍无真正意识）。</span></li>
+    </ul>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 8.2 探寻机器人 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">8.2</span>探寻机器人</div>
+
+  <div class="module">
+    <div class="module-title">◆ 机器人基础概念（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">14.</span><span class="text"><span class="kw">机器人</span>：人工智能的一种重要应用形式，具有一定<span class="kw">人类智能</span>（感知/决策/行动），能感知外部环境变化并做出反应。从结构上看，机器人是<span class="kw">机械与电子技术相结合</span>的机器。</span></li>
+      <li><span class="num">15.</span><span class="text">机器人四大组成（必背！类比人体）：
+        <span class="kw">机械机构</span>（本体结构，类比人的肌肉骨骼，负责支撑和运动）；
+        <span class="kw">驱动机构</span>（动力系统，类比人的血管心脏，提供动力，如电机/液压/气动）；
+        <span class="kw">传感装置</span>（感知系统，类比人的眼睛耳朵和皮肤，感知环境信息，如摄像头/麦克风/传感器）；
+        <span class="kw">控制系统</span>（指挥中枢，类比人的大脑，接收传感信息、处理决策、控制执行）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 机器人发展历程与分类（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">16.</span><span class="text"><span class="kw">机器人发展三代</span>：
+        <span class="kw">第一代</span>=<span class="kw">示教再现型</span>（需要人工示教，机器人记住动作后重复执行，如早期工业机械臂）；
+        <span class="kw">第二代</span>=<span class="kw">带传感器型</span>（能感知环境变化，根据传感器反馈自我调整，如扫地机器人）；
+        <span class="kw">第三代</span>=<span class="kw">智能型</span>（具有感知、认知、决策能力，能自主行动，如酒店送物机器人/手术机器人）。</span></li>
+      <li><span class="num">17.</span><span class="text">机器人分类：
+        <span class="kw">工业机器人</span>（多关节机械手臂，用于生产线自动装配/焊接/喷涂，精度高）；
+        <span class="kw">特种机器人</span>（非工业用途）：服务机器人（酒店/餐厅/导览）、水下机器人（深海探测/救援）、娱乐机器人（舞蹈机器人/陪伴机器人）、军用机器人（排雷/侦查）、农业机器人（采摘/喷药）。</span></li>
+    </ul>
+  </div>
+
+  <div class="module">
+    <div class="module-title">◆ 机器人三定律（必背）</div>
+    <ul class="kp-list">
+      <li><span class="num">18.</span><span class="text"><span class="kw">机器人三定律</span>（科幻作家阿西莫夫提出，是机器人伦理的基础）：
+        第一定律：机器人<span class="kw">不得伤害人类</span>，或坐视人类受到伤害而不顾；
+        第二定律：机器人必须<span class="kw">服从人类给予的命令</span>（但不得与第一定律矛盾）；
+        第三定律：机器人必须<span class="kw">保护自己</span>的存在（但不得与前两条定律矛盾）。</span></li>
+    </ul>
+    <div class="tip-box">⚡ <strong>助记</strong>：机器人三定律优先级：第一定律（不伤害人）> 第二定律（服从命令）> 第三定律（保护自己）</div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ===================== 各单元核心考点速查表 ===================== -->
+  <div class="chapter-title"><span class="chapter-num">✦</span>各单元核心考点速查表</div>
+
+  <div class="table-wrapper"><table>
+    <tr><th>单元</th><th>核心必背考点</th></tr>
+    <tr><td>第一单元</td><td>计算机四代发展、进制转换、文件扩展名、操作系统功能、系统维护</td></tr>
+    <tr><td>第二单元</td><td>TCP/IP四层、交换机vs路由器vs集线器、私有IP、IPv4/IPv6、物联网三层结构</td></tr>
+    <tr><td>第三单元</td><td>Word字体/段落格式、样式与目录、表格计算(按F9刷新)、邮件合并流程</td></tr>
+    <tr><td>第四单元</td><td>Excel函数(SUM/AVERAGE/IF/VLOOKUP/RANK)、排序/筛选/分类汇总(先排序!)、数据透视表、图表</td></tr>
+    <tr><td>第五单元</td><td>算法5特征、Python三大结构(顺序/选择/循环)、冒泡/选择/插入/快速排序、二分查找(前提:已排序)</td></tr>
+    <tr><td>第六单元</td><td>位图vs矢量图、JPG有损/MP3有损、44.1kHz采样、VR全虚拟/AR虚实融合</td></tr>
+    <tr><td>第七单元</td><td>安全5属性(完整/保密/可用/可控/不可否认)、病毒无免疫性、防火墙(企业硬件/个人软件)</td></tr>
+    <tr><td>第八单元</td><td>图灵测试(>30%)、机器学习3类(有/无/半监督)、深度学习=多层神经网络、机器人4组成</td></tr>
+  </table></div>
+
+  <div class="tip-box">
+    <strong>【第八单元高频易错汇总】</strong><br>
+    ① 图灵测试通过条件：超过<span class="kw">30%</span>的回答让人无法判断是机器还是人（不是50%，也不是100%）<br>
+    ② AI核心=机器学习；深度学习是基于<span class="kw">多层人工神经网络</span>的方法，可用有监督/无监督/强化学习<br>
+    ③ 成绩查询（数据库查询）<span class="kw">不属于</span>AI；微信视频通话<span class="kw">不属于</span>AI（是通信技术）<br>
+    ④ 机器人驱动机构≠控制系统（驱动=动力，类比心脏；控制=决策，类比大脑）<br>
+    ⑤ 机器人三定律：第一定律优先级最高（不伤害人）
+  </div>
+    <div class="footer">第八单元 · 人工智能初步（8.1～8.2）· 江西省单招·对口升学信息技术专用</div>
+  </div>
+</div>
+
+<script>
+// 回到顶部
+function scrollToTop() {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// 侧边目录展开/收起
+function toggleTocSidebar() {
+  var sidebar = document.getElementById('tocSidebar');
+  sidebar.classList.toggle('collapsed');
+}
+
+// 平滑滚动到指定单元
+function scrollToUnit(id) {
+  var el = document.getElementById(id);
+  if (el) {
+    var offset = 20;
+    var top = el.getBoundingClientRect().top + window.pageYOffset - offset;
+    window.scrollTo({ top: top, behavior: 'smooth' });
+  }
+  // 手机端点击后自动收起目录
+  if (window.innerWidth <= 768) {
+    document.getElementById('tocSidebar').classList.add('collapsed');
+  }
+}
+
+// 滚动监听：回到顶部按钮 + 阅读进度条 + 目录高亮
+window.addEventListener('scroll', function() {
+  var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+  var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+  var progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0;
+
+  // 阅读进度条
+  document.getElementById('readingProgress').style.width = progress + '%';
+
+  // 回到顶部按钮
+  var backToTop = document.getElementById('backToTop');
+  if (scrollTop > 300) {
+    backToTop.classList.add('show');
+  } else {
+    backToTop.classList.remove('show');
+  }
+
+  // 目录高亮当前单元
+  var units = ['unit1','unit2','unit3','unit4','unit5','unit6','unit7','unit8'];
+  var currentUnit = null;
+  for (var i = 0; i < units.length; i++) {
+    var el = document.getElementById(units[i]);
+    if (el && el.getBoundingClientRect().top <= 100) {
+      currentUnit = units[i];
+    }
+  }
+  var links = document.querySelectorAll('.toc-sidebar-list a');
+  links.forEach(function(link) {
+    link.classList.remove('active');
+    if (currentUnit && link.getAttribute('href') === '#' + currentUnit) {
+      link.classList.add('active');
+    }
+  });
+});
+
+// 页面加载完成后：统一默认收起目录，只露切换按钮
+window.addEventListener('load', function() {
+  // 保持HTML默认的collapsed类，不自动展开
+});
+</script>
+
+</body>
+</html>
