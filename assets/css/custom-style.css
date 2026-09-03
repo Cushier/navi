@@ -186,6 +186,13 @@ body.io-black-mode .search-history-clear-li .search-history-clear:hover {
 	color: #e74c3c !important;
 }
 
+/* 移动端适配：手机端没有鼠标悬停，删除按钮默认显示 */
+@media (max-width: 768px) {
+	.search-history-item .search-history-delete {
+		opacity: 1;
+	}
+}
+
 
 
 
