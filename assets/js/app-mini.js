@@ -1025,11 +1025,9 @@
                 var $li = $('<li class="search-history-item" data-kw="' + kw.replace(/"/g, '&quot;') + '">' + kw + '<a href="javascript:;" class="search-history-delete" title="删除">×</a></li>');
                 $ul.append($li);
             });
-            // 清空按钮：只有历史记录达到9个时才显示（加清空刚好10个，和搜索建议匹配）
-            if (list.length >= 9) {
-                var $clearLi = $('<li class="search-history-clear-li"><a href="javascript:;" class="search-history-clear">清空历史记录</a></li>');
-                $ul.append($clearLi);
-            }
+            // 清空按钮：只要有历史记录就一直显示
+            var $clearLi = $('<li class="search-history-clear-li"><a href="javascript:;" class="search-history-clear">清空历史记录</a></li>');
+            $ul.append($clearLi);
             $ul.show();
             // 如果已经显示，直接更新内容，不重复slideDown避免闪烁
             if (!$tipsContainer.is(':visible')) {
