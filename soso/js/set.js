@@ -205,6 +205,36 @@ function setBgImg(bg_img) {
 
 // 设置-壁纸
 //$('#bg').attr('src','https://api.dujin.org/bing/1920.php')
+
+// 本地随机壁纸（毫秒级，作为占位与兜底，不阻塞进入页面）
+function localBgUrl() {
+    return './img/background' + (Math.floor(Math.random() * 10) + 1) + '.webp';
+}
+
+// 远程壁纸：先固定一张本地占位，后台预载，成功后替换，超时/失败仍用这同一张本地，避免换图跳变
+function loadRemoteBg(url, timeoutMs) {
+    var fallback = localBgUrl();
+    $('#bg').attr('src', fallback);
+    var img = new Image();
+    var settled = false;
+    var timer = setTimeout(function () {
+        if (!settled) { settled = true; img.src = ''; $('#bg').attr('src', fallback); }
+    }, timeoutMs || 8000);
+    img.onload = function () {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        $('#bg').attr('src', url);
+    };
+    img.onerror = function () {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        $('#bg').attr('src', fallback);
+    };
+    img.src = url;
+}
+
 function setBgImgInit() {
     var bg_img = getBgImg();
     $("input[name='wallpaper-type'][value=" + bg_img["type"] + "]").click();
@@ -219,38 +249,21 @@ function setBgImgInit() {
 
     switch (bg_img["type"]) {
         case "1":
-            var pictures = new Array();
-            pictures[0] = './img/background1.webp';
-            pictures[1] = './img/background2.webp';
-            pictures[2] = './img/background3.webp';
-            pictures[3] = './img/background4.webp';
-            pictures[4] = './img/background5.webp';
-            pictures[5] = './img/background6.webp';
-            pictures[6] = './img/background7.webp';
-            pictures[7] = './img/background8.webp';
-            pictures[8] = './img/background9.webp';
-            pictures[9] = './img/background10.webp';
-            var rd = Math.floor(Math.random() * 10);
-            $('#bg').attr('src', pictures[rd]) //随机默认壁纸
+            // 本地随机壁纸，毫秒级直接显示
+            $('#bg').attr('src', localBgUrl());
             break;
         case "2":
-            fetch('https://cn.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN')
-                .then(function (r) { return r.json(); })
-                .then(function (data) {
-                    $('#bg').attr('src', 'https://cn.bing.com' + data.images[0].url);
-                })
-                .catch(function () {
-                    $('#bg').attr('src', './img/background' + (Math.floor(Math.random() * 10) + 1) + '.webp');
-                });
+            // 每日风景（国内快速直出）：本地占位，后台预载，失败/超时回退本地
+            loadRemoteBg('https://t.alcy.cc/fj', 8000);
             break;
         case "3":
-            $('#bg').attr('src', 'https://picsum.photos/1920/1080') //随机风景
+            loadRemoteBg('https://picsum.photos/1920/1080', 8000); //高清随机风景（国外CDN，失败回退本地）
             break;
         case "4":
-            $('#bg').attr('src', 'https://www.dmoe.cc/random.php') //随机二次元
+            loadRemoteBg('https://t.alcy.cc/moez', 8000); //随机二次元（国内快速直出，失败回退本地）
             break;
         case "5":
-            $('#bg').attr('src', bg_img["path"]) //自定义
+            loadRemoteBg(bg_img["path"], 8000); //自定义
             break;
     }
 }
@@ -1090,7 +1103,7 @@ $(document).ready(function () {
         }
 
         if (type === "2") {
-            $('#wallpaper_text').html("显示必应每日一图，每天更新，刷新页面以生效 | API @ Bing 官方");
+            $('#wallpaper_text').html("显示每日风景图，刷新即更换，国内快速加载，失败自动用本地壁纸");
             setBgImg(bg_img);
             iziToast.show({
                 message: '壁纸设置成功，刷新生效',
@@ -1106,7 +1119,7 @@ $(document).ready(function () {
         }
 
         if (type === "4") {
-            $('#wallpaper_text').html("显示随机二次元图，每次刷新后更换，刷新页面以生效 | API @ dmoe.cc");
+            $('#wallpaper_text').html("显示随机二次元图，每次刷新后更换，国内快速加载，失败自动用本地壁纸");
             setBgImg(bg_img);
             iziToast.show({
                 message: '壁纸设置成功，刷新生效',

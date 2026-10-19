@@ -7,21 +7,21 @@ window.addEventListener('load', function () {
         var DEFAULT_PLAYLIST_ID = '9874829261';
 
         // 歌单解析API列表（按稳定性排列，逐个尝试，失败自动切换下一个）
+        // 按实测速度排序：快源优先，失效源保留在后面兜底
         var METING_APIS = [
-            'https://api.i-meto.com/meting/api?server=netease&type=playlist&id=',
             'https://api.injahow.cn/meting/?type=playlist&id=',
-            'https://meting.jmstrand.cn/?type=playlist&id=',
-            'https://api.qijieya.cn/meting/?type=playlist&id='
+            'https://api.qijieya.cn/meting/?type=playlist&id=',
+            'https://api.i-meto.com/meting/api?server=netease&type=playlist&id=',
+            'https://meting.jmstrand.cn/?type=playlist&id='
         ];
 
-        // 带超时的fetch（避免某个解析源卡住太久）
+        // 带超时的fetch：超时即中断连接（AbortController），快速切到下一源，不残留挂起连接
         function fetchWithTimeout(url, timeout) {
-            return Promise.race([
-                fetch(url),
-                new Promise(function (_, reject) {
-                    setTimeout(function () { reject(new Error('请求超时')); }, timeout);
-                })
-            ]);
+            var ctrl = new AbortController();
+            var timer = setTimeout(function () { ctrl.abort(); }, timeout);
+            return fetch(url, { signal: ctrl.signal })
+                .then(function (res) { clearTimeout(timer); return res; })
+                .catch(function (err) { clearTimeout(timer); throw err; });
         }
 
         // 多源加载歌单：按顺序尝试，成功返回歌单数组，全部失败则reject
@@ -32,7 +32,7 @@ window.addEventListener('load', function () {
             }
             var apiUrl = METING_APIS[idx] + playlistId;
             console.log('[播放器] 尝试解析源 ' + (idx + 1) + '/' + METING_APIS.length);
-            return fetchWithTimeout(apiUrl, 6000)
+            return fetchWithTimeout(apiUrl, 4000)
                 .then(function (res) { return res.json(); })
                 .then(function (list) {
                     if (!list || !list.length) throw new Error('歌单为空');
