@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico">
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-7707360415617520"
      crossorigin="anonymous"></script>
-    <script src="https://cdn.staticfile.org/valine/1.5.1/Valine.min.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
 	</head>
 	<body class="grid-bg">
 		<div class="box">
@@ -35,9 +35,15 @@
 					
 				
 			</div>
-			<div class="vcomment"></div>
+			<div id="waline"></div>
 		</div>
-		<script src=/tougao/data.js></script>
+		<script type="module">
+  import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+  init({
+    el: '#waline',
+    serverURL: 'https://comment.qnkjxx.top',
+  });
+</script>
 	</body>
 	<link rel="stylesheet" href="/tougao/style.css">
 	<div class="cnblogs_Highlighter">

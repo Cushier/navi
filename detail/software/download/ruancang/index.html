@@ -678,9 +678,15 @@
 </div>
      
      <iframe src="/drinks/" style="overflow-x:hidden;overflow-y:hidden; border:0xp none #fff; min-height:240px; width:100%;"  frameborder="0" scrolling="no"></iframe>
-      <div class="vcomment"></div>
-      <script src="https://cdn.staticfile.org/valine/1.5.1/Valine.min.js"></script>
-      <script src="/tougao/data.js"></script>
+      <div id="waline"></div>
+      <link rel="stylesheet" href="https://unpkg.com/@waline/client@v3/dist/waline.css" />
+      <script type="module">
+        import { init } from 'https://unpkg.com/@waline/client@v3/dist/waline.js';
+        init({
+          el: '#waline',
+          serverURL: 'https://comment.qnkjxx.top',
+        });
+      </script>
       
     </div>
   </main>
