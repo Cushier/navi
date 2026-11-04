@@ -800,17 +800,31 @@ svg {
     background-color: #d8d8d8;
 }
 
+.br-mobile {
+	display: none;
+}
+
 @media screen and (max-width: 520px) {
 	.box-1 {
 		padding: 30px 16px 12px 16px;
 	}
 	.box-1 h1 {
 		font-size: 28px;
+		line-height: 1.35;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		text-align: center;
+		gap: 8px;
+	}
+	.box-1 h1 .br-mobile {
+		display: block;
 	}
 	.box-1 h1 svg {
 		width: 44px;
 		height: 44px;
-		top: 15px;
+		top: 0;
 	}
 	.box-1 p {
 		padding: 18px 12px;
