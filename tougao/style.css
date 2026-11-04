@@ -799,3 +799,22 @@ svg {
     background-size: 15px 15px;
     background-color: #d8d8d8;
 }
+
+@media screen and (max-width: 520px) {
+	.box-1 {
+		padding: 30px 16px 12px 16px;
+	}
+	.box-1 h1 {
+		font-size: 28px;
+	}
+	.box-1 h1 svg {
+		width: 44px;
+		height: 44px;
+		top: 15px;
+	}
+	.box-1 p {
+		padding: 18px 12px;
+		font-size: 14px;
+		line-height: 26px;
+	}
+}
