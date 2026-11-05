@@ -100,6 +100,48 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 .post .reply { font-size: 12px; color: #9aa0a6; padding: 2px 0; word-break: break-all; }
 .empty { text-align: center; color: #aaa; font-size: 13px; padding: 36px 0; }
 .list-title h2 .avail-count { font-size: 12px; color: #24b47e; font-weight: 400; margin-left: 8px; }
+.toolbar { display: flex; gap: 8px; align-items: center; margin: 0 0 12px; flex-wrap: wrap; }
+.toolbar .search {
+	flex: 1 1 200px;
+	min-width: 150px;
+	box-sizing: border-box;
+	padding: 8px 12px;
+	font-size: 13px;
+	font-family: inherit;
+	border: 1px solid #e4e7ed;
+	border-radius: 10px;
+	outline: none;
+	background: #fff;
+	color: #333;
+}
+.toolbar .search:focus { border-color: #24b47e; }
+.toolbar .tabs { display: flex; gap: 4px; padding: 3px; background: #f2f4f7; border-radius: 10px; }
+.toolbar .tab {
+	border: 0;
+	background: transparent;
+	color: #666;
+	font-size: 12px;
+	font-family: inherit;
+	padding: 6px 10px;
+	border-radius: 8px;
+	cursor: pointer;
+}
+.toolbar .tab.active { background: #fff; color: #24b47e; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+.more-wrap { text-align: center; margin: 14px 0 6px; }
+.btn-more {
+	border: 1px solid #e4e7ed;
+	background: #fff;
+	color: #24b47e;
+	font-size: 13px;
+	font-family: inherit;
+	padding: 9px 18px;
+	border-radius: 10px;
+	cursor: pointer;
+	width: 100%;
+	max-width: 320px;
+}
+.btn-more:disabled { color: #aaa; cursor: default; }
+.more-info { font-size: 12px; color: #aaa; margin-top: 8px; }
 .group-title { font-size: 13px; color: #9aa0a6; margin: 22px 0 10px; padding-left: 4px; }
 .empty-avail {
 	text-align: center;
@@ -153,7 +195,19 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		<h2>互助列表<span class="avail-count" id="avail">可用 0 个</span></h2>
 		<button class="btn-refresh" id="refresh" type="button">刷新</button>
 	</div>
+	<div class="toolbar">
+		<input class="search" id="search" type="search" placeholder="搜索码 / 说明 / 昵称" autocomplete="off">
+		<div class="tabs" id="tabs">
+			<button class="tab active" data-filter="all" type="button">全部</button>
+			<button class="tab" data-filter="avail" type="button">可用</button>
+			<button class="tab" data-filter="done" type="button">已完成</button>
+		</div>
+	</div>
 	<div id="list"><div class="empty">加载中…</div></div>
+	<div class="more-wrap" id="more" style="display:none">
+		<button class="btn-more" id="loadMore" type="button">加载更多</button>
+		<div class="more-info" id="moreInfo"></div>
+	</div>
 
 	<div class="foot">互助板由本站评论系统提供<br>请勿发布违法及不当内容</div>
 </div>
@@ -167,6 +221,10 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	var REFRESH_SECONDS = 15;
 	var DAILY_LIMIT = 7;
 	var DEFAULT_NICK = '匿名访客';
+	var PAGE_SIZE = 30;
+	var COUNT_BATCH = 50;
+	var loadedPages = 1;
+	var totalCount = 0;
 
 	var listEl = document.getElementById('list');
 	var pubMsg = document.getElementById('pubMsg');
@@ -177,6 +235,11 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	var refreshTimer = null;
 	var lastSig = '';
 	var busy = false;
+	var allItems = [];
+	var currentFilter = 'all';
+	var keyword = '';
+	var moreEl = document.getElementById('more');
+	var loadMoreBtn = document.getElementById('loadMore');
 
 	/* ---------- 工具函数 ---------- */
 	function plainText(html) {
@@ -298,16 +361,30 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	}
 
 	/* ---------- 接口 ---------- */
-	function fetchList() {
-		return fetch(API + '/comment?path=' + PAGE_PATH + '&pageSize=50')
-			.then(function (r) {
-				if (r.status !== 200) throw new Error('HTTP ' + r.status);
-				return r.json();
-			})
-			.then(function (res) {
-				if (res.errno !== 0) throw new Error(res.errmsg || '接口错误');
-				return (res.data && res.data.data) || [];
-			});
+	/* 拉取第 1..pages 页，返回 { posts, total }（total 为服务端总条数） */
+	function fetchList(pages) {
+		pages = Math.max(1, Math.floor(pages || 1));
+		var jobs = [];
+		var total = 0;
+		for (var i = 1; i <= pages; i++) {
+			(function (pageNo) {
+				jobs.push(fetch(API + '/comment?path=' + PAGE_PATH + '&page=' + pageNo + '&pageSize=' + PAGE_SIZE)
+					.then(function (r) {
+						if (r.status !== 200) throw new Error('HTTP ' + r.status);
+						return r.json();
+					})
+					.then(function (res) {
+						if (res.errno !== 0) throw new Error(res.errmsg || '接口错误');
+						if (res.data && typeof res.data.count === 'number') total = res.data.count;
+						return (res.data && res.data.data) || [];
+					}));
+			})(i);
+		}
+		return Promise.all(jobs).then(function (lists) {
+			var out = [];
+			lists.forEach(function (l) { out = out.concat(l); });
+			return { posts: out, total: total };
+		});
 	}
 
 	function sendComment(payload) {
@@ -320,15 +397,25 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		}).then(function (r) { return r.json(); });
 	}
 
-	// 批量读取计数：/article?path=p1,p2,... 返回与 path 顺序对应的 [{time:n}]
+	// 批量读取计数：/article?path=p1,p2,... 返回与 path 顺序对应的 [{time:n}]（按 50 条分批，避免 URL 过长）
 	function fetchCounts(paths) {
 		if (!paths.length) return Promise.resolve([]);
-		return fetch(API + '/article?path=' + paths.join(','))
-			.then(function (r) { return r.json(); })
-			.then(function (res) {
-				if (res.errno !== 0) throw new Error(res.errmsg || '计数接口错误');
-				return (res.data || []).map(function (it) { return Number(it && it.time) || 0; });
-			});
+		var batches = [];
+		for (var i = 0; i < paths.length; i += COUNT_BATCH) {
+			batches.push(paths.slice(i, i + COUNT_BATCH));
+		}
+		return Promise.all(batches.map(function (batch) {
+			return fetch(API + '/article?path=' + batch.join(','))
+				.then(function (r) { return r.json(); })
+				.then(function (res) {
+					if (res.errno !== 0) throw new Error(res.errmsg || '计数接口错误');
+					return (res.data || []).map(function (it) { return Number(it && it.time) || 0; });
+				});
+		})).then(function (lists) {
+			var out = [];
+			lists.forEach(function (l) { out = out.concat(l); });
+			return out;
+		});
 	}
 
 	// 计数 +1：不产生评论，不发邮件，也不触发评论发布限速
@@ -446,11 +533,33 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		if (el) el.textContent = '可用 ' + n + ' 个';
 	}
 
-	function render(items) {
+	/* 底部"加载更多 / 已显示全部"状态 */
+	function updateMore() {
+		if (!moreEl || !loadMoreBtn) return;
+		var info = document.getElementById('moreInfo');
+		if (!totalCount || !allItems.length) {
+			moreEl.style.display = 'none';
+			if (info) info.textContent = '';
+			return;
+		}
+		moreEl.style.display = 'block';
+		if (allItems.length >= totalCount) {
+			loadMoreBtn.style.display = 'none';
+			loadMoreBtn.disabled = false;
+			if (info) info.textContent = '已显示全部 ' + totalCount + ' 条';
+		} else {
+			loadMoreBtn.style.display = '';
+			loadMoreBtn.disabled = false;
+			loadMoreBtn.textContent = '加载更多（已显示 ' + allItems.length + ' / 共 ' + totalCount + ' 条）';
+			if (info) info.textContent = '';
+		}
+	}
+
+	function render(items, filter, isEmptyAll) {
 		clearList();
 		if (!items || !items.length) {
-			showEmpty('还没有互助帖，来发第一条吧');
-			updateAvail(0);
+			showEmpty(isEmptyAll ? '还没有互助帖，来发第一条吧' : '没有匹配的互助帖');
+			if (isEmptyAll) updateAvail(0);
 			return;
 		}
 
@@ -460,14 +569,13 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 			if (it.used >= it.p.need) done.push(it);
 			else avail.push(it);
 		});
-		updateAvail(avail.length);
 
-		if (!avail.length) {
+		if (filter !== 'done' && !avail.length) {
 			var tip = document.createElement('div');
 			tip.className = 'empty-avail';
 			tip.textContent = '暂无可用互助';
 			listEl.appendChild(tip);
-			} else {
+		} else {
 			avail.forEach(function (it) { listEl.appendChild(renderPost(it.c, it.p, it.used)); });
 		}
 
@@ -480,9 +588,28 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		}
 	}
 
+	/* 按"状态 tab + 搜索词"过滤后重绘 */
+	function applyFilter() {
+		var items = allItems;
+		if (currentFilter === 'avail') {
+			items = items.filter(function (it) { return it.used < it.p.need; });
+		} else if (currentFilter === 'done') {
+			items = items.filter(function (it) { return it.used >= it.p.need; });
+		}
+		var kw = keyword.trim().toLowerCase();
+		if (kw) {
+			items = items.filter(function (it) {
+				return ((it.p.code || '') + ' ' + (it.p.desc || '') + ' ' + (it.c.nick || '')).toLowerCase().indexOf(kw) >= 0;
+			});
+		}
+		render(items, currentFilter, allItems.length === 0 && kw === '');
+	}
+
 	function loadList(silent) {
 		if (silent && busy) return Promise.resolve();
-		return fetchList().then(function (posts) {
+		return fetchList(loadedPages).then(function (result) {
+			var posts = result.posts;
+			totalCount = result.total;
 			var items = posts.map(function (c) {
 				var p = parsePost(c);
 				p.key = codeKey(p.code);
@@ -490,9 +617,12 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 				return { c: c, p: p, used: 0 };
 			});
 			if (!items.length) {
+				allItems = [];
+				updateAvail(0);
+				updateMore();
 				if (silent && lastSig === '') return;
 				lastSig = '';
-				render([]);
+				applyFilter();
 				return;
 			}
 			var paths = items.map(function (it) { return it.p.path; });
@@ -505,13 +635,16 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 					if (fa !== fb) return fa - fb;
 					return (Number(b.c.time) || 0) - (Number(a.c.time) || 0);
 				});
+				allItems = items;
+				updateAvail(items.filter(function (it) { return it.used < it.p.need; }).length);
+				updateMore();
 				// 静默刷新时数据没变化就不重绘，避免列表闪动
 				var sig = items.map(function (it) {
 					return it.c.objectId + ':' + it.used + ':' + it.p.need + ':' + it.c.time + ':' + it.c.nick;
 				}).join('|');
 				if (silent && sig === lastSig) return;
 				lastSig = sig;
-				render(items);
+				applyFilter();
 			});
 		}).catch(function (err) {
 			if (silent) return;
@@ -643,6 +776,41 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		updateRefreshBtn();
 		loadList(false);
 	});
+
+	var searchInput = document.getElementById('search');
+	if (searchInput) {
+		searchInput.addEventListener('input', function () {
+			keyword = searchInput.value || '';
+			applyFilter();
+		});
+	}
+	var tabsEl = document.getElementById('tabs');
+	if (tabsEl) {
+		tabsEl.addEventListener('click', function (e) {
+			var t = e.target;
+			var f = t && t.getAttribute ? t.getAttribute('data-filter') : '';
+			if (!f) return;
+			currentFilter = f;
+			Array.prototype.forEach.call(tabsEl.querySelectorAll('.tab'), function (b) {
+				b.classList.toggle('active', b === t);
+			});
+			applyFilter();
+		});
+	}
+
+	if (loadMoreBtn) {
+		loadMoreBtn.addEventListener('click', function () {
+			if (loadMoreBtn.disabled) return;
+			loadMoreBtn.disabled = true;
+			loadMoreBtn.textContent = '加载中…';
+			loadedPages++;
+			loadList(false).then(function () {
+				loadMoreBtn.disabled = false;
+				updateMore();
+			});
+		});
+	}
+
 	loadList(false);
 	startAutoRefresh();
 })();
