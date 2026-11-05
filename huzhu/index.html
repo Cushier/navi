@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>互助大厅 - 青年科技学习导航</title>
+<link rel="icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico">
+<link rel="apple-touch-icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico">
+<style>
+* { box-sizing: border-box; }
+body {
+	margin: 0;
+	padding: 26px 16px 70px;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+	color: #333;
+	background-color: #f2f3f5;
+	background-image: linear-gradient(rgba(0,0,0,.03) 1px, transparent 0), linear-gradient(90deg, rgba(0,0,0,.03) 1px, transparent 0);
+	background-size: 15px 15px;
+	-webkit-text-size-adjust: 100%;
+}
+.wrap { max-width: 680px; margin: 0 auto; }
+header { text-align: center; margin-bottom: 22px; }
+header h1 { font-size: 26px; margin: 0 0 8px; color: #1b1b1b; letter-spacing: 1px; }
+header p { font-size: 12.5px; color: #9aa0a6; margin: 0; line-height: 1.7; }
+.card, .post {
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	padding: 18px;
+}
+.card { margin-bottom: 26px; }
+.card h2 { font-size: 15px; margin: 0 0 14px; color: #444; }
+.field { margin-bottom: 13px; }
+.field label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; }
+.field label em { font-style: normal; color: #aaa; font-size: 12px; margin-left: 6px; }
+input, textarea {
+	width: 100%;
+	border: 1px solid #e2e5ea;
+	border-radius: 8px;
+	padding: 10px 12px;
+	font-size: 14px;
+	font-family: inherit;
+	outline: none;
+	background: #fafbfc;
+	transition: border-color .2s, background .2s;
+}
+input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
+.btn {
+	display: inline-block;
+	border: 0;
+	border-radius: 8px;
+	background: #24b47e;
+	color: #fff;
+	font-size: 14px;
+	padding: 10px 28px;
+	cursor: pointer;
+	transition: background .2s;
+	font-family: inherit;
+}
+.btn:hover { background: #1fa271; }
+.btn:disabled { background: #c8cdd4; cursor: not-allowed; }
+.msg { font-size: 13px; margin-top: 10px; min-height: 18px; line-height: 1.6; }
+.msg.ok { color: #1fa271; }
+.msg.err { color: #e05656; }
+.list-title { display: flex; justify-content: space-between; align-items: center; margin: 0 0 12px; }
+.list-title h2 { font-size: 15px; margin: 0; color: #444; }
+.btn-refresh {
+	background: transparent;
+	color: #24b47e;
+	border: 1px solid #24b47e;
+	font-size: 13px;
+	padding: 6px 14px;
+	border-radius: 8px;
+	cursor: pointer;
+	font-family: inherit;
+}
+.post { margin-bottom: 12px; }
+.post.done { opacity: .72; }
+.post .code {
+	font-size: 18px;
+	font-weight: 600;
+	letter-spacing: .5px;
+	word-break: break-all;
+	color: #111;
+	margin-bottom: 6px;
+}
+.post .meta { font-size: 12px; color: #9aa0a6; }
+.post .desc-wrap { margin: 6px 0 10px; }
+.post .desc { font-size: 13px; color: #666; margin: 0; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
+.post .desc.clamped { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.desc-toggle { display: none; background: none; border: 0; color: #24b47e; font-size: 12px; padding: 0; margin: 4px 0 0; cursor: pointer; font-family: inherit; }
+.post .bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.post .bottom-left { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.post .progress { font-size: 13px; color: #24b47e; }
+.post .progress.full { color: #e05656; }
+.post .btn-copy { padding: 8px 20px; font-size: 13px; }
+.post .btn-copy.full { background: #c8cdd4; }
+.post .replies { margin-top: 10px; border-top: 1px dashed #ececec; padding-top: 8px; }
+.post .reply { font-size: 12px; color: #9aa0a6; padding: 2px 0; word-break: break-all; }
+.empty { text-align: center; color: #aaa; font-size: 13px; padding: 36px 0; }
+.list-title h2 .avail-count { font-size: 12px; color: #24b47e; font-weight: 400; margin-left: 8px; }
+.group-title { font-size: 13px; color: #9aa0a6; margin: 22px 0 10px; padding-left: 4px; }
+.empty-avail {
+	text-align: center;
+	color: #aaa;
+	font-size: 13px;
+	padding: 30px 0;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 1px 4px rgba(0,0,0,.06);
+	margin-bottom: 12px;
+}
+.foot { text-align: center; font-size: 12px; color: #b5b9bf; margin-top: 28px; line-height: 1.7; }
+@media screen and (max-width: 520px) {
+	header h1 { font-size: 22px; }
+	.card { padding: 16px 14px 18px; }
+	.post .code { font-size: 16px; }
+	.btn { padding: 10px 22px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+	<header>
+		<h1>互助大厅</h1>
+		<p>友善互助 · 点复制即自动记录一次使用<br>发布内容公开可见，违规刷帖将被删除</p>
+	</header>
+
+	<div class="card">
+		<h2>发布我的互助</h2>
+		<div class="field">
+			<label>互助码 / 内容<em>必填，粘贴你的互助码或要分享的内容</em></label>
+			<input id="code" maxlength="200" placeholder="例如：58062816" autocomplete="off">
+		</div>
+		<div class="field">
+			<label>需要人数<em>必填，几个人能成团，如 3</em></label>
+			<input id="need" type="number" min="1" max="20" value="1">
+		</div>
+		<div class="field">
+			<label>一句话说明<em>选填，如有效期、备注</em></label>
+			<input id="desc" maxlength="60" placeholder="例如：今晚 24 点前有效" autocomplete="off">
+		</div>
+		<div class="field">
+			<label>昵称<em>选填，不填显示"匿名访客"</em></label>
+			<input id="nick" maxlength="20" placeholder="例如：小明" autocomplete="off">
+		</div>
+		<button class="btn" id="publish" type="button">发布</button>
+		<div class="msg" id="pubMsg"></div>
+	</div>
+
+	<div class="list-title">
+		<h2>互助列表<span class="avail-count" id="avail">可用 0 个</span></h2>
+		<button class="btn-refresh" id="refresh" type="button">刷新</button>
+	</div>
+	<div id="list"><div class="empty">加载中…</div></div>
+
+	<div class="foot">互助板由本站评论系统提供<br>请勿发布违法及不当内容</div>
+</div>
+<script>
+(function () {
+	'use strict';
+
+	var API = 'https://comment.qnkjxx.top/api';
+	var PAGE_PATH = '/huzhu/';
+	var ARTICLE_PREFIX = '/huzhu/c/';
+	var REFRESH_SECONDS = 15;
+	var DAILY_LIMIT = 7;
+	var DEFAULT_NICK = '匿名访客';
+
+	var listEl = document.getElementById('list');
+	var pubMsg = document.getElementById('pubMsg');
+	var publishBtn = document.getElementById('publish');
+	var refreshBtn = document.getElementById('refresh');
+
+	var refreshLeft = REFRESH_SECONDS;
+	var refreshTimer = null;
+	var lastSig = '';
+	var busy = false;
+
+	/* ---------- 工具函数 ---------- */
+	function plainText(html) {
+		return String(html == null ? '' : html)
+			.replace(/<br\s*\/?>/gi, '\n')
+			.replace(/<\/p>/gi, '\n')
+			.replace(/<[^>]*>/g, '')
+			.replace(/&nbsp;/gi, ' ')
+			.replace(/&amp;/gi, '&')
+			.replace(/&lt;/gi, '<')
+			.replace(/&gt;/gi, '>')
+			.replace(/&quot;/gi, '"')
+			.replace(/&#39;/g, "'");
+	}
+
+	function parsePost(c) {
+		var text = plainText(c.comment);
+		var code = '';
+		var desc = '';
+		var need = 1;
+		text.split('\n').forEach(function (raw) {
+			var line = raw.trim();
+			if (!line) return;
+			var m;
+			m = line.match(/^码[：:]\s*([\s\S]*)$/);
+			if (m) { code += (code ? '\n' : '') + m[1]; return; }
+			m = line.match(/^说明[：:]\s*([\s\S]*)$/);
+			if (m) { desc += (desc ? '\n' : '') + m[1]; return; }
+			m = line.match(/^人数[：:]\s*(\d+)/);
+			if (m) {
+				need = parseInt(m[1], 10) || 1;
+				if (need < 1) need = 1;
+				if (need > 50) need = 50;
+				return;
+			}
+			if (!code) code = line;
+		});
+		if (!code) code = text.trim();
+		return { code: code.trim(), desc: desc.trim(), need: need };
+	}
+
+	function fmtTime(ts) {
+		var d = new Date(Number(ts) || 0);
+		if (!d.getTime()) return '';
+		function p(n) { return n < 10 ? '0' + n : '' + n; }
+		return (d.getMonth() + 1) + '/' + p(d.getDate()) + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+	}
+
+	function getSavedNick() {
+		try { return localStorage.getItem('huzhu_nick') || ''; } catch (e) { return ''; }
+	}
+	function saveNick(n) {
+		try { localStorage.setItem('huzhu_nick', n); } catch (e) {}
+	}
+
+	// 匿名访客用随机占位邮箱（Waline 服务端要求 mail 字段）
+	function guestMail() {
+		return 'huzhu-' + String(Math.random()).slice(2, 10) + '@qnkjxx.top';
+	}
+
+	// 互助码 -> 计数键（djb2 哈希，保证计数路径只含字母数字，避免特殊字符）
+	function codeKey(code) {
+		var h = 5381;
+		for (var i = 0; i < code.length; i++) {
+			h = ((h << 5) + h + code.charCodeAt(i)) >>> 0;
+		}
+		return h.toString(36);
+	}
+
+	// 本地已领取记录（浏览器本地防重复领取）
+	function usedMap() {
+		try { return JSON.parse(localStorage.getItem('huzhu_used') || '{}'); } catch (e) { return {}; }
+	}
+	function markUsed(key) {
+		try {
+			var m = usedMap();
+			m[key] = Date.now();
+			Object.keys(m).forEach(function (k) {
+				if (Date.now() - m[k] > 86400000 * 30) delete m[k];
+			});
+			localStorage.setItem('huzhu_used', JSON.stringify(m));
+		} catch (e) {}
+	}
+	function isUsed(key) {
+		return !!usedMap()[key];
+	}
+
+	function todayKey() {
+		var d = new Date();
+		return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate();
+	}
+	function todayCount() {
+		try {
+			var obj = JSON.parse(localStorage.getItem('huzhu_daily') || '{}');
+			return (obj[todayKey()] || []).length;
+		} catch (e) { return 0; }
+	}
+	function addTodayCount() {
+		try {
+			var obj = JSON.parse(localStorage.getItem('huzhu_daily') || '{}');
+			var k = todayKey();
+			if (!obj[k]) obj[k] = [];
+			obj[k].push(Date.now());
+			Object.keys(obj).forEach(function (key) {
+				if (key !== k && Array.isArray(obj[key]) && obj[key].length && Date.now() - new Date(key).getTime() > 86400000 * 3) {
+					delete obj[key];
+				}
+			});
+			localStorage.setItem('huzhu_daily', JSON.stringify(obj));
+		} catch (e) {}
+	}
+
+	var msgTimer = null;
+	function showMsg(text, isErr) {
+		pubMsg.textContent = text;
+		pubMsg.className = 'msg ' + (isErr ? 'err' : 'ok');
+		if (msgTimer) clearTimeout(msgTimer);
+		msgTimer = setTimeout(function () { pubMsg.textContent = ''; }, 8000);
+	}
+
+	/* ---------- 接口 ---------- */
+	function fetchList() {
+		return fetch(API + '/comment?path=' + PAGE_PATH + '&pageSize=50')
+			.then(function (r) {
+				if (r.status !== 200) throw new Error('HTTP ' + r.status);
+				return r.json();
+			})
+			.then(function (res) {
+				if (res.errno !== 0) throw new Error(res.errmsg || '接口错误');
+				return (res.data && res.data.data) || [];
+			});
+	}
+
+	function sendComment(payload) {
+		payload.mail = payload.mail || guestMail();
+		if (payload.link == null) payload.link = '';
+		return fetch(API + '/comment', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(payload)
+		}).then(function (r) { return r.json(); });
+	}
+
+	// 批量读取计数：/article?path=p1,p2,... 返回与 path 顺序对应的 [{time:n}]
+	function fetchCounts(paths) {
+		if (!paths.length) return Promise.resolve([]);
+		return fetch(API + '/article?path=' + paths.join(','))
+			.then(function (r) { return r.json(); })
+			.then(function (res) {
+				if (res.errno !== 0) throw new Error(res.errmsg || '计数接口错误');
+				return (res.data || []).map(function (it) { return Number(it && it.time) || 0; });
+			});
+	}
+
+	// 计数 +1：不产生评论，不发邮件，也不触发评论发布限速
+	function incrCount(path) {
+		return fetch(API + '/article', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ path: path })
+		}).then(function (r) { return r.json(); });
+	}
+
+	/* ---------- 渲染 ---------- */
+	function clearList() {
+		while (listEl.firstChild) listEl.removeChild(listEl.firstChild);
+	}
+	function showEmpty(text) {
+		clearList();
+		var d = document.createElement('div');
+		d.className = 'empty';
+		d.textContent = text;
+		listEl.appendChild(d);
+	}
+
+	function renderPost(c, p, used) {
+		var full = used >= p.need;
+		var mine = isUsed(p.key);
+		var replies = (c.children || []).filter(function (r) {
+			return plainText(r.comment).indexOf('已使用') < 0;
+		});
+
+		var post = document.createElement('div');
+		post.className = 'post' + (full ? ' done' : '');
+
+		var codeEl = document.createElement('div');
+		codeEl.className = 'code';
+		codeEl.textContent = p.code || '(无内容)';
+		post.appendChild(codeEl);
+
+		if (p.desc) {
+			var descWrap = document.createElement('div');
+			descWrap.className = 'desc-wrap';
+			var descEl = document.createElement('div');
+			descEl.className = 'desc clamped';
+			descEl.textContent = p.desc;
+			descWrap.appendChild(descEl);
+			var toggle = document.createElement('button');
+			toggle.className = 'desc-toggle';
+			toggle.type = 'button';
+			toggle.textContent = '查看说明';
+			toggle.addEventListener('click', function () {
+				if (descEl.classList.contains('clamped')) {
+					descEl.classList.remove('clamped');
+					toggle.textContent = '收起说明';
+				} else {
+					descEl.classList.add('clamped');
+					toggle.textContent = '查看说明';
+				}
+			});
+			descWrap.appendChild(toggle);
+			post.appendChild(descWrap);
+			// 默认只显示 2 行，内容溢出时才出现"查看说明"
+			setTimeout(function () {
+				if (descEl.scrollHeight - descEl.clientHeight > 2) {
+					toggle.style.display = 'inline-block';
+				}
+			}, 0);
+		}
+
+		var bottom = document.createElement('div');
+		bottom.className = 'bottom';
+
+		var left = document.createElement('div');
+		left.className = 'bottom-left';
+
+		var prog = document.createElement('div');
+		prog.className = 'progress' + (full ? ' full' : '');
+		prog.textContent = '进度 ' + used + '/' + p.need + (full ? '（已满）' : '');
+		left.appendChild(prog);
+
+		var meta = document.createElement('span');
+		meta.className = 'meta';
+		meta.textContent = (c.nick || DEFAULT_NICK) + ' · ' + fmtTime(c.time);
+		left.appendChild(meta);
+
+		bottom.appendChild(left);
+
+		var copyBtn = document.createElement('button');
+		copyBtn.className = 'btn btn-copy' + (full ? ' full' : '');
+		copyBtn.type = 'button';
+		copyBtn.textContent = full ? '已满' : (mine ? '已领取' : '复制');
+		if (full || mine) {
+			copyBtn.disabled = true;
+		} else {
+			copyBtn.addEventListener('click', function () { handleCopy(p, copyBtn); });
+		}
+		bottom.appendChild(copyBtn);
+		post.appendChild(bottom);
+
+		if (replies.length) {
+			var wrap = document.createElement('div');
+			wrap.className = 'replies';
+			replies.forEach(function (r) {
+				var line = document.createElement('div');
+				line.className = 'reply';
+				line.textContent = (r.nick || DEFAULT_NICK) + '：' + plainText(r.comment).replace(/\s*\n\s*/g, ' ');
+				wrap.appendChild(line);
+			});
+			post.appendChild(wrap);
+		}
+		return post;
+	}
+
+	function updateAvail(n) {
+		var el = document.getElementById('avail');
+		if (el) el.textContent = '可用 ' + n + ' 个';
+	}
+
+	function render(items) {
+		clearList();
+		if (!items || !items.length) {
+			showEmpty('还没有互助帖，来发第一条吧');
+			updateAvail(0);
+			return;
+		}
+
+		var avail = [];
+		var done = [];
+		items.forEach(function (it) {
+			if (it.used >= it.p.need) done.push(it);
+			else avail.push(it);
+		});
+		updateAvail(avail.length);
+
+		if (!avail.length) {
+			var tip = document.createElement('div');
+			tip.className = 'empty-avail';
+			tip.textContent = '暂无可用互助';
+			listEl.appendChild(tip);
+			} else {
+			avail.forEach(function (it) { listEl.appendChild(renderPost(it.c, it.p, it.used)); });
+		}
+
+		if (done.length) {
+			var divider = document.createElement('div');
+			divider.className = 'group-title';
+			divider.textContent = '已完成 · ' + done.length + ' 条';
+			listEl.appendChild(divider);
+			done.forEach(function (it) { listEl.appendChild(renderPost(it.c, it.p, it.used)); });
+		}
+	}
+
+	function loadList(silent) {
+		if (silent && busy) return Promise.resolve();
+		return fetchList().then(function (posts) {
+			var items = posts.map(function (c) {
+				var p = parsePost(c);
+				p.key = codeKey(p.code);
+				p.path = ARTICLE_PREFIX + p.key + '/';
+				return { c: c, p: p, used: 0 };
+			});
+			if (!items.length) {
+				if (silent && lastSig === '') return;
+				lastSig = '';
+				render([]);
+				return;
+			}
+			var paths = items.map(function (it) { return it.p.path; });
+			return fetchCounts(paths).then(function (counts) {
+				items.forEach(function (it, i) { it.used = counts[i] || 0; });
+				// 排序：未满（可用）在前，已满（已完成）在后；同组内按发布时间倒序
+				items.sort(function (a, b) {
+					var fa = a.used >= a.p.need ? 1 : 0;
+					var fb = b.used >= b.p.need ? 1 : 0;
+					if (fa !== fb) return fa - fb;
+					return (Number(b.c.time) || 0) - (Number(a.c.time) || 0);
+				});
+				// 静默刷新时数据没变化就不重绘，避免列表闪动
+				var sig = items.map(function (it) {
+					return it.c.objectId + ':' + it.used + ':' + it.p.need + ':' + it.c.time + ':' + it.c.nick;
+				}).join('|');
+				if (silent && sig === lastSig) return;
+				lastSig = sig;
+				render(items);
+			});
+		}).catch(function (err) {
+			if (silent) return;
+			showEmpty('列表加载失败：' + err.message + '（本地预览会被安全域名拦截，请在线上站点使用）');
+		});
+	}
+
+	/* ---------- 自动刷新（参考站每 9 秒，这里 15 秒） ---------- */
+	function updateRefreshBtn() {
+		if (refreshBtn) refreshBtn.textContent = '刷新 · ' + refreshLeft + 's';
+	}
+	function startAutoRefresh() {
+		refreshLeft = REFRESH_SECONDS;
+		updateRefreshBtn();
+		if (refreshTimer) clearInterval(refreshTimer);
+		refreshTimer = setInterval(function () {
+			if (document.hidden) return;
+			refreshLeft--;
+			if (refreshLeft < 0) refreshLeft = 0;
+			updateRefreshBtn();
+			if (refreshLeft <= 0) {
+				refreshLeft = REFRESH_SECONDS;
+				updateRefreshBtn();
+				loadList(true);
+			}
+		}, 1000);
+	}
+
+	/* ---------- 复制 + 使用计数 ---------- */
+	function copyText(text) {
+		if (navigator.clipboard && navigator.clipboard.writeText) {
+			return navigator.clipboard.writeText(text);
+		}
+		return new Promise(function (resolve, reject) {
+			var ta = document.createElement('textarea');
+			ta.value = text;
+			ta.style.position = 'fixed';
+			ta.style.top = '-999px';
+			ta.style.opacity = '0';
+			document.body.appendChild(ta);
+			ta.select();
+			try {
+				var ok = document.execCommand('copy');
+				document.body.removeChild(ta);
+				if (ok) resolve();
+				else reject(new Error('复制失败'));
+			} catch (e) {
+				document.body.removeChild(ta);
+				reject(e);
+			}
+		});
+	}
+
+	function handleCopy(p, btn) {
+		if (btn.disabled || busy) return;
+		busy = true;
+		btn.disabled = true;
+		btn.textContent = '复制中…';
+		copyText(p.code).then(function () {
+			btn.textContent = '已复制';
+			return incrCount(p.path);
+		}).then(function (res) {
+			if (!res || res.errno !== 0) throw new Error((res && res.errmsg) || '计数失败');
+			markUsed(p.key);
+			busy = false;
+			refreshLeft = REFRESH_SECONDS;
+			updateRefreshBtn();
+			loadList(false);
+		}).catch(function (err) {
+			busy = false;
+			btn.disabled = false;
+			btn.textContent = '复制';
+			showMsg('复制或计数失败：' + err.message, true);
+		});
+	}
+
+	/* ---------- 发布 ---------- */
+	function handlePublish() {
+		var code = (document.getElementById('code').value || '').trim();
+		var need = parseInt(document.getElementById('need').value, 10);
+		var desc = (document.getElementById('desc').value || '').trim();
+		var nick = (document.getElementById('nick').value || '').trim();
+
+		if (!code) { showMsg('请先填写互助码 / 内容', true); return; }
+		if (!need || need < 1) { showMsg('需要人数请填 1~20 之间的数字', true); return; }
+		if (need > 20) need = 20;
+
+		if (todayCount() >= DAILY_LIMIT) {
+			showMsg('今天的发布额度（' + DAILY_LIMIT + ' 条）已用完，明天再来', true);
+			return;
+		}
+
+		var body = '码：' + code + '\n说明：' + desc + '\n人数：' + need;
+
+		publishBtn.disabled = true;
+		publishBtn.textContent = '发布中…';
+		sendComment({
+			comment: body,
+			nick: nick || getSavedNick() || DEFAULT_NICK,
+			url: PAGE_PATH,
+			ua: navigator.userAgent
+		}).then(function (res) {
+			if (res && res.errno === 0) {
+				if (nick) saveNick(nick);
+				addTodayCount();
+				document.getElementById('code').value = '';
+				document.getElementById('desc').value = '';
+				document.getElementById('need').value = '1';
+				showMsg('发布成功，已显示在下方列表', false);
+				refreshLeft = REFRESH_SECONDS;
+				updateRefreshBtn();
+				loadList(false);
+			} else {
+				throw new Error((res && res.errmsg) || '发布失败');
+			}
+		}).catch(function (err) {
+			showMsg('发布失败：' + err.message + '（本地预览会被安全域名拦截，请在线上站点使用）', true);
+		}).finally(function () {
+			publishBtn.disabled = false;
+			publishBtn.textContent = '发布';
+		});
+	}
+
+	/* ---------- 初始化 ---------- */
+	document.getElementById('nick').value = getSavedNick();
+	publishBtn.addEventListener('click', handlePublish);
+	refreshBtn.addEventListener('click', function () {
+		refreshLeft = REFRESH_SECONDS;
+		updateRefreshBtn();
+		loadList(false);
+	});
+	loadList(false);
+	startAutoRefresh();
+})();
+</script>
+</body>
+
+<!-- 在线聊天 -->
+<!-- <script async src='/tougao/chat.js' fold></script> -->
+<script async src='https://topurl.cn/chat.js' fold></script>
+<script>  
+  // 设置时间限制（毫秒）  
+  const TIMEOUT = 10000; // 10秒  
+  let startTime = Date.now();  
+  let timerId = null; // 在全局作用域中定义timerId  
+  let keywords = ['小姐姐']; // 创建一个数组来存储所有需要检查的关键词   
+
+  // 定义一个函数来检查并删除广告div  
+  function checkAndRemoveAd() {  
+      const adDiv = document.querySelector('.ctrm-domain');  
+      if (adDiv) {  
+          // 如果找到了广告div，则删除它  
+          //adDiv.parentNode.removeChild(adDiv);  
+          adDiv.style.display = 'none'; // 隐藏div
+          console.log('广告div已被删除。');  
+          clearTimeout(timerId); // 清除定时器  
+      } else {  
+          // 如果没有找到，检查是否超时  
+          if (Date.now() - startTime > TIMEOUT) {  
+              // 超过时间限制，停止轮询  
+              console.log('未找到广告div或已超时，停止轮询。');  
+              clearTimeout(timerId); // 清除定时器  
+          } else {  
+              // 稍后再试  
+              console.log('广告div尚未找到，稍后再试...');  
+              // 设置定时器以稍后再次尝试，并使用当前的timerId  
+              timerId = setTimeout(checkAndRemoveAd, 100);  
+          }  
+      }  
+  }  
+
+  // 当DOM加载完成后开始检查  
+  document.addEventListener('DOMContentLoaded', (event) => {  
+      // 设置定时器以稍后开始检查，并使用全局的timerId  
+      timerId = setTimeout(checkAndRemoveAd, 200);  
+
+
+      // 定义检查并移除不良内容的函数  
+      function checkAndRemoveBadContent() {  
+            
+          // 获取所有类名为ctrm-domain-item的a标签  
+          var domainItems = document.querySelectorAll('.ctrm-domain-item');  
+            
+          domainItems.forEach(function(item) {  
+              // 假设链接文本加上"小姐姐"就是我们要过滤的关键词  
+              var keyword = item.textContent.trim();  
+              keywords.push(new RegExp(keyword, 'i')); // 使用正则表达式，并设置不区分大小写  
+          });  
+
+          // 获取所有类名为ctrm-dialog-item的div  
+          var dialogItems = document.querySelectorAll('.ctrm-dialog-item');  
+            
+          // 遍历这些div，检查是否包含不良信息  
+          dialogItems.forEach(function(item) {  
+              // 遍历关键词数组  
+              keywords.forEach(function(keyword) {  
+                  // 如果div的文本内容包含关键词，则移除该div  
+                  if (item.textContent.match(keyword)) {  
+                      item.querySelector('.ctrm-dialog-bubble').textContent = "好好学习，天天向上，文明你我他^_^";
+                      //item.parentNode.removeChild(item);  
+                      return; // 移除后跳出当前循环  
+                  }  
+              });  
+          });  
+      }  
+
+      // 每隔500毫秒执行一次checkAndRemoveBadContent函数  
+      timerId2=setInterval(checkAndRemoveBadContent, 500);  
+
+  });  
+  </script>
+
+</html>
