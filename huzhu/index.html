@@ -62,6 +62,7 @@ header p { font-size: 12.5px; color: #9aa0a6; margin: 0; line-height: 1.7; }
 .field { margin-bottom: 13px; }
 .field label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; }
 .field label em { font-style: normal; color: #aaa; font-size: 12px; margin-left: 6px; }
+.field label .req { color: #e05656; font-weight: 600; margin-right: 4px; }
 input, textarea {
 	width: 100%;
 	border: 1px solid #e2e5ea;
@@ -197,7 +198,7 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 <div class="wrap">
 	<header>
 		<h1>互助大厅</h1>
-		<p>友善互助 · 点复制即自动记录一次使用<br>发布内容公开可见，违规刷帖将被删除</p>
+		<p>友善互助 · 点复制即自动记录一次使用<br>发布内容公开可见，违规刷帖将被拉黑</p>
 	</header>
 
 	<div class="card pub-card">
@@ -208,15 +209,15 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		</button>
 		<div class="pub-body" id="pubBody" hidden>
 			<div class="field">
-				<label>互助码 / 内容<em>必填，粘贴你的互助码或要分享的内容</em></label>
-				<input id="code" maxlength="200" placeholder="例如：58062816" autocomplete="off">
+				<label><span class="req">*</span>互助码 / 内容<em>粘贴你的互助码或要分享的内容</em></label>
+				<input id="code" maxlength="200" placeholder="例如：88888888" autocomplete="off">
 			</div>
 			<div class="field">
-				<label>需要人数<em>必填，几个人能成团，如 3</em></label>
+				<label><span class="req">*</span>需要人数<em>几个人能成团，如 3</em></label>
 				<input id="need" type="number" min="1" max="20" value="1">
 			</div>
 			<div class="field">
-				<label>一句话说明<em>选填，如有效期、备注</em></label>
+				<label>说明<em>选填，如有效期、备注</em></label>
 				<input id="desc" maxlength="60" placeholder="例如：今晚 24 点前有效" autocomplete="off">
 			</div>
 			<div class="field">
@@ -245,8 +246,6 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		<button class="btn-more" id="loadMore" type="button">加载更多</button>
 		<div class="more-info" id="moreInfo"></div>
 	</div>
-
-	<div class="foot">互助板由本站评论系统提供<br>请勿发布违法及不当内容</div>
 </div>
 <script>
 (function () {
