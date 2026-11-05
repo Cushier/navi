@@ -31,6 +31,34 @@ header p { font-size: 12.5px; color: #9aa0a6; margin: 0; line-height: 1.7; }
 }
 .card { margin-bottom: 26px; }
 .card h2 { font-size: 15px; margin: 0 0 14px; color: #444; }
+/* 发布区折叠：默认收起，点击展开 */
+.pub-card { padding: 0; }
+/* 提高优先级，避免手机端媒体查询里的 .card padding 覆盖（否则折叠条会被叠成两层内边距） */
+.card.pub-card { padding: 0; }
+.pub-toggle {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 16px 18px;
+	background: none;
+	border: 0;
+	font-family: inherit;
+	font-size: 15px;
+	font-weight: 600;
+	color: #1f2328;
+	text-align: left;
+	cursor: pointer;
+}
+.pub-toggle:focus { outline: none; }
+.pub-toggle:focus-visible { outline: 2px solid #24b47e; outline-offset: 2px; border-radius: 12px; }
+.pub-toggle-text { flex: 1; }
+.pub-toggle-hint { font-size: 12px; font-weight: 400; color: #24b47e; }
+.pub-chev { font-style: normal; font-size: 13px; line-height: 1; color: #9aa0a6; transition: transform .2s ease; }
+.pub-toggle[aria-expanded="true"] .pub-chev { transform: rotate(180deg); }
+.pub-body { padding: 2px 18px 18px; }
+.pub-body[hidden] { display: none; }
 .field { margin-bottom: 13px; }
 .field label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; }
 .field label em { font-style: normal; color: #aaa; font-size: 12px; margin-left: 6px; }
@@ -157,8 +185,11 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 @media screen and (max-width: 520px) {
 	header h1 { font-size: 22px; }
 	.card { padding: 16px 14px 18px; }
+	.card.pub-card { padding: 0; }
 	.post .code { font-size: 16px; }
 	.btn { padding: 10px 22px; }
+	.pub-toggle { padding: 16px 14px; }
+	.pub-body { padding: 2px 14px 16px; }
 }
 </style>
 </head>
@@ -169,26 +200,32 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		<p>友善互助 · 点复制即自动记录一次使用<br>发布内容公开可见，违规刷帖将被删除</p>
 	</header>
 
-	<div class="card">
-		<h2>发布我的互助</h2>
-		<div class="field">
-			<label>互助码 / 内容<em>必填，粘贴你的互助码或要分享的内容</em></label>
-			<input id="code" maxlength="200" placeholder="例如：58062816" autocomplete="off">
+	<div class="card pub-card">
+		<button class="pub-toggle" id="pubToggle" type="button" aria-expanded="false" aria-controls="pubBody">
+			<span class="pub-toggle-text">发布我的互助</span>
+			<span class="pub-toggle-hint" id="pubToggleHint">点击展开</span>
+			<i class="pub-chev" aria-hidden="true">▾</i>
+		</button>
+		<div class="pub-body" id="pubBody" hidden>
+			<div class="field">
+				<label>互助码 / 内容<em>必填，粘贴你的互助码或要分享的内容</em></label>
+				<input id="code" maxlength="200" placeholder="例如：58062816" autocomplete="off">
+			</div>
+			<div class="field">
+				<label>需要人数<em>必填，几个人能成团，如 3</em></label>
+				<input id="need" type="number" min="1" max="20" value="1">
+			</div>
+			<div class="field">
+				<label>一句话说明<em>选填，如有效期、备注</em></label>
+				<input id="desc" maxlength="60" placeholder="例如：今晚 24 点前有效" autocomplete="off">
+			</div>
+			<div class="field">
+				<label>昵称<em>选填，不填显示"匿名访客"</em></label>
+				<input id="nick" maxlength="20" placeholder="例如：小明" autocomplete="off">
+			</div>
+			<button class="btn" id="publish" type="button">发布</button>
+			<div class="msg" id="pubMsg"></div>
 		</div>
-		<div class="field">
-			<label>需要人数<em>必填，几个人能成团，如 3</em></label>
-			<input id="need" type="number" min="1" max="20" value="1">
-		</div>
-		<div class="field">
-			<label>一句话说明<em>选填，如有效期、备注</em></label>
-			<input id="desc" maxlength="60" placeholder="例如：今晚 24 点前有效" autocomplete="off">
-		</div>
-		<div class="field">
-			<label>昵称<em>选填，不填显示"匿名访客"</em></label>
-			<input id="nick" maxlength="20" placeholder="例如：小明" autocomplete="off">
-		</div>
-		<button class="btn" id="publish" type="button">发布</button>
-		<div class="msg" id="pubMsg"></div>
 	</div>
 
 	<div class="list-title">
@@ -769,7 +806,37 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	}
 
 	/* ---------- 初始化 ---------- */
-	document.getElementById('nick').value = getSavedNick();
+	var pubToggle = document.getElementById('pubToggle');
+	var pubBody = document.getElementById('pubBody');
+	var pubToggleHint = document.getElementById('pubToggleHint');
+
+	/* 展开/收起发布区：展开后自动跳到"互助码"输入框，收起时输入内容保留 */
+	function setPubOpen(open) {
+		if (!pubBody) return;
+		pubBody.hidden = !open;
+		if (pubToggle) pubToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+		if (pubToggleHint) pubToggleHint.textContent = open ? '点击收起' : '点击展开';
+		if (open) {
+			var codeEl = document.getElementById('code');
+			if (codeEl) codeEl.focus();
+		}
+	}
+
+	if (pubToggle) {
+		pubToggle.addEventListener('click', function () {
+			setPubOpen(!!pubBody && pubBody.hidden);
+		});
+	}
+
+	var nickInput = document.getElementById('nick');
+	if (nickInput) {
+		nickInput.value = getSavedNick();
+		// 输入完（离开输入框）就记住昵称，不必等到发布成功
+		nickInput.addEventListener('change', function () {
+			var v = (nickInput.value || '').trim();
+			if (v) saveNick(v);
+		});
+	}
 	publishBtn.addEventListener('click', handlePublish);
 	refreshBtn.addEventListener('click', function () {
 		refreshLeft = REFRESH_SECONDS;
