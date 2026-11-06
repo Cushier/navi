@@ -204,3 +204,27 @@ body.io-black-mode .search-history-clear-li .search-history-clear:hover {
 
 
 
+
+/* ===== 详情页正文：有序 / 无序列表字号与正文段落对齐 =====
+   主题 style-3.03029.1.css 里 .panel-body p 是 .9375rem（15px），
+   而 .panel-body ul, .panel-body ol 只有 .875rem（14px），列表比正文小一号、
+   行高也没跟上段落，条目一长就显得又小又挤。这里统一到 15px、拉开行距，
+   并把 Ol 默认 40px 的缩进收窄一点。 */
+.panel-body ul,
+.panel-body ol {
+	font-size: 0.9375rem;
+	line-height: 1.9;
+	padding-left: 1.75rem;
+}
+
+.panel-body ul li,
+.panel-body ol li {
+	margin: 0.75rem 0;
+}
+
+/* 段落行高与列表统一到 1.9（主题原值 line-height:2 偏松，与列表 1.9 有节奏差） */
+.panel-body p,
+.panel-body ol li p,
+.panel-body ul li p {
+	line-height: 1.9;
+}
