@@ -143,22 +143,8 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 .post .meta .time { flex: 0 0 auto; white-space: nowrap; }
 .post .desc-wrap { margin: 6px 0 8px; }
 .post .desc { font-size: 13px; color: #666; margin: 0; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
-.post .desc.clamped { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
-.post .desc-wrap { position: relative; margin: 6px 0 8px; }
 .post .desc-wrap.more { cursor: pointer; }
-.post .desc-wrap.more:not(.open) .desc.clamped { padding-right: 54px; }
-.post .desc-wrap.more:not(.open)::after {
-	content: '展开';
-	position: absolute;
-	right: 0;
-	bottom: 1px;
-	padding: 0 2px 0 14px;
-	font-size: 12px;
-	line-height: 1.6;
-	color: #24b47e;
-	background: linear-gradient(to right, rgba(255,255,255,0), #fff 12px);
-	pointer-events: none;
-}
+.post .desc-more { color: #24b47e; font-size: 12px; }
 .post .bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: nowrap; }
 .post .bottom-left { display: flex; align-items: baseline; gap: 10px; flex-wrap: nowrap; flex: 1 1 auto; min-width: 0; overflow: hidden; }
 .post .progress { flex: 0 0 auto; white-space: nowrap; font-size: 13px; color: #24b47e; }
@@ -518,6 +504,42 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		listEl.appendChild(d);
 	}
 
+	// 说明默认 2 行，超出部分改为"…展开"接在文字末尾，不额外占行、不遮挡文字
+	function clampDesc(wrap, el, text) {
+		el.textContent = text;
+		wrap.classList.remove('more');
+		var lh = parseFloat(getComputedStyle(el).lineHeight) || 20.8;
+		var maxH = lh * 2 + 1;
+		if (el.scrollHeight <= maxH) return;
+		var tail = '…展开';
+		var lo = 0, hi = text.length;
+		while (lo < hi) {
+			var mid = Math.ceil((lo + hi) / 2);
+			el.textContent = text.slice(0, mid) + tail;
+			if (el.scrollHeight > maxH) { hi = mid - 1; } else { lo = mid; }
+		}
+		el.textContent = text.slice(0, lo);
+		var sp = document.createElement('span');
+		sp.className = 'desc-more';
+		sp.textContent = tail;
+		el.appendChild(sp);
+		wrap.classList.add('more');
+		wrap.title = '点击展开完整说明';
+	}
+	var rzTimer;
+	window.addEventListener('resize', function () {
+		clearTimeout(rzTimer);
+		rzTimer = setTimeout(function () {
+			var list = document.querySelectorAll('.desc-wrap[data-full]');
+			for (var i = 0; i < list.length; i++) {
+				var w = list[i], el = w.querySelector('.desc');
+				if (!el) continue;
+				if (w.classList.contains('open')) { el.textContent = w.dataset.full; continue; }
+				clampDesc(w, el, w.dataset.full);
+			}
+		}, 200);
+	});
+
 	function renderPost(c, p, used) {
 		var full = used >= p.need;
 		var mine = isUsed(p.key);
@@ -539,27 +561,21 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 			var descWrap = document.createElement('div');
 			descWrap.className = 'desc-wrap';
 			var descEl = document.createElement('div');
-			descEl.className = 'desc clamped';
-			descEl.textContent = p.desc;
+			descEl.className = 'desc';
 			descWrap.appendChild(descEl);
 			main.appendChild(descWrap);
-			// 说明默认只显示 2 行；溢出时整块可点开，不额外占一行按钮高度，三处间距才一致
-			setTimeout(function () {
-				if (descEl.scrollHeight - descEl.clientHeight > 2) {
-					descWrap.classList.add('more');
-					descWrap.title = '点击展开完整说明';
-				}
-			}, 0);
+			descWrap.dataset.full = p.desc;
+			// 默认只显示 2 行，超出时末尾接"…展开"，点整块展开/收起
+			setTimeout(function () { clampDesc(descWrap, descEl, p.desc); }, 0);
 			descWrap.addEventListener('click', function () {
 				if (!descWrap.classList.contains('more')) return;
-				if (descEl.classList.contains('clamped')) {
-					descEl.classList.remove('clamped');
-					descWrap.classList.add('open');
-					descWrap.title = '点击收起说明';
-				} else {
-					descEl.classList.add('clamped');
+				if (descWrap.classList.contains('open')) {
 					descWrap.classList.remove('open');
-					descWrap.title = '点击展开完整说明';
+					clampDesc(descWrap, descEl, p.desc);
+				} else {
+					descWrap.classList.add('open');
+					descEl.textContent = p.desc;
+					descWrap.title = '点击收起说明';
 				}
 			});
 		}
