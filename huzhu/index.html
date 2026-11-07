@@ -144,7 +144,21 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 .post .desc-wrap { margin: 6px 0 8px; }
 .post .desc { font-size: 13px; color: #666; margin: 0; line-height: 1.6; white-space: pre-wrap; word-break: break-word; }
 .post .desc.clamped { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
-.desc-toggle { display: none; background: none; border: 0; color: #24b47e; font-size: 12px; padding: 0; margin: 4px 0 0; cursor: pointer; font-family: inherit; }
+.post .desc-wrap { position: relative; margin: 6px 0 8px; }
+.post .desc-wrap.more { cursor: pointer; }
+.post .desc-wrap.more:not(.open) .desc.clamped { padding-right: 54px; }
+.post .desc-wrap.more:not(.open)::after {
+	content: '展开';
+	position: absolute;
+	right: 0;
+	bottom: 1px;
+	padding: 0 2px 0 14px;
+	font-size: 12px;
+	line-height: 1.6;
+	color: #24b47e;
+	background: linear-gradient(to right, rgba(255,255,255,0), #fff 12px);
+	pointer-events: none;
+}
 .post .bottom { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: nowrap; }
 .post .bottom-left { display: flex; align-items: baseline; gap: 10px; flex-wrap: nowrap; flex: 1 1 auto; min-width: 0; overflow: hidden; }
 .post .progress { flex: 0 0 auto; white-space: nowrap; font-size: 13px; color: #24b47e; }
@@ -528,27 +542,26 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 			descEl.className = 'desc clamped';
 			descEl.textContent = p.desc;
 			descWrap.appendChild(descEl);
-			var toggle = document.createElement('button');
-			toggle.className = 'desc-toggle';
-			toggle.type = 'button';
-			toggle.textContent = '查看说明';
-			toggle.addEventListener('click', function () {
-				if (descEl.classList.contains('clamped')) {
-					descEl.classList.remove('clamped');
-					toggle.textContent = '收起说明';
-				} else {
-					descEl.classList.add('clamped');
-					toggle.textContent = '查看说明';
-				}
-			});
-			descWrap.appendChild(toggle);
 			main.appendChild(descWrap);
-			// 默认只显示 2 行，内容溢出时才出现"查看说明"
+			// 说明默认只显示 2 行；溢出时整块可点开，不额外占一行按钮高度，三处间距才一致
 			setTimeout(function () {
 				if (descEl.scrollHeight - descEl.clientHeight > 2) {
-					toggle.style.display = 'inline-block';
+					descWrap.classList.add('more');
+					descWrap.title = '点击展开完整说明';
 				}
 			}, 0);
+			descWrap.addEventListener('click', function () {
+				if (!descWrap.classList.contains('more')) return;
+				if (descEl.classList.contains('clamped')) {
+					descEl.classList.remove('clamped');
+					descWrap.classList.add('open');
+					descWrap.title = '点击收起说明';
+				} else {
+					descEl.classList.add('clamped');
+					descWrap.classList.remove('open');
+					descWrap.title = '点击展开完整说明';
+				}
+			});
 		}
 
 		var bottom = document.createElement('div');
