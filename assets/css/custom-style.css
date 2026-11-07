@@ -228,3 +228,19 @@ body.io-black-mode .search-history-clear-li .search-history-clear:hover {
 .panel-body ul li p {
 	line-height: 1.9;
 }
+
+/* ===== 首页「编辑」模式：添加网址占位框的加号在夜间模式要看得见 =====
+   加号那个 <a class="btn"> 的文字色走 Bootstrap 默认的 #212529，
+   夜间底色 #1b1d1f 上几乎等于隐形；它的背景和虚线边框写在模板的行内 style 里，
+   行内样式优先级高于普通 CSS，所以这里必须用 !important 才能改到。 */
+.io-black-mode #add-site .btn {
+	color: #c6c9cf !important;
+	background: rgba(255, 255, 255, 0.06) !important;
+	border-color: rgba(255, 255, 255, 0.28) !important;
+}
+
+.io-black-mode #add-site .btn:hover {
+	color: #fff !important;
+	background: rgba(255, 255, 255, 0.12) !important;
+	border-color: rgba(255, 255, 255, 0.45) !important;
+}
