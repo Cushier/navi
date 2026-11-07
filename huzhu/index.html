@@ -359,6 +359,9 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	function saveNick(n) {
 		try { localStorage.setItem('huzhu_nick', n); } catch (e) {}
 	}
+	function clearNick() {
+		try { localStorage.removeItem('huzhu_nick'); } catch (e) {}
+	}
 
 	// 匿名访客用随机占位邮箱（Waline 服务端要求 mail 字段）
 	function guestMail() {
@@ -853,12 +856,12 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		publishBtn.textContent = '发布中…';
 		sendComment({
 			comment: body,
-			nick: nick || getSavedNick() || DEFAULT_NICK,
+			nick: nick || DEFAULT_NICK,
 			url: PAGE_PATH,
 			ua: navigator.userAgent
 		}).then(function (res) {
 			if (res && res.errno === 0) {
-				if (nick) saveNick(nick);
+				if (nick) { saveNick(nick); } else { clearNick(); }
 				addTodayCount();
 				document.getElementById('code').value = '';
 				document.getElementById('desc').value = '';
