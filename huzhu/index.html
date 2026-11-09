@@ -152,6 +152,33 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 .post .btn-copy { flex: 0 0 auto; white-space: nowrap; padding: 8px 20px; font-size: 13px; }
 .post .btn-copy.full { background: #c8cdd4; }
 .post .replies { margin-top: 10px; border-top: 1px dashed #ececec; padding-top: 8px; }
+.post .post-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 5px;
+	max-width: 100%;
+	margin: 0 0 8px;
+	font-size: 12.5px;
+	line-height: 1.5;
+	color: #4a5866;
+	text-decoration: none;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	transition: color .15s;
+}
+.post .post-link:hover { color: #24b47e; }
+.post .post-link .lk-ico { flex: 0 0 auto; font-size: 12px; opacity: .85; }
+.post .post-link .lk-host {
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	text-decoration: underline;
+	text-decoration-color: #cbd3da;
+	text-decoration-thickness: 1px;
+	text-underline-offset: 2px;
+}
+.post .post-link:hover .lk-host { text-decoration-color: #24b47e; }
 .post .reply { font-size: 12px; color: #9aa0a6; padding: 2px 0; word-break: break-all; }
 .empty { text-align: center; color: #aaa; font-size: 13px; padding: 36px 0; }
 .list-title h2 .avail-count { font-size: 12px; color: #24b47e; font-weight: 400; margin-left: 8px; }
@@ -250,6 +277,10 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 				<input id="desc" maxlength="60" placeholder="例如：今晚 24 点前有效" autocomplete="off">
 			</div>
 			<div class="field">
+				<label>链接<em>选填，活动页 / 互助页地址，http 或 https 开头</em></label>
+				<input id="link" maxlength="300" placeholder="例如：https://example.com/act" autocomplete="off" inputmode="url">
+			</div>
+			<div class="field">
 				<label>昵称<em>选填，不填显示"匿名访客"</em></label>
 				<input id="nick" maxlength="20" placeholder="例如：小明" autocomplete="off">
 			</div>
@@ -324,6 +355,7 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		var text = plainText(c.comment);
 		var code = '';
 		var desc = '';
+		var link = '';
 		var need = 1;
 		text.split('\n').forEach(function (raw) {
 			var line = raw.trim();
@@ -333,6 +365,8 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 			if (m) { code += (code ? '\n' : '') + m[1]; return; }
 			m = line.match(/^说明[：:]\s*([\s\S]*)$/);
 			if (m) { desc += (desc ? '\n' : '') + m[1]; return; }
+			m = line.match(/^链接[：:]\s*([\s\S]*)$/);
+			if (m) { link = m[1].trim(); return; }
 			m = line.match(/^人数[：:]\s*(\d+)/);
 			if (m) {
 				need = parseInt(m[1], 10) || 1;
@@ -343,7 +377,33 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 			if (!code) code = line;
 		});
 		if (!code) code = text.trim();
-		return { code: code.trim(), desc: desc.trim(), need: need };
+		return { code: code.trim(), desc: desc.trim(), link: safeLink(link), need: need };
+	}
+
+	/* 链接白名单：只放行 http/https，无协议时补 https，其余协议（javascript:、data: 等）一律丢弃 */
+	function safeLink(raw) {
+		var u = String(raw == null ? '' : raw).trim();
+		if (!u) return '';
+		if (/[\s"'<>]/.test(u)) return '';
+		if (/^[a-z][a-z0-9+.\-]*:/i.test(u) && !/^https?:\/\//i.test(u)) return '';
+		if (!/^https?:\/\//i.test(u)) u = 'https://' + u.replace(/^\/+/, '');
+		try {
+			var parsed = new URL(u);
+			if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') return '';
+			if (!parsed.hostname || parsed.hostname.indexOf('.') < 0) return '';
+			return parsed.href;
+		} catch (e) {
+			return '';
+		}
+	}
+
+	/* 链接行只显示域名，长地址不会撑破卡片 */
+	function linkHost(u) {
+		try {
+			return new URL(u).hostname.replace(/^www\./i, '');
+		} catch (e) {
+			return u;
+		}
 	}
 
 	function fmtTime(ts) {
@@ -583,6 +643,28 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 			});
 		}
 
+		if (p.link) {
+			var linkEl = document.createElement('a');
+			linkEl.className = 'post-link';
+			linkEl.href = p.link;
+			linkEl.target = '_blank';
+			linkEl.rel = 'noopener noreferrer';
+			linkEl.title = '在新窗口打开 ' + p.link;
+			linkEl.addEventListener('click', function (e) { e.stopPropagation(); });
+
+			var lkIco = document.createElement('span');
+			lkIco.className = 'lk-ico';
+			lkIco.textContent = '🔗';
+
+			var lkHost = document.createElement('span');
+			lkHost.className = 'lk-host';
+			lkHost.textContent = linkHost(p.link);
+
+			linkEl.appendChild(lkIco);
+			linkEl.appendChild(lkHost);
+			main.appendChild(linkEl);
+		}
+
 		var bottom = document.createElement('div');
 		bottom.className = 'bottom';
 
@@ -712,7 +794,7 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		var kw = keyword.trim().toLowerCase();
 		if (kw) {
 			items = items.filter(function (it) {
-				return ((it.p.code || '') + ' ' + (it.p.desc || '') + ' ' + (it.c.nick || '')).toLowerCase().indexOf(kw) >= 0;
+				return ((it.p.code || '') + ' ' + (it.p.desc || '') + ' ' + (it.p.link || '') + ' ' + (it.c.nick || '')).toLowerCase().indexOf(kw) >= 0;
 			});
 		}
 		render(items, currentFilter, allItems.length === 0 && kw === '');
@@ -839,18 +921,21 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		var code = (document.getElementById('code').value || '').trim();
 		var need = parseInt(document.getElementById('need').value, 10);
 		var desc = (document.getElementById('desc').value || '').trim();
+		var linkRaw = (document.getElementById('link').value || '').trim();
 		var nick = (document.getElementById('nick').value || '').trim();
+		var link = safeLink(linkRaw);
 
 		if (!code) { showMsg('请先填写互助码 / 内容', true); return; }
 		if (!need || need < 1) { showMsg('需要人数请填 1~20 之间的数字', true); return; }
 		if (need > 20) need = 20;
+		if (linkRaw && !link) { showMsg('链接格式不对，请填 http 或 https 开头的地址', true); return; }
 
 		if (todayCount() >= DAILY_LIMIT) {
 			showMsg('今天的发布额度（' + DAILY_LIMIT + ' 条）已用完，明天再来', true);
 			return;
 		}
 
-		var body = '码：' + code + '\n说明：' + desc + '\n人数：' + need;
+		var body = '码：' + code + '\n说明：' + desc + (link ? '\n链接：' + link : '') + '\n人数：' + need;
 
 		publishBtn.disabled = true;
 		publishBtn.textContent = '发布中…';
@@ -865,6 +950,7 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 				addTodayCount();
 				document.getElementById('code').value = '';
 				document.getElementById('desc').value = '';
+				document.getElementById('link').value = '';
 				document.getElementById('need').value = '1';
 				showMsg('发布成功，已显示在下方列表', false);
 				refreshLeft = REFRESH_SECONDS;
