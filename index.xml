@@ -6,8 +6,29 @@
     <description>Recent content on 青年科技学习导航</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>zh-CN</language>
-    <lastBuildDate>Mon, 09 Nov 2026 10:50:00 +0800</lastBuildDate>
+    <lastBuildDate>Tue, 10 Nov 2026 10:50:00 +0800</lastBuildDate>
     <atom:link href="https://www.qnkjxx.top/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>WorkBuddy | 网站指南 - 青年科技学习导航</title>
+      <link>https://www.qnkjxx.top/detail/ai/agent/workbuddy/</link>
+      <pubDate>Tue, 10 Nov 2026 10:50:00 +0800</pubDate>
+      <guid>https://www.qnkjxx.top/detail/ai/agent/workbuddy/</guid>
+      <description>WorkBuddy 是什么？ 腾讯出品的 AI 办公工作台。形态上它不是聊天框，而是一个「把活交出去」的地方：你说清要什么，它自己拆步骤、找工具、动手做，最后交出一份</description>
+    </item>
+    <item>
+      <title>OpenMAIC | 网站指南 - 青年科技学习导航</title>
+      <link>https://www.qnkjxx.top/detail/ai/agent/openmaic/</link>
+      <pubDate>Tue, 10 Nov 2026 10:20:00 +0800</pubDate>
+      <guid>https://www.qnkjxx.top/detail/ai/agent/openmaic/</guid>
+      <description>OpenMAIC 是什么？ 清华大学做的开源 AI 教学平台。给它一句话描述，或者丢一份 PDF 进去，它会把内容变成一整堂能点开的课：幻灯片、语音讲解、测验、可拖动的模拟</description>
+    </item>
+    <item>
+      <title>OpenClaw | 网站指南 - 青年科技学习导航</title>
+      <link>https://www.qnkjxx.top/detail/ai/agent/openclaw/</link>
+      <pubDate>Tue, 10 Nov 2026 08:55:00 +0800</pubDate>
+      <guid>https://www.qnkjxx.top/detail/ai/agent/openclaw/</guid>
+      <description>OpenClaw 是什么？ 跑在自己电脑上的开源 AI 助手，不是一个网页聊天框。装好之后它变成常驻在机器里的「手」：人在外面，用 Telegram、WhatsApp</description>
+    </item>
     <item>
       <title>电视盒子应用 | 网站指南 - 青年科技学习导航</title>
       <link>https://www.qnkjxx.top/detail/happy/vedio/tvboxapp/</link>
