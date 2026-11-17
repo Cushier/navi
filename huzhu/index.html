@@ -409,8 +409,8 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		</button>
 		<div class="pub-body" id="pubBody" hidden>
 			<div class="field">
-				<label><span class="req">*</span>内容<em>粘贴你的互助码或要分享的内容</em></label>
-				<input id="code" maxlength="200" placeholder="例如：88888888" autocomplete="off">
+				<label><span class="req">*</span>内容<em>互助码，或直接贴活动页链接</em></label>
+				<input id="code" maxlength="200" placeholder="例如：88888888，或 https://example.com/act" autocomplete="off">
 			</div>
 			<div class="field">
 				<label><span class="req">*</span>人数<em>几个人能成团，如 3</em></label>
@@ -522,7 +522,16 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			if (!code) code = line;
 		});
 		if (!code) code = text.trim();
-		return { code: code.trim(), desc: desc.trim(), link: safeLink(link), need: need };
+		code = code.trim();
+		// 有人不发码、直接把活动页链接当"码"填。这种帖子点"复制"只能拿到一串网址，还得自己粘到浏览器，
+		// 所以这里认出来：整条内容就是一个链接（http(s):// 或 www. 开头、中间没空格、能过白名单），
+		// 就把它当链接卡，按钮换成"打开"。判定和「链接：」字段互不影响——两个都填了就以显式链接为准，
+		// 否则内容贴了网址、链接字段又重复填一遍，卡片会退回显示整条长网址，和只填内容时长得不一样。
+		var codeLink = '';
+		if (code && !/[\s"'<>]/.test(code) && /^(https?:\/\/|www\.)/i.test(code)) {
+			codeLink = safeLink(code);
+		}
+		return { code: code, desc: desc.trim(), link: safeLink(link) || codeLink, need: need, codeLink: !!codeLink };
 	}
 
 	/* 链接白名单：只放行 http/https，无协议时补 https，其余协议（javascript:、data: 等）一律丢弃 */
@@ -762,7 +771,8 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 
 		var codeEl = document.createElement('div');
 		codeEl.className = 'code';
-		codeEl.textContent = p.code || '(无内容)';
+		// 链接卡不显示那一长串网址（会撑破卡片），改显示域名；想看清具体地址，按钮打开就是那一页
+		codeEl.textContent = p.codeLink ? linkHost(p.link) : (p.code || '(无内容)');
 		main.appendChild(codeEl);
 
 		if (p.desc) {
@@ -788,7 +798,8 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			});
 		}
 
-		if (p.link) {
+		// 链接卡不重复挂链接行：它的按钮就是"打开"，再挂一行等于同一个入口写两遍
+		if (p.link && !p.codeLink) {
 			var linkEl = document.createElement('a');
 			linkEl.className = 'post-link';
 			linkEl.href = p.link;
@@ -844,16 +855,22 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		var copyBtn = document.createElement('button');
 		copyBtn.className = 'btn btn-copy' + (full ? ' full' : '');
 		copyBtn.type = 'button';
-		copyBtn.textContent = full ? '已满' : (mine ? '已领取' : '复制');
+		// 链接卡按钮写"打开"：这类帖子的意图就是去活动页，让人再自己粘网址是多余的
+		var isLinkCard = !!p.codeLink;
+		copyBtn.textContent = full ? '已满' : (mine ? '已领取' : (isLinkCard ? '打开' : '复制'));
 		if (full) {
 			// 已满的码照给：need 是发布者自己填的，填多填少都常见，锁死会让剩余名额白废
-			copyBtn.title = '该团已满，仍可取码';
+			copyBtn.title = isLinkCard ? '该团已满，仍可取链接' : '该团已满，仍可取码';
 			copyBtn.addEventListener('click', function () { copyOnly(p, copyBtn); });
 		} else if (mine) {
 			// 本机领过：可以再看一眼码，但不再重复计数
 			copyBtn.title = '你已领取过，可再次复制查看';
 			copyBtn.addEventListener('click', function () { copyOnly(p, copyBtn); });
+		} else if (isLinkCard) {
+			copyBtn.title = '直接打开活动页，同时记为已使用';
+			copyBtn.addEventListener('click', function () { handleOpen(p, copyBtn); });
 		} else {
+			copyBtn.title = p.link ? '复制码，活动页在卡片上点开' : '复制码';
 			copyBtn.addEventListener('click', function () { handleCopy(p, copyBtn); });
 		}
 		side.appendChild(copyBtn);
@@ -1071,6 +1088,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 	function handleCopy(p, btn) {
 		if (btn.disabled || busy) return;
 		busy = true;
+		var label = btn.textContent;
 		btn.disabled = true;
 		btn.textContent = '复制中…';
 		copyText(p.code).then(function () {
@@ -1084,8 +1102,30 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		}).catch(function (err) {
 			busy = false;
 			btn.disabled = false;
-			btn.textContent = '复制';
+			btn.textContent = label;
 			showMsg('复制或计数失败：' + err.message, true);
+		});
+	}
+
+	/* 内容是网址的帖子：点"打开"直接去活动页，不复制（复制也没意义，整条内容就是那个网址）。
+	   window.open 必须留在点击回调的同步段里，挪进 Promise 里会被浏览器当广告拦掉。 */
+	function handleOpen(p, btn) {
+		if (btn.disabled || busy) return;
+		busy = true;
+		btn.disabled = true;
+		btn.textContent = '打开中…';
+		try { window.open(p.link, '_blank', 'noopener'); } catch (e) {}
+		incrCount(p.path).then(function (res) {
+			if (!res || res.errno !== 0) throw new Error((res && res.errmsg) || '计数失败');
+			markUsed(p.key);
+			busy = false;
+			btn.textContent = '已打开';
+			doRefresh();
+		}).catch(function (err) {
+			busy = false;
+			btn.disabled = false;
+			btn.textContent = '打开';
+			showMsg('打开或计数失败：' + err.message, true);
 		});
 	}
 
