@@ -644,7 +644,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		return 'huzhu-' + String(Math.random()).slice(2, 10) + '@qnkjxx.top';
 	}
 
-	// 互助码 -> 计数键（djb2 哈希，保证计数路径只含字母数字，避免特殊字符）
+	// 互助码 -> 哈希键。正常计数键就是评论自己的 objectId，这里只在评论缺 id 时兜底用
 	function codeKey(code) {
 		var h = 5381;
 		for (var i = 0; i < code.length; i++) {
@@ -936,7 +936,8 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		// 链接卡按钮写"打开"：这类帖子的意图就是去活动页，让人再自己粘网址是多余的
 		var isLinkCard = !!p.codeLink;
 		// 过期优先于已满：活动都结束了，"已满"没什么意义。都写两个字，宽度才能和复制卡齐平
-		copyBtn.textContent = st.expired ? '过期' : (full ? '已满' : (mine ? '已领取' : (isLinkCard ? '打开' : '复制')));
+		// 链接卡排在"已领取"前面：它是跳转入口，不是一次性领取，进过几次都该能再进
+		copyBtn.textContent = st.expired ? '过期' : (full ? '已满' : (isLinkCard ? '打开' : (mine ? '已领取' : '复制')));
 		if (st.expired) {
 			// 过期不等于内容作废，有些活动页还开着，照样给
 			copyBtn.title = '该活动已过期，内容仍可复制';
@@ -945,13 +946,13 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			// 已满的码照给：need 是发布者自己填的，填多填少都常见，锁死会让剩余名额白废
 			copyBtn.title = isLinkCard ? '该团已满，仍可取链接' : '该团已满，仍可取码';
 			copyBtn.addEventListener('click', function () { copyOnly(p, copyBtn); });
+		} else if (isLinkCard) {
+			copyBtn.title = '直接打开活动页，同时记为已使用';
+			copyBtn.addEventListener('click', function () { handleOpen(p, copyBtn); });
 		} else if (mine) {
 			// 本机领过：可以再看一眼码，但不再重复计数
 			copyBtn.title = '你已领取过，可再次复制查看';
 			copyBtn.addEventListener('click', function () { copyOnly(p, copyBtn); });
-		} else if (isLinkCard) {
-			copyBtn.title = '直接打开活动页，同时记为已使用';
-			copyBtn.addEventListener('click', function () { handleOpen(p, copyBtn); });
 		} else {
 			copyBtn.title = p.link ? '复制码，活动页在卡片上点开' : '复制码';
 			copyBtn.addEventListener('click', function () { handleCopy(p, copyBtn); });
@@ -1058,7 +1059,10 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			totalCount = result.total;
 			var items = posts.map(function (c) {
 				var p = parsePost(c);
-				p.key = codeKey(p.code);
+				// 计数键用评论自己的 objectId，不再拿内容哈希：哈希会把"同一个码发两次"的两条帖子并成一条，
+				// 计数和"已领取"都串味。objectId 缺失时才退回哈希
+				var oid = c.objectId;
+				p.key = (oid === undefined || oid === null || oid === '') ? codeKey(p.code) : String(oid);
 				p.path = ARTICLE_PREFIX + p.key + '/';
 				return { c: c, p: p, used: 0 };
 			});
