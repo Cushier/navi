@@ -90,7 +90,7 @@ header p { font-size: 12.5px; color: #767c82; margin: 0; line-height: 1.7; }
 .field label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; }
 .field label em { font-style: normal; color: #8a9099; font-size: 12px; margin-left: 6px; }
 .field label .req { color: #e05656; font-weight: 600; margin-right: 4px; }
-input, textarea {
+input, textarea, select {
 	width: 100%;
 	border: 1px solid #e2e5ea;
 	border-radius: 8px;
@@ -101,7 +101,10 @@ input, textarea {
 	background: #fafbfc;
 	transition: border-color .2s, background .2s;
 }
-input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
+input:focus, textarea:focus, select:focus { border-color: #24b47e; background: #fff; }
+/* 人数 + 有效期并排，省一行高度；太窄时自动落成一列 */
+.field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 13px; }
+.field-pair .field { margin-bottom: 0; }
 .btn {
 	display: inline-block;
 	border: 0;
@@ -186,6 +189,12 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 .post .bottom-left { display: flex; align-items: baseline; gap: 10px; flex-wrap: nowrap; flex: 1 1 auto; min-width: 0; overflow: hidden; }
 .post .progress { flex: 0 0 auto; white-space: nowrap; font-size: 13px; color: #24b47e; }
 .post .progress.full { color: #e05656; }
+/* 过期但没满：红色代表"名额没了"，这里不该红，用中性灰 */
+.post .progress.muted { color: #767c82; }
+/* 只给有期限的帖子挂这个标签：长期有效是默认状态，每条都写一遍"长期"只会白占地方 */
+.post .expire { flex: 0 0 auto; white-space: nowrap; font-size: 12px; padding: 1px 6px; border-radius: 4px; background: #eef1f4; color: #6b7280; }
+.post .expire.warn { background: #fdf1e0; color: #a3670f; }
+.post .expire.over { background: #fdeaea; color: #bf3f3f; }
 .post .btn-copy { flex: 0 0 auto; white-space: nowrap; padding: 10px 20px; font-size: 13px; }
 /* 已满 / 本机已领取：码仍然给用户，只是变成浅底描边的次要按钮，一眼不是"点不得"的样子 */
 .post .btn-copy.full {
@@ -339,7 +348,8 @@ html.io-black-mode .field label { color: #b4b9c0; }
 html.io-black-mode .field label em { color: #7d8388; }
 html.io-black-mode .field label .req { color: #f07b7b; }
 html.io-black-mode input,
-html.io-black-mode textarea {
+html.io-black-mode textarea,
+html.io-black-mode select {
 	background: #26282a;
 	border-color: #3a3d40;
 	color: #d5d8dc;
@@ -347,7 +357,8 @@ html.io-black-mode textarea {
 html.io-black-mode input::placeholder,
 html.io-black-mode textarea::placeholder { color: #75797f; }
 html.io-black-mode input:focus,
-html.io-black-mode textarea:focus { border-color: #24b47e; background: #2c2f31; }
+html.io-black-mode textarea:focus,
+html.io-black-mode select:focus { border-color: #24b47e; background: #2c2f31; }
 html.io-black-mode .btn:disabled { background: #3a3d40; color: #75797f; }
 html.io-black-mode .msg.ok { color: #5fd3a5; }
 html.io-black-mode .msg.err { color: #f07b7b; }
@@ -361,6 +372,10 @@ html.io-black-mode .post .desc { color: #b4b9c0; }
 html.io-black-mode .post .desc-more { color: #4fc79b; }
 html.io-black-mode .post .progress { color: #4fc79b; }
 html.io-black-mode .post .progress.full { color: #f07b7b; }
+html.io-black-mode .post .progress.muted { color: #7d8388; }
+html.io-black-mode .post .expire { background: #34373a; color: #a8adb3; }
+html.io-black-mode .post .expire.warn { background: #3b3222; color: #e2b264; }
+html.io-black-mode .post .expire.over { background: #3c2a2a; color: #f07b7b; }
 html.io-black-mode .post .btn-copy.full { background: #34373a; color: #a8adb3; box-shadow: inset 0 0 0 1px #4a4d50; }
 html.io-black-mode .post .btn-copy.full:hover { background: #3b3f42; box-shadow: inset 0 0 0 1px #565a5e; }
 html.io-black-mode .post .replies { border-top-color: #3a3d40; }
@@ -412,9 +427,21 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 				<label><span class="req">*</span>内容<em>互助码，或直接贴活动页链接</em></label>
 				<input id="code" maxlength="200" placeholder="例如：88888888，或 https://example.com/act" autocomplete="off">
 			</div>
-			<div class="field">
-				<label><span class="req">*</span>人数<em>几个人能成团，如 3</em></label>
-				<input id="need" type="number" min="1" max="20" value="1">
+			<div class="field-pair">
+				<div class="field">
+					<label>人数<em>选填，不限就留空</em></label>
+					<input id="need" type="number" min="1" max="20" placeholder="如 3" autocomplete="off">
+				</div>
+				<div class="field">
+					<label>有效期<em>不填就是长期</em></label>
+					<select id="days">
+						<option value="0">长期有效</option>
+						<option value="1">1 天</option>
+						<option value="3">3 天</option>
+						<option value="7">7 天</option>
+						<option value="30">30 天</option>
+					</select>
+				</div>
 			</div>
 			<div class="field">
 				<label>说明<em>选填，如有效期、备注</em></label>
@@ -502,6 +529,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		var desc = '';
 		var link = '';
 		var need = 1;
+		var days = 0;
 		text.split('\n').forEach(function (raw) {
 			var line = raw.trim();
 			if (!line) return;
@@ -512,11 +540,23 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			if (m) { desc += (desc ? '\n' : '') + m[1]; return; }
 			m = line.match(/^链接[：:]\s*([\s\S]*)$/);
 			if (m) { link = m[1].trim(); return; }
-			m = line.match(/^人数[：:]\s*(\d+)/);
+			m = line.match(/^人数[：:]\s*(不限|[0-9]+)/);
 			if (m) {
-				need = parseInt(m[1], 10) || 1;
-				if (need < 1) need = 1;
-				if (need > 50) need = 50;
+				// "不限"是 0；老帖没写这行就沿用原来的默认 1，不改变历史行为
+				if (m[1] === '不限') {
+					need = 0;
+				} else {
+					need = parseInt(m[1], 10) || 1;
+					if (need < 1) need = 1;
+					if (need > 50) need = 50;
+				}
+				return;
+			}
+			m = line.match(/^有效期[：:]\s*([0-9]+)/);
+			if (m) {
+				days = parseInt(m[1], 10) || 0;
+				if (days < 0) days = 0;
+				if (days > 365) days = 365;
 				return;
 			}
 			if (!code) code = line;
@@ -531,7 +571,29 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		if (code && !/[\s"'<>]/.test(code) && /^(https?:\/\/|www\.)/i.test(code)) {
 			codeLink = safeLink(code);
 		}
-		return { code: code, desc: desc.trim(), link: safeLink(link) || codeLink, need: need, codeLink: !!codeLink };
+		return { code: code, desc: desc.trim(), link: safeLink(link) || codeLink, need: need, days: days, codeLink: !!codeLink };
+	}
+
+	/* 一条帖子的状态。need=0 表示不限人数，永远不满；days=0 表示长期有效，不判过期。
+	   过期按"发布时刻 + 天数"算，用的是本机时间——各设备时钟差几小时会产生边界差，只影响显示，不影响数据。 */
+	function postState(p, c, used) {
+		var full = p.need > 0 && used >= p.need;
+		var leftMs = 0;
+		var expired = false;
+		if (p.days > 0) {
+			leftMs = (Number(c.time) || 0) + p.days * 86400000 - Date.now();
+			expired = leftMs <= 0;
+		}
+		return { full: full, expired: expired, done: full || expired, leftMs: leftMs };
+	}
+
+	/* 有效期徽标：长期不显示（默认状态，没必要每条都写）；不到一天按小时报，更准 */
+	function expireLabel(p, st) {
+		if (!p.days) return null;
+		if (st.expired) return { text: '已过期', cls: 'over' };
+		var h = st.leftMs / 3600000;
+		if (h <= 24) return { text: '剩 ' + Math.max(1, Math.ceil(h)) + ' 小时', cls: 'warn' };
+		return { text: '剩 ' + Math.ceil(h / 24) + ' 天', cls: '' };
 	}
 
 	/* 链接白名单：只放行 http/https，无协议时补 https，其余协议（javascript:、data: 等）一律丢弃 */
@@ -758,14 +820,15 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 	});
 
 	function renderPost(c, p, used) {
-		var full = used >= p.need;
+		var st = postState(p, c, used);
+		var full = st.full;
 		var mine = isUsed(p.key);
 		var replies = (c.children || []).filter(function (r) {
 			return plainText(r.comment).indexOf('已使用') < 0;
 		});
 
 		var post = document.createElement('div');
-		post.className = 'post' + (full ? ' done' : '');
+		post.className = 'post' + (st.done ? ' done' : '');
 		var main = document.createElement('div');
 		main.className = 'post-main';
 
@@ -828,9 +891,23 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		left.className = 'bottom-left';
 
 		var prog = document.createElement('div');
-		prog.className = 'progress' + (full ? ' full' : '');
-		prog.textContent = '进度 ' + used + '/' + p.need + (full ? '（已满）' : '');
+		prog.className = 'progress' + (full ? ' full' : (st.expired ? ' muted' : ''));
+		// 不限人数的帖子不该出现"进度 0/1"：那个 1 是必填项的默认值，不是"只够一个人"，写出来反而误导
+		if (p.need > 0) {
+			prog.textContent = '进度 ' + used + '/' + p.need + (full ? '（已满）' : '');
+		} else {
+			prog.textContent = used > 0 ? ('已领 ' + used + ' 次') : '不限人数';
+		}
 		left.appendChild(prog);
+
+		var ep = expireLabel(p, st);
+		if (ep) {
+			var epEl = document.createElement('span');
+			epEl.className = 'expire' + (ep.cls ? ' ' + ep.cls : '');
+			epEl.textContent = ep.text;
+			if (st.expired) epEl.title = '已超过有效期，内容仍可复制';
+			left.appendChild(epEl);
+		}
 
 		var nickName = c.nick || DEFAULT_NICK;
 		var meta = document.createElement('span');
@@ -838,7 +915,8 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		meta.title = nickName + ' · ' + fmtTime(c.time);
 		var nickEl = document.createElement('span');
 		nickEl.className = 'nick';
-		nickEl.textContent = nickName;
+		// 前面补一个点：进度、有效期徽标、昵称挨着排，不隔开容易被读成一串
+		nickEl.textContent = '· ' + nickName;
 		var timeEl = document.createElement('span');
 		timeEl.className = 'time';
 		timeEl.textContent = ' · ' + fmtTime(c.time);
@@ -853,12 +931,17 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		side.className = 'post-side';
 
 		var copyBtn = document.createElement('button');
-		copyBtn.className = 'btn btn-copy' + (full ? ' full' : '');
+		copyBtn.className = 'btn btn-copy' + (st.done ? ' full' : '');
 		copyBtn.type = 'button';
 		// 链接卡按钮写"打开"：这类帖子的意图就是去活动页，让人再自己粘网址是多余的
 		var isLinkCard = !!p.codeLink;
-		copyBtn.textContent = full ? '已满' : (mine ? '已领取' : (isLinkCard ? '打开' : '复制'));
-		if (full) {
+		// 过期优先于已满：活动都结束了，"已满"没什么意义。都写两个字，宽度才能和复制卡齐平
+		copyBtn.textContent = st.expired ? '过期' : (full ? '已满' : (mine ? '已领取' : (isLinkCard ? '打开' : '复制')));
+		if (st.expired) {
+			// 过期不等于内容作废，有些活动页还开着，照样给
+			copyBtn.title = '该活动已过期，内容仍可复制';
+			copyBtn.addEventListener('click', function () { copyOnly(p, copyBtn); });
+		} else if (full) {
 			// 已满的码照给：need 是发布者自己填的，填多填少都常见，锁死会让剩余名额白废
 			copyBtn.title = isLinkCard ? '该团已满，仍可取链接' : '该团已满，仍可取码';
 			copyBtn.addEventListener('click', function () { copyOnly(p, copyBtn); });
@@ -929,7 +1012,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		var avail = [];
 		var done = [];
 		items.forEach(function (it) {
-			if (it.used >= it.p.need) done.push(it);
+			if (postState(it.p, it.c, it.used).done) done.push(it);
 			else avail.push(it);
 		});
 
@@ -955,9 +1038,9 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 	function applyFilter() {
 		var items = allItems;
 		if (currentFilter === 'avail') {
-			items = items.filter(function (it) { return it.used < it.p.need; });
+			items = items.filter(function (it) { return !postState(it.p, it.c, it.used).done; });
 		} else if (currentFilter === 'done') {
-			items = items.filter(function (it) { return it.used >= it.p.need; });
+			items = items.filter(function (it) { return postState(it.p, it.c, it.used).done; });
 		}
 		var kw = keyword.trim().toLowerCase();
 		if (kw) {
@@ -991,19 +1074,20 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			var paths = items.map(function (it) { return it.p.path; });
 			return fetchCounts(paths).then(function (counts) {
 				items.forEach(function (it, i) { it.used = counts[i] || 0; });
-				// 排序：未满（可用）在前，已满（已完成）在后；同组内按发布时间倒序
+				// 排序：可用（未满且没过期）在前，其余沉底；同组内按发布时间倒序
 				items.sort(function (a, b) {
-					var fa = a.used >= a.p.need ? 1 : 0;
-					var fb = b.used >= b.p.need ? 1 : 0;
+					var fa = postState(a.p, a.c, a.used).done ? 1 : 0;
+					var fb = postState(b.p, b.c, b.used).done ? 1 : 0;
 					if (fa !== fb) return fa - fb;
 					return (Number(b.c.time) || 0) - (Number(a.c.time) || 0);
 				});
 				allItems = items;
-				updateAvail(items.filter(function (it) { return it.used < it.p.need; }).length);
+				updateAvail(items.filter(function (it) { return !postState(it.p, it.c, it.used).done; }).length);
 				updateMore();
-				// 静默刷新时数据没变化就不重绘，避免列表闪动
+				// 静默刷新时数据没变化就不重绘，避免列表闪动；过期状态也算进签名，跨过到期点才能重绘
 				var sig = items.map(function (it) {
-					return it.c.objectId + ':' + it.used + ':' + it.p.need + ':' + it.c.time + ':' + it.c.nick;
+					var st = postState(it.p, it.c, it.used);
+					return it.c.objectId + ':' + it.used + ':' + it.p.need + ':' + it.p.days + ':' + (st.expired ? 1 : 0) + ':' + it.c.time + ':' + it.c.nick;
 				}).join('|');
 				if (silent && sig === lastSig) return;
 				lastSig = sig;
@@ -1149,14 +1233,17 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 	/* ---------- 发布 ---------- */
 	function handlePublish() {
 		var code = (document.getElementById('code').value || '').trim();
-		var need = parseInt(document.getElementById('need').value, 10);
+		var needRaw = (document.getElementById('need').value || '').trim();
+		var need = needRaw === '' ? 0 : parseInt(needRaw, 10);
+		var days = parseInt(document.getElementById('days').value, 10) || 0;
 		var desc = (document.getElementById('desc').value || '').trim();
 		var linkRaw = (document.getElementById('link').value || '').trim();
 		var nick = (document.getElementById('nick').value || '').trim();
 		var link = safeLink(linkRaw);
 
 		if (!code) { showMsg('请先填写互助码 / 内容', true); return; }
-		if (!need || need < 1) { showMsg('需要人数请填 1~20 之间的数字', true); return; }
+		// 留空就是不限人数；填了就必须是有效数字，0 和负数不认
+		if (needRaw !== '' && (!need || need < 1)) { showMsg('人数留空表示不限，要填请写 1~20', true); return; }
 		if (need > 20) need = 20;
 		if (linkRaw && !link) { showMsg('链接格式不对，请填 http 或 https 开头的地址', true); return; }
 
@@ -1165,7 +1252,9 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			return;
 		}
 
-		var body = '码：' + code + '\n说明：' + desc + (link ? '\n链接：' + link : '') + '\n人数：' + need;
+		// 长期有效（days=0）就不写这一行，老帖和新帖的格式差别越小越好
+		var body = '码：' + code + '\n说明：' + desc + (link ? '\n链接：' + link : '') +
+			'\n人数：' + (need > 0 ? need : '不限') + (days > 0 ? '\n有效期：' + days : '');
 
 		publishBtn.disabled = true;
 		publishBtn.textContent = '发布中…';
@@ -1181,7 +1270,8 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 				document.getElementById('code').value = '';
 				document.getElementById('desc').value = '';
 				document.getElementById('link').value = '';
-				document.getElementById('need').value = '1';
+				document.getElementById('need').value = '';
+				document.getElementById('days').value = '0';
 				showMsg('发布成功，已显示在下方列表', false);
 				doRefresh();
 			} else {
