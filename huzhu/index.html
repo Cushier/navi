@@ -788,7 +788,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		el.textContent = text;
 		wrap.classList.remove('more');
 		var lh = parseFloat(getComputedStyle(el).lineHeight) || 20.8;
-		var maxH = lh * 2 + 1;
+		var maxH = lh + 1;
 		if (el.scrollHeight <= maxH) return;
 		var tail = '…展开';
 		var lo = 0, hi = text.length;
@@ -846,7 +846,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			descWrap.appendChild(descEl);
 			main.appendChild(descWrap);
 			descWrap.dataset.full = p.desc;
-			// 默认只显示 2 行，超出时末尾接"…展开"，点整块展开/收起
+			// 默认只显示 1 行：说明长短不一时卡片高度会参差，统一一行才排得整齐；超出时末尾接"…展开"，点整块展开/收起
 			setTimeout(function () { clampDesc(descWrap, descEl, p.desc); }, 0);
 			descWrap.addEventListener('click', function () {
 				if (!descWrap.classList.contains('more')) return;
