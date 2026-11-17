@@ -9,6 +9,19 @@
 <link rel="apple-touch-icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico">
 <link rel="preconnect" href="https://comment.qnkjxx.top" crossorigin="anonymous">
 <link rel="dns-prefetch" href="//comment.qnkjxx.top">
+<script>
+/* 夜间模式：跟随主站设置（同域 cookie night=1），未设置时按主站同样规则按时间自动判断（18:00-06:00） */
+(function () {
+	try {
+		var m = document.cookie.match(/(?:^|;)\s*night=([^;]*)/);
+		var v = m ? m[1] : '';
+		var h = new Date().getHours();
+		if (v === '1' || (v === '' && (h > 17 || h < 6))) {
+			document.documentElement.className = 'night io-black-mode';
+		}
+	} catch (e) {}
+})();
+</script>
 <style>
 * { box-sizing: border-box; }
 body {
@@ -24,7 +37,7 @@ body {
 .wrap { max-width: 680px; margin: 0 auto; }
 header { text-align: center; margin-bottom: 22px; }
 header h1 { font-size: 26px; margin: 0 0 8px; color: #1b1b1b; letter-spacing: 1px; }
-header p { font-size: 12.5px; color: #9aa0a6; margin: 0; line-height: 1.7; }
+header p { font-size: 12.5px; color: #767c82; margin: 0; line-height: 1.7; }
 .card, .post {
 	background: #fff;
 	border-radius: 12px;
@@ -57,7 +70,7 @@ header p { font-size: 12.5px; color: #9aa0a6; margin: 0; line-height: 1.7; }
 .pub-toggle:focus-visible { outline: 2px solid #24b47e; outline-offset: 2px; border-radius: 12px; }
 .pub-toggle-text { flex: 1; }
 .pub-toggle-hint { font-size: 12px; font-weight: 400; color: #24b47e; }
-.pub-chev { font-style: normal; font-size: 13px; line-height: 1; color: #9aa0a6; transition: transform .2s ease; }
+.pub-chev { font-style: normal; font-size: 13px; line-height: 1; color: #767c82; transition: transform .2s ease; }
 .pub-toggle[aria-expanded="true"] .pub-chev { transform: rotate(180deg); }
 .pub-body { padding: 0 18px 16px; }
 .pub-body[hidden] { display: none; }
@@ -75,7 +88,7 @@ header p { font-size: 12.5px; color: #9aa0a6; margin: 0; line-height: 1.7; }
 .pub-body .msg { text-align: center; }
 .field { margin-bottom: 13px; }
 .field label { display: block; font-size: 13px; color: #555; margin-bottom: 6px; }
-.field label em { font-style: normal; color: #aaa; font-size: 12px; margin-left: 6px; }
+.field label em { font-style: normal; color: #8a9099; font-size: 12px; margin-left: 6px; }
 .field label .req { color: #e05656; font-weight: 600; margin-right: 4px; }
 input, textarea {
 	width: 100%;
@@ -114,15 +127,34 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	color: #24b47e;
 	border: 1px solid #24b47e;
 	font-size: 13px;
-	padding: 6px 14px;
+	padding: 8px 14px;
 	border-radius: 8px;
 	cursor: pointer;
 	font-family: inherit;
+	/* 倒计时从 9 掉到 8、或改成两位数时，按钮不能跟着抽动：数字等宽 + 预留两位宽度 */
+	font-variant-numeric: tabular-nums;
+	min-width: 86px;
+	text-align: center;
 }
-.post { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+/* 刷新进行中：转圈图标 + 「刷新中」，这期间按钮不再接受点击 */
+.btn-refresh.is-refreshing { pointer-events: none; }
+.rf-spin {
+	display: inline-block;
+	width: 11px;
+	height: 11px;
+	margin-right: 6px;
+	border: 2px solid rgba(36,180,126,.28);
+	border-top-color: #24b47e;
+	border-radius: 50%;
+	vertical-align: -1px;
+	animation: rf-spin .7s linear infinite;
+}
+@keyframes rf-spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .rf-spin { animation-duration: 2.4s; } }
+.post { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
 .post-main { flex: 1 1 auto; min-width: 0; }
 .post-side { flex: 0 0 auto; display: flex; align-items: center; }
-.post.done { opacity: .72; }
+.post.done { opacity: .88; }
 .post .code {
 	display: inline-block;
 	max-width: 100%;
@@ -143,7 +175,7 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 
 /* 已满：码降为中性灰，和「可复制」的绿色状态一眼分开 */
 .post.done .code { color: #7d858c; background: #f3f4f5; border-color: #e6e8ea; }
-.post .meta { display: flex; align-items: baseline; min-width: 0; font-size: 12px; color: #9aa0a6; }
+.post .meta { display: flex; align-items: baseline; min-width: 0; font-size: 12px; color: #767c82; }
 .post .meta .nick { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .post .meta .time { flex: 0 0 auto; white-space: nowrap; }
 .post .desc-wrap { margin: 6px 0 8px; }
@@ -154,8 +186,14 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 .post .bottom-left { display: flex; align-items: baseline; gap: 10px; flex-wrap: nowrap; flex: 1 1 auto; min-width: 0; overflow: hidden; }
 .post .progress { flex: 0 0 auto; white-space: nowrap; font-size: 13px; color: #24b47e; }
 .post .progress.full { color: #e05656; }
-.post .btn-copy { flex: 0 0 auto; white-space: nowrap; padding: 8px 20px; font-size: 13px; }
-.post .btn-copy.full { background: #c8cdd4; }
+.post .btn-copy { flex: 0 0 auto; white-space: nowrap; padding: 10px 20px; font-size: 13px; }
+/* 已满 / 本机已领取：码仍然给用户，只是变成浅底描边的次要按钮，一眼不是"点不得"的样子 */
+.post .btn-copy.full {
+	background: #f6f7f8;
+	color: #6b7280;
+	box-shadow: inset 0 0 0 1px #dfe3e8;
+}
+.post .btn-copy.full:hover { background: #eceff2; box-shadow: inset 0 0 0 1px #cfd6dd; }
 .post .replies { margin-top: 10px; border-top: 1px dashed #ececec; padding-top: 8px; }
 .post .post-link {
 	display: inline-flex;
@@ -184,15 +222,15 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	text-underline-offset: 2px;
 }
 .post .post-link:hover .lk-host { text-decoration-color: #24b47e; }
-.post .reply { font-size: 12px; color: #9aa0a6; padding: 2px 0; word-break: break-all; }
-.empty { text-align: center; color: #aaa; font-size: 13px; padding: 36px 0; }
+.post .reply { font-size: 12px; color: #767c82; padding: 2px 0; word-break: break-all; }
+.empty { text-align: center; color: #8a9099; font-size: 13px; padding: 36px 0; }
 .list-title h2 .avail-count { font-size: 12px; color: #24b47e; font-weight: 400; margin-left: 8px; }
 .toolbar { display: flex; gap: 8px; align-items: center; margin: 0 0 12px; flex-wrap: wrap; }
 .toolbar .search {
 	flex: 1 1 200px;
 	min-width: 150px;
 	box-sizing: border-box;
-	padding: 8px 12px;
+	padding: 9px 12px;
 	font-size: 13px;
 	font-family: inherit;
 	border: 1px solid #e4e7ed;
@@ -201,7 +239,7 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	background: #fff;
 	color: #333;
 }
-.toolbar .search:focus { border-color: #24b47e; }
+.toolbar .search:focus { border-color: #24b47e; box-shadow: 0 0 0 3px rgba(36,180,126,.12); }
 .toolbar .tabs { display: flex; gap: 4px; padding: 3px; background: #f2f4f7; border-radius: 10px; }
 .toolbar .tab {
 	border: 0;
@@ -209,7 +247,7 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	color: #666;
 	font-size: 12px;
 	font-family: inherit;
-	padding: 6px 10px;
+	padding: 7px 12px;
 	border-radius: 8px;
 	cursor: pointer;
 }
@@ -227,12 +265,25 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	width: 100%;
 	max-width: 320px;
 }
-.btn-more:disabled { color: #aaa; cursor: default; }
-.more-info { font-size: 12px; color: #aaa; margin-top: 8px; }
-.group-title { font-size: 13px; color: #9aa0a6; margin: 22px 0 10px; padding-left: 4px; }
+.btn-more:disabled { color: #8a9099; cursor: default; }
+/* 键盘与读屏：可点元素统一焦点描边，任何时候都能看出光标落在哪
+   搜索框不在此列——输入框点进去就触发 focus-visible，描边会一直挂着像多套了一个框，
+   改用边框变绿加一圈淡光晕 */
+.toolbar .tab:focus-visible,
+.btn-refresh:focus-visible,
+.btn:focus-visible,
+.btn-more:focus-visible { outline: 2px solid #24b47e; outline-offset: 2px; }
+/* 触屏没有 hover，按下时轻微下沉，让点击有回应 */
+.btn:active,
+.btn-refresh:active,
+.btn-more:active,
+.toolbar .tab:active,
+.pub-toggle:active { transform: translateY(1px); }
+.more-info { font-size: 12px; color: #8a9099; margin-top: 8px; }
+.group-title { font-size: 13px; color: #767c82; margin: 22px 0 10px; padding-left: 4px; }
 .empty-avail {
 	text-align: center;
-	color: #aaa;
+	color: #8a9099;
 	font-size: 13px;
 	padding: 30px 0;
 	background: #fff;
@@ -240,7 +291,6 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	box-shadow: 0 1px 4px rgba(0,0,0,.06);
 	margin-bottom: 12px;
 }
-.foot { text-align: center; font-size: 12px; color: #b5b9bf; margin-top: 28px; line-height: 1.7; }
 @media screen and (max-width: 520px) {
 	header h1 { font-size: 22px; }
 	.card { padding: 16px 14px 18px; }
@@ -248,11 +298,100 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	.post { gap: 8px; padding: 16px 14px; }
 	.post .code { font-size: 16px; }
 	.post .bottom-left { gap: 6px; }
-	.post .btn-copy { padding: 8px 16px; }
+	.post .btn-copy { padding: 10px 16px; }
 	.btn { padding: 10px 22px; }
 	.pub-toggle { padding: 16px 14px; }
 	.pub-body { padding: 0 14px 16px; }
+	/* 手机端：视觉尺寸保持紧凑，用透明热区把上下可点范围补到 44px，避免按钮整体变胖 */
+	.btn-refresh, .post .btn-copy, .toolbar .tab { position: relative; }
+	.btn-refresh::after,
+	.post .btn-copy::after,
+	.toolbar .tab::after {
+		content: "";
+		position: absolute;
+		left: 0;
+		right: 0;
+		top: 50%;
+		height: 44px;
+		margin-top: -22px;
+	}
 }
+
+/* ---------- 夜间模式（与主站同一套：cookie night=1 / body.io-black-mode） ---------- */
+html.io-black-mode { color-scheme: dark; }
+html.io-black-mode body {
+	background-color: #1b1d1f;
+	background-image: none;
+	color: #c6c9cf;
+}
+html.io-black-mode header h1 { color: #e8eaed; }
+html.io-black-mode header p { color: #8b9196; }
+html.io-black-mode .card,
+html.io-black-mode .post,
+html.io-black-mode .empty-avail { background: #2c2e2f; box-shadow: 0 1px 4px rgba(0,0,0,.35); }
+html.io-black-mode .card h2,
+html.io-black-mode .list-title h2 { color: #c6c9cf; }
+html.io-black-mode .list-title h2 .avail-count { color: #4fc79b; }
+html.io-black-mode .pub-toggle { color: #e8eaed; }
+html.io-black-mode .pub-toggle-hint { color: #4fc79b; }
+html.io-black-mode .pub-chev { color: #8b9196; }
+html.io-black-mode .field label { color: #b4b9c0; }
+html.io-black-mode .field label em { color: #7d8388; }
+html.io-black-mode .field label .req { color: #f07b7b; }
+html.io-black-mode input,
+html.io-black-mode textarea {
+	background: #26282a;
+	border-color: #3a3d40;
+	color: #d5d8dc;
+}
+html.io-black-mode input::placeholder,
+html.io-black-mode textarea::placeholder { color: #75797f; }
+html.io-black-mode input:focus,
+html.io-black-mode textarea:focus { border-color: #24b47e; background: #2c2f31; }
+html.io-black-mode .btn:disabled { background: #3a3d40; color: #75797f; }
+html.io-black-mode .msg.ok { color: #5fd3a5; }
+html.io-black-mode .msg.err { color: #f07b7b; }
+html.io-black-mode .btn-refresh { color: #4fc79b; border-color: rgba(79,199,155,.5); }
+html.io-black-mode .rf-spin { border-color: rgba(79,199,155,.28); border-top-color: #4fc79b; }
+html.io-black-mode .post .code { color: #5fd3a5; background: #17352a; border-color: #27543f; }
+html.io-black-mode .post.done { opacity: .86; }
+html.io-black-mode .post.done .code { color: #8b9196; background: #34373a; border-color: #3f4245; }
+html.io-black-mode .post .meta { color: #7d8388; }
+html.io-black-mode .post .desc { color: #b4b9c0; }
+html.io-black-mode .post .desc-more { color: #4fc79b; }
+html.io-black-mode .post .progress { color: #4fc79b; }
+html.io-black-mode .post .progress.full { color: #f07b7b; }
+html.io-black-mode .post .btn-copy.full { background: #34373a; color: #a8adb3; box-shadow: inset 0 0 0 1px #4a4d50; }
+html.io-black-mode .post .btn-copy.full:hover { background: #3b3f42; box-shadow: inset 0 0 0 1px #565a5e; }
+html.io-black-mode .post .replies { border-top-color: #3a3d40; }
+html.io-black-mode .post .reply { color: #8b9196; }
+html.io-black-mode .post .post-link { color: #9aa0a6; }
+html.io-black-mode .post .post-link .lk-host { text-decoration-color: #4a4d50; }
+html.io-black-mode .toolbar .search { background: #26282a; border-color: #3a3d40; color: #d5d8dc; }
+html.io-black-mode .toolbar .search:focus { border-color: #4fc79b; background: #2c2f31; box-shadow: 0 0 0 3px rgba(79,199,155,.15); }
+html.io-black-mode .toolbar .tabs { background: #26282a; }
+html.io-black-mode .toolbar .tab { color: #9aa0a6; }
+html.io-black-mode .toolbar .tab.active { background: #363738; color: #4fc79b; box-shadow: 0 1px 3px rgba(0,0,0,.4); }
+html.io-black-mode .btn-more { background: #26282a; border-color: #3a3d40; color: #4fc79b; }
+html.io-black-mode .btn-more:disabled { color: #75797f; }
+html.io-black-mode .more-info { color: #75797f; }
+html.io-black-mode .empty,
+html.io-black-mode .group-title { color: #7d8388; }
+html.io-black-mode .empty-avail { color: #8b9196; }
+
+/* 底部第三方聊天组件（topurl.cn/chat.js 注入）的浅色面板一并压深，避免夜间底部一块发亮 */
+html.io-black-mode #ctrm_ .ctrm-title { background: rgba(38,40,42,.92) !important; color: #c6c9cf !important; }
+html.io-black-mode #ctrm_ .ctrm-panel { background: rgba(44,46,47,.92) !important; }
+html.io-black-mode #ctrm_ .ctrm-online { background: rgba(30,32,34,.92) !important; }
+html.io-black-mode #ctrm_ .ctrm-textarea { border-color: #3a3d40 !important; }
+html.io-black-mode #ctrm_ .ctrm-textarea textarea { background: #26282a !important; color: #d5d8dc !important; }
+html.io-black-mode #ctrm_ .ctrm-textarea textarea::-webkit-input-placeholder { color: #75797f !important; }
+html.io-black-mode #ctrm_ .ctrm-textarea textarea::-moz-placeholder { color: #75797f !important; }
+html.io-black-mode #ctrm_ .ctrm-emit { background: #3a3d40 !important; color: #c6c9cf !important; }
+html.io-black-mode #ctrm_ .ctrm-title-close,
+html.io-black-mode #ctrm_ .ctrm-title-reconn { background: #3a3d40 !important; border-color: #4a4d50 !important; color: #c6c9cf !important; }
+html.io-black-mode #ctrm_ .ctrm-dialog-bubble { background: rgba(255,255,255,.08) !important; }
+html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 </style>
 </head>
 <body>
@@ -319,7 +458,7 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	var API = 'https://comment.qnkjxx.top/api';
 	var PAGE_PATH = '/huzhu/';
 	var ARTICLE_PREFIX = '/huzhu/c/';
-	var REFRESH_SECONDS = 15;
+	var REFRESH_SECONDS = 9;
 	var DAILY_LIMIT = 7;
 	var DEFAULT_NICK = '匿名访客';
 	var PAGE_SIZE = 30;
@@ -333,6 +472,7 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	var refreshBtn = document.getElementById('refresh');
 
 	var refreshLeft = REFRESH_SECONDS;
+	var refreshing = false;
 	var refreshTimer = null;
 	var lastSig = '';
 	var busy = false;
@@ -705,8 +845,14 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		copyBtn.className = 'btn btn-copy' + (full ? ' full' : '');
 		copyBtn.type = 'button';
 		copyBtn.textContent = full ? '已满' : (mine ? '已领取' : '复制');
-		if (full || mine) {
-			copyBtn.disabled = true;
+		if (full) {
+			// 已满的码照给：need 是发布者自己填的，填多填少都常见，锁死会让剩余名额白废
+			copyBtn.title = '该团已满，仍可取码';
+			copyBtn.addEventListener('click', function () { copyOnly(p, copyBtn); });
+		} else if (mine) {
+			// 本机领过：可以再看一眼码，但不再重复计数
+			copyBtn.title = '你已领取过，可再次复制查看';
+			copyBtn.addEventListener('click', function () { copyOnly(p, copyBtn); });
 		} else {
 			copyBtn.addEventListener('click', function () { handleCopy(p, copyBtn); });
 		}
@@ -852,9 +998,34 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		});
 	}
 
-	/* ---------- 自动刷新（参考站每 9 秒，这里 15 秒） ---------- */
+	/* ---------- 自动刷新（与参考站一致的 9 秒） ---------- */
+	/* 参考站的做法：倒数到 0 时按钮变成「转圈 + 刷新中」并锁住点击，请求回来才恢复倒计时。
+	   这里同样走一遍，避免 1 秒直接跳回 9 秒、用户看不出到底刷没刷。 */
 	function updateRefreshBtn() {
-		if (refreshBtn) refreshBtn.textContent = '刷新 · ' + refreshLeft + 's';
+		if (!refreshBtn) return;
+		if (refreshing) {
+			// 每秒都会调到这里，已经处于刷新态就不再重设，否则转圈动画会被重置成一卡一卡
+			if (!refreshBtn.classList.contains('is-refreshing')) {
+				refreshBtn.classList.add('is-refreshing');
+				refreshBtn.innerHTML = '<span class="rf-spin"></span>刷新中';
+			}
+			return;
+		}
+		if (refreshBtn.classList.contains('is-refreshing')) {
+			refreshBtn.classList.remove('is-refreshing');
+		}
+		refreshBtn.textContent = '刷新 · ' + refreshLeft + 's';
+	}
+	function endRefresh() {
+		refreshing = false;
+		refreshLeft = REFRESH_SECONDS;
+		updateRefreshBtn();
+	}
+	function doRefresh() {
+		if (refreshing) return;
+		refreshing = true;
+		updateRefreshBtn();
+		loadList(false).then(endRefresh, endRefresh);
 	}
 	function startAutoRefresh() {
 		refreshLeft = REFRESH_SECONDS;
@@ -862,13 +1033,12 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 		if (refreshTimer) clearInterval(refreshTimer);
 		refreshTimer = setInterval(function () {
 			if (document.hidden) return;
+			if (refreshing) return;
 			refreshLeft--;
 			if (refreshLeft < 0) refreshLeft = 0;
 			updateRefreshBtn();
 			if (refreshLeft <= 0) {
-				refreshLeft = REFRESH_SECONDS;
-				updateRefreshBtn();
-				loadList(true);
+				doRefresh();
 			}
 		}, 1000);
 	}
@@ -910,14 +1080,29 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 			if (!res || res.errno !== 0) throw new Error((res && res.errmsg) || '计数失败');
 			markUsed(p.key);
 			busy = false;
-			refreshLeft = REFRESH_SECONDS;
-			updateRefreshBtn();
-			loadList(false);
+			doRefresh();
 		}).catch(function (err) {
 			busy = false;
 			btn.disabled = false;
 			btn.textContent = '复制';
 			showMsg('复制或计数失败：' + err.message, true);
+		});
+	}
+
+	/* 已满 / 本机已领过的码：只复制，不计数。计数再加也没意义，反而会刷出 6/5 这种进度 */
+	function copyOnly(p, btn) {
+		if (btn.copied) return;
+		btn.copied = true;
+		var label = btn.textContent;
+		copyText(p.code).then(function () {
+			btn.textContent = '已复制';
+		}, function () {
+			btn.textContent = '复制失败';
+		}).then(function () {
+			setTimeout(function () {
+				btn.textContent = label;
+				btn.copied = false;
+			}, 1400);
 		});
 	}
 
@@ -958,9 +1143,7 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 				document.getElementById('link').value = '';
 				document.getElementById('need').value = '1';
 				showMsg('发布成功，已显示在下方列表', false);
-				refreshLeft = REFRESH_SECONDS;
-				updateRefreshBtn();
-				loadList(false);
+				doRefresh();
 			} else {
 				throw new Error((res && res.errmsg) || '发布失败');
 			}
@@ -1006,9 +1189,7 @@ input:focus, textarea:focus { border-color: #24b47e; background: #fff; }
 	}
 	publishBtn.addEventListener('click', handlePublish);
 	refreshBtn.addEventListener('click', function () {
-		refreshLeft = REFRESH_SECONDS;
-		updateRefreshBtn();
-		loadList(false);
+		doRefresh();
 	});
 
 	var searchInput = document.getElementById('search');
