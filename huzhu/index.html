@@ -1445,9 +1445,11 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		};
 		expAt.addEventListener('change', syncAt);
 		expAt.addEventListener('input', syncAt);
-		// 点哪儿都弹系统选择器（桌面日历面板 / 手机日期时间滚轮），免得先聚焦再逐个选段落
+		// 点哪儿都弹系统选择器，免得先聚焦再逐个选段落。
+		// 触屏设备本来就是点一下自动弹；程序化再调一次会让 iOS 首帧滚轮定位算歪（先偏左、一拨才回中间），所以只在桌面调
 		expAt.addEventListener('click', function () {
 			if (typeof expAt.showPicker !== 'function') return;
+			if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
 			try { expAt.showPicker(); } catch (e) {}
 		});
 		syncAt();
