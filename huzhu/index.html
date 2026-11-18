@@ -458,7 +458,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		</button>
 		<div class="pub-body" id="pubBody" hidden>
 			<div class="field">
-				<label><span class="req">*</span>内容<em>互助码，或直接贴活动页链接</em></label>
+				<label><span class="req">*</span>内容<em>必填，互助码、活动页链接、分享内容</em></label>
 				<input id="code" maxlength="200" placeholder="例如：88888888，或 https://example.com/act" autocomplete="off">
 			</div>
 			<div class="field-pair">
@@ -475,7 +475,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 				</div>
 			</div>
 			<div class="field">
-				<label>说明<em>选填，如有效期、备注</em></label>
+				<label>说明<em>选填，限制条件、备注</em></label>
 				<input id="desc" maxlength="60" placeholder="例如：今晚 24 点前有效" autocomplete="off">
 			</div>
 			<div class="field">
@@ -483,7 +483,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 				<input id="link" maxlength="300" placeholder="例如：https://example.com/act" autocomplete="off" inputmode="url">
 			</div>
 			<div class="field">
-				<label>昵称<em>选填，不填显示"匿名访客"</em></label>
+				<label>昵称<em>选填，不填显示「匿名访客」</em></label>
 				<input id="nick" maxlength="20" placeholder="例如：小明" autocomplete="off">
 			</div>
 			<button class="btn" id="publish" type="button">发布</button>
@@ -1339,6 +1339,8 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 				document.getElementById('link').value = '';
 				document.getElementById('need').value = '';
 				document.getElementById('expAt').value = '';
+				// 清空真控件后要把显示层一起复位，否则格子上还留着上一次选的日期
+				syncAt();
 				showMsg('发布成功，已显示在下方列表', false);
 				doRefresh();
 			} else {
