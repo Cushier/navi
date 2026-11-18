@@ -105,6 +105,38 @@ input:focus, textarea:focus, select:focus { border-color: #24b47e; background: #
 /* 人数 + 有效期并排，省一行高度；太窄时自动落成一列 */
 .field-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 13px; }
 .field-pair .field { margin-bottom: 0; }
+/* 到期时间：底层只显示文字，真控件透明盖在上面——点哪儿都直接弹选择器，不用在框里打字 */
+.at-wrap { position: relative; }
+.at-display {
+	height: 41px;
+	display: flex;
+	align-items: center;
+	padding: 0 12px;
+	border: 1px solid #e2e5ea;
+	border-radius: 8px;
+	background: #fafbfc;
+	color: #9aa0a6;
+	font-size: 14px;
+	cursor: pointer;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	transition: border-color .2s, background .2s;
+}
+.at-wrap.has-value .at-display { color: #333; }
+.at-wrap input {
+	position: absolute;
+	left: 0;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	border: 0;
+	opacity: 0;
+	cursor: pointer;
+}
 .btn {
 	display: inline-block;
 	border: 0;
@@ -359,6 +391,8 @@ html.io-black-mode textarea::placeholder { color: #75797f; }
 html.io-black-mode input:focus,
 html.io-black-mode textarea:focus,
 html.io-black-mode select:focus { border-color: #24b47e; background: #2c2f31; }
+html.io-black-mode .at-display { background: #26282a; border-color: #3a3d40; color: #75797f; }
+html.io-black-mode .at-wrap.has-value .at-display { color: #d5d8dc; }
 html.io-black-mode .btn:disabled { background: #3a3d40; color: #75797f; }
 html.io-black-mode .msg.ok { color: #5fd3a5; }
 html.io-black-mode .msg.err { color: #f07b7b; }
@@ -433,14 +467,11 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 					<input id="need" type="number" min="1" max="20" placeholder="如 3" autocomplete="off">
 				</div>
 				<div class="field">
-					<label>有效期<em>不填就是长期</em></label>
-					<select id="days">
-						<option value="0">长期有效</option>
-						<option value="1">1 天</option>
-						<option value="3">3 天</option>
-						<option value="7">7 天</option>
-						<option value="30">30 天</option>
-					</select>
+					<label>有效期<em>不选就是长期有效</em></label>
+					<div class="at-wrap" id="atWrap">
+						<div class="at-display" id="atDisplay">选择到期时间</div>
+						<input id="expAt" type="datetime-local" step="600">
+					</div>
 				</div>
 			</div>
 			<div class="field">
@@ -529,7 +560,8 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		var desc = '';
 		var link = '';
 		var need = 1;
-		var days = 0;
+		var hours = 0;
+		var until = 0;
 		text.split('\n').forEach(function (raw) {
 			var line = raw.trim();
 			if (!line) return;
@@ -552,11 +584,20 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 				}
 				return;
 			}
-			m = line.match(/^有效期[：:]\s*([0-9]+)/);
+			// 直接写到期时间「2026-11-18 20:00」——发布时选的就是这一刻，不用再拿时长反推
+			m = line.match(/^有效期[：:]\s*(\d{4})-(\d{1,2})-(\d{1,2})\s*(\d{1,2}):(\d{2})/);
 			if (m) {
-				days = parseInt(m[1], 10) || 0;
-				if (days < 0) days = 0;
-				if (days > 365) days = 365;
+				until = new Date(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]).getTime();
+				if (!until || isNaN(until)) until = 0;
+				return;
+			}
+			// 单位带不带都认：写"小"按小时，其余按天（兼容更早只写数字的帖子）
+			m = line.match(/^有效期[：:]\s*([0-9.]+)\s*(小\s*时|天)?/);
+			if (m) {
+				hours = parseFloat(m[1]) || 0;
+				if (!(m[2] && m[2].indexOf('小') >= 0)) hours = hours * 24;
+				if (hours < 0) hours = 0;
+				if (hours > 8760) hours = 8760;
 				return;
 			}
 			if (!code) code = line;
@@ -571,17 +612,19 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		if (code && !/[\s"'<>]/.test(code) && /^(https?:\/\/|www\.)/i.test(code)) {
 			codeLink = safeLink(code);
 		}
-		return { code: code, desc: desc.trim(), link: safeLink(link) || codeLink, need: need, days: days, codeLink: !!codeLink };
+		return { code: code, desc: desc.trim(), link: safeLink(link) || codeLink, need: need, hours: hours, until: until, codeLink: !!codeLink };
 	}
 
-	/* 一条帖子的状态。need=0 表示不限人数，永远不满；days=0 表示长期有效，不判过期。
-	   过期按"发布时刻 + 天数"算，用的是本机时间——各设备时钟差几小时会产生边界差，只影响显示，不影响数据。 */
+	/* 一条帖子的状态。need=0 表示不限人数，永远不满；hours=0 且 until=0 表示长期有效，不判过期。
+	   until 是发帖人直接选的到期时刻，按绝对值算；hours 是按"发布时刻 + 小时数"算，老帖走这条。
+	   两者都用本机时间——各设备时钟有差，只影响显示，不影响数据。 */
 	function postState(p, c, used) {
 		var full = p.need > 0 && used >= p.need;
 		var leftMs = 0;
 		var expired = false;
-		if (p.days > 0) {
-			leftMs = (Number(c.time) || 0) + p.days * 86400000 - Date.now();
+		var endMs = p.until > 0 ? p.until : (p.hours > 0 ? (Number(c.time) || 0) + p.hours * 3600000 : 0);
+		if (endMs > 0) {
+			leftMs = endMs - Date.now();
 			expired = leftMs <= 0;
 		}
 		return { full: full, expired: expired, done: full || expired, leftMs: leftMs };
@@ -589,11 +632,14 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 
 	/* 有效期徽标：长期不显示（默认状态，没必要每条都写）；不到一天按小时报，更准 */
 	function expireLabel(p, st) {
-		if (!p.days) return null;
+		if (!p.hours && !p.until) return null;
 		if (st.expired) return { text: '已过期', cls: 'over' };
 		var h = st.leftMs / 3600000;
 		if (h <= 24) return { text: '剩 ' + Math.max(1, Math.ceil(h)) + ' 小时', cls: 'warn' };
-		return { text: '剩 ' + Math.ceil(h / 24) + ' 天', cls: '' };
+		// 一天多到两天之间仍按小时报——36 小时说成「2 天」会凭空多出半天
+		if (h < 48) return { text: '剩 ' + Math.ceil(h) + ' 小时', cls: '' };
+		// 四舍五入而不是向上取整：剩 7 天零半小时不该显示成 8 天
+		return { text: '剩 ' + Math.round(h / 24) + ' 天', cls: '' };
 	}
 
 	/* 链接白名单：只放行 http/https，无协议时补 https，其余协议（javascript:、data: 等）一律丢弃 */
@@ -1091,7 +1137,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 				// 静默刷新时数据没变化就不重绘，避免列表闪动；过期状态也算进签名，跨过到期点才能重绘
 				var sig = items.map(function (it) {
 					var st = postState(it.p, it.c, it.used);
-					return it.c.objectId + ':' + it.used + ':' + it.p.need + ':' + it.p.days + ':' + (st.expired ? 1 : 0) + ':' + it.c.time + ':' + it.c.nick;
+					return it.c.objectId + ':' + it.used + ':' + it.p.need + ':' + it.p.hours + ':' + it.p.until + ':' + (st.expired ? 1 : 0) + ':' + it.c.time + ':' + it.c.nick;
 				}).join('|');
 				if (silent && sig === lastSig) return;
 				lastSig = sig;
@@ -1239,7 +1285,16 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		var code = (document.getElementById('code').value || '').trim();
 		var needRaw = (document.getElementById('need').value || '').trim();
 		var need = needRaw === '' ? 0 : parseInt(needRaw, 10);
-		var days = parseInt(document.getElementById('days').value, 10) || 0;
+		// 有效期就是「到期时间」：选到哪一刻，哪一刻失效；不选就是不限时
+		var until = 0;
+		var atRaw = document.getElementById('expAt').value;
+		if (atRaw) {
+			// datetime-local 给的是 "2026-11-18T20:00"，全用数字构造，避开各浏览器的解析差异
+			var am = atRaw.match(/(\d{4})-(\d{1,2})-(\d{1,2})T(\d{1,2}):(\d{2})/);
+			if (!am) { showMsg('到期时间格式不正确，请重新选择', true); return; }
+			until = new Date(+am[1], +am[2] - 1, +am[3], +am[4], +am[5]).getTime();
+			if (!until || until <= Date.now()) { showMsg('到期时间要晚于当前时间', true); return; }
+		}
 		var desc = (document.getElementById('desc').value || '').trim();
 		var linkRaw = (document.getElementById('link').value || '').trim();
 		var nick = (document.getElementById('nick').value || '').trim();
@@ -1256,9 +1311,17 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			return;
 		}
 
-		// 长期有效（days=0）就不写这一行，老帖和新帖的格式差别越小越好
+		// 长期有效（hours=0 且 until=0）就不写这一行，老帖和新帖的格式差别越小越好
+		// 指定的到期时间直接写成「2026-11-20 18:00」；按时长的写「6小时」「7天」，别人看评论原文也能一眼看懂
+		var expText = '';
+		if (until > 0) {
+			var pad2 = function (n) { return (n < 10 ? '0' : '') + n; };
+			var ed = new Date(until);
+			expText = ed.getFullYear() + '-' + pad2(ed.getMonth() + 1) + '-' + pad2(ed.getDate()) +
+				' ' + pad2(ed.getHours()) + ':' + pad2(ed.getMinutes());
+		}
 		var body = '码：' + code + '\n说明：' + desc + (link ? '\n链接：' + link : '') +
-			'\n人数：' + (need > 0 ? need : '不限') + (days > 0 ? '\n有效期：' + days : '');
+			'\n人数：' + (need > 0 ? need : '不限') + (expText ? '\n有效期：' + expText : '');
 
 		publishBtn.disabled = true;
 		publishBtn.textContent = '发布中…';
@@ -1275,7 +1338,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 				document.getElementById('desc').value = '';
 				document.getElementById('link').value = '';
 				document.getElementById('need').value = '';
-				document.getElementById('days').value = '0';
+				document.getElementById('expAt').value = '';
 				showMsg('发布成功，已显示在下方列表', false);
 				doRefresh();
 			} else {
@@ -1358,6 +1421,36 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 				updateMore();
 			});
 		});
+	}
+
+	// 到期时间：点一下就直接弹选择器，不用在框里敲数字；选完把值写到底层文字上
+	var expAt = document.getElementById('expAt');
+	var atWrap = document.getElementById('atWrap');
+	var atDisplay = document.getElementById('atDisplay');
+	if (expAt) {
+		var pad = function (n) { return (n < 10 ? '0' : '') + n; };
+		var now2 = new Date();
+		expAt.min = now2.getFullYear() + '-' + pad(now2.getMonth() + 1) + '-' + pad(now2.getDate()) +
+			'T' + pad(now2.getHours()) + ':' + pad(now2.getMinutes());
+		var syncAt = function () {
+			var v = expAt.value;
+			if (atWrap) atWrap.classList.toggle('has-value', !!v);
+			if (!atDisplay) return;
+			if (!v) { atDisplay.textContent = '选择到期时间'; return; }
+			// 把 "2026-11-20T18:30" 换成和评论里一致的写法，读起来跟列表徽标同一套
+			var d = new Date(('' + v).replace('T', ' ').replace(/-/g, '/'));
+			if (isNaN(d.getTime())) { atDisplay.textContent = String(v).replace('T', ' '); return; }
+			atDisplay.textContent = d.getFullYear() + '/' + pad(d.getMonth() + 1) + '/' + pad(d.getDate()) +
+				' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+		};
+		expAt.addEventListener('change', syncAt);
+		expAt.addEventListener('input', syncAt);
+		// 点哪儿都弹系统选择器（桌面日历面板 / 手机日期时间滚轮），免得先聚焦再逐个选段落
+		expAt.addEventListener('click', function () {
+			if (typeof expAt.showPicker !== 'function') return;
+			try { expAt.showPicker(); } catch (e) {}
+		});
+		syncAt();
 	}
 
 	loadList(false);
