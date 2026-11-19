@@ -56,11 +56,11 @@ header p { font-size: 12.5px; color: #767c82; margin: 0; line-height: 1.7; }
 	gap: 10px;
 	width: 100%;
 	box-sizing: border-box;
-	padding: 16px 18px;
+	padding: 12px 18px;
 	background: none;
 	border: 0;
 	font-family: inherit;
-	font-size: 15px;
+	font-size: 16px;
 	font-weight: 600;
 	color: #1f2328;
 	text-align: left;
@@ -94,7 +94,7 @@ input, textarea, select {
 	width: 100%;
 	border: 1px solid #e2e5ea;
 	border-radius: 8px;
-	padding: 10px 12px;
+	padding: 9px 12px;
 	font-size: 14px;
 	font-family: inherit;
 	outline: none;
@@ -108,7 +108,7 @@ input:focus, textarea:focus, select:focus { border-color: #24b47e; background: #
 /* 到期时间：底层只显示文字，真控件透明盖在上面——点哪儿都直接弹选择器，不用在框里打字 */
 .at-wrap { position: relative; }
 .at-display {
-	height: 41px;
+	height: 39px;
 	display: flex;
 	align-items: center;
 	padding: 0 12px;
@@ -156,28 +156,33 @@ input:focus, textarea:focus, select:focus { border-color: #24b47e; background: #
 .msg.err { color: #e05656; }
 .msg:empty { display: none; }
 .list-title { display: flex; justify-content: space-between; align-items: center; margin: 0 0 12px; }
-.list-title h2 { font-size: 15px; margin: 0; color: #444; }
+.list-title h2 { font-size: 16px; font-weight: 600; margin: 0; color: #3c4043; }
 .btn-refresh {
 	background: transparent;
 	color: #24b47e;
 	border: 1px solid #24b47e;
 	font-size: 13px;
-	padding: 8px 14px;
+	line-height: 1.4;
+	padding: 5px 12px;
 	border-radius: 8px;
 	cursor: pointer;
 	font-family: inherit;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
 	/* 倒计时从 9 掉到 8、或改成两位数时，按钮不能跟着抽动：数字等宽 + 预留两位宽度 */
 	font-variant-numeric: tabular-nums;
-	min-width: 86px;
+	min-width: 70px;
 	text-align: center;
 }
 /* 刷新进行中：转圈图标 + 「刷新中」，这期间按钮不再接受点击 */
-.btn-refresh.is-refreshing { pointer-events: none; }
+.btn-refresh.is-refreshing { pointer-events: none; min-width: 0; }
 .rf-spin {
 	display: inline-block;
 	width: 11px;
 	height: 11px;
-	margin-right: 6px;
+	margin-right: 0;
 	border: 2px solid rgba(36,180,126,.28);
 	border-top-color: #24b47e;
 	border-radius: 50%;
@@ -263,6 +268,16 @@ input:focus, textarea:focus, select:focus { border-color: #24b47e; background: #
 	text-underline-offset: 2px;
 }
 .post .post-link:hover .lk-host { text-decoration-color: #24b47e; }
+/* 链接行右侧的显式「打开」：这一行本来就能点，标出来才有人点 */
+.post .post-link .lk-go {
+	flex: 0 0 auto;
+	margin-left: 2px;
+	white-space: nowrap;
+	font-size: 12px;
+	color: #24b47e;
+	font-weight: 500;
+}
+.post .post-link.can-go { cursor: pointer; }
 .post .reply { font-size: 12px; color: #767c82; padding: 2px 0; word-break: break-all; }
 .empty { text-align: center; color: #8a9099; font-size: 13px; padding: 36px 0; }
 .list-title h2 .avail-count { font-size: 12px; color: #24b47e; font-weight: 400; margin-left: 8px; }
@@ -271,7 +286,7 @@ input:focus, textarea:focus, select:focus { border-color: #24b47e; background: #
 	flex: 1 1 200px;
 	min-width: 150px;
 	box-sizing: border-box;
-	padding: 9px 12px;
+	padding: 10px 12px;
 	font-size: 13px;
 	font-family: inherit;
 	border: 1px solid #e4e7ed;
@@ -293,6 +308,113 @@ input:focus, textarea:focus, select:focus { border-color: #24b47e; background: #
 	cursor: pointer;
 }
 .toolbar .tab.active { background: #fff; color: #24b47e; font-weight: 600; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+
+.list-actions { display: flex; gap: 8px; align-items: center; }
+/* 记录按钮要放图标，去掉刷新按钮那条"预留两位数宽度"的 86px */
+#recBtn { min-width: 70px; }
+
+/* 本机记录弹窗 */
+.rec-mask {
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	z-index: 10005;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 16px;
+	background: rgba(0, 0, 0, .42);
+}
+.rec-mask[hidden] { display: none; }
+.rec-box {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: 460px;
+	max-height: 74vh;
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 10px 34px rgba(0, 0, 0, .18);
+	overflow: hidden;
+	outline: none;
+}
+.rec-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 8px; }
+.rec-head h3 { margin: 0; font-size: 15px; font-weight: 600; color: #333; }
+.rec-head h3 em { margin-left: 7px; font-size: 12px; font-style: normal; font-weight: 400; color: #9aa0a6; }
+.rec-close {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 26px;
+	height: 26px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: transparent;
+	color: #8b9196;
+	cursor: pointer;
+	font-family: inherit;
+	transition: background .15s, color .15s;
+}
+.rec-close:hover { background: #f2f4f6; color: #24b47e; }
+.rec-close:focus-visible,
+.rec-tab:focus-visible,
+.rec-again:focus-visible,
+.rec-del:focus-visible { outline: 2px solid #24b47e; outline-offset: 2px; }
+.rec-tabs { display: flex; gap: 6px; padding: 0 16px 10px; justify-content: center; }
+.rec-tab {
+	padding: 7px 14px;
+	border: 0;
+	border-radius: 16px;
+	background: #f2f4f6;
+	color: #666;
+	font-size: 13px;
+	font-family: inherit;
+	cursor: pointer;
+	transition: background .15s, color .15s;
+}
+.rec-tab.active { background: #24b47e; color: #fff; }
+.rec-list { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; padding: 0 16px; }
+.rec-item { display: flex; align-items: flex-start; gap: 10px; padding: 11px 0; border-top: 1px solid #f0f2f4; }
+.rec-item-main { flex: 1 1 auto; min-width: 0; }
+.rec-code { font-size: 14px; font-weight: 600; color: #0e6b4a; word-break: break-all; line-height: 1.5; }
+.rec-meta { margin-top: 3px; font-size: 11.5px; color: #9aa0a6; }
+.rec-act { flex: 0 0 auto; display: flex; align-items: center; gap: 6px; }
+.rec-again {
+	display: inline-flex;
+	align-items: center;
+	gap: 4px;
+	padding: 5px 9px;
+	border: 1px solid #24b47e;
+	border-radius: 6px;
+	background: transparent;
+	color: #24b47e;
+	font-size: 12px;
+	font-family: inherit;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: background .15s;
+}
+.rec-again:hover { background: #e8f8f1; }
+.rec-del {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	width: 22px;
+	height: 22px;
+	padding: 0;
+	border: 0;
+	border-radius: 4px;
+	background: transparent;
+	color: #9aa0a6;
+	cursor: pointer;
+	transition: color .15s;
+}
+.rec-del:hover { color: #e05656; }
+.rec-empty { padding: 26px 0; text-align: center; font-size: 13px; line-height: 1.8; color: #9aa0a6; }
+.rec-foot { padding: 9px 16px 12px; border-top: 1px solid #f0f2f4; font-size: 11.5px; line-height: 1.6; color: #9aa0a6; text-align: center; }
 .more-wrap { text-align: center; margin: 14px 0 6px; }
 .btn-more {
 	border: 1px solid #e4e7ed;
@@ -341,7 +463,7 @@ input:focus, textarea:focus, select:focus { border-color: #24b47e; background: #
 	.post .bottom-left { gap: 6px; }
 	.post .btn-copy { padding: 10px 16px; }
 	.btn { padding: 10px 22px; }
-	.pub-toggle { padding: 16px 14px; }
+	.pub-toggle { padding: 12px 14px; }
 	.pub-body { padding: 0 14px 16px; }
 	/* 手机端：视觉尺寸保持紧凑，用透明热区把上下可点范围补到 44px，避免按钮整体变胖 */
 	.btn-refresh, .post .btn-copy, .toolbar .tab { position: relative; }
@@ -416,6 +538,7 @@ html.io-black-mode .post .replies { border-top-color: #3a3d40; }
 html.io-black-mode .post .reply { color: #8b9196; }
 html.io-black-mode .post .post-link { color: #9aa0a6; }
 html.io-black-mode .post .post-link .lk-host { text-decoration-color: #4a4d50; }
+html.io-black-mode .post .post-link .lk-go { color: #4fc79b; }
 html.io-black-mode .toolbar .search { background: #26282a; border-color: #3a3d40; color: #d5d8dc; }
 html.io-black-mode .toolbar .search:focus { border-color: #4fc79b; background: #2c2f31; box-shadow: 0 0 0 3px rgba(79,199,155,.15); }
 html.io-black-mode .toolbar .tabs { background: #26282a; }
@@ -424,11 +547,30 @@ html.io-black-mode .toolbar .tab.active { background: #363738; color: #4fc79b; b
 html.io-black-mode .btn-more { background: #26282a; border-color: #3a3d40; color: #4fc79b; }
 html.io-black-mode .btn-more:disabled { color: #75797f; }
 html.io-black-mode .more-info { color: #75797f; }
+html.io-black-mode .rec-mask { background: rgba(0, 0, 0, .62); }
+html.io-black-mode .rec-box { background: #34363a; border: 1px solid #45484c; box-shadow: 0 12px 36px rgba(0, 0, 0, .6); }
+html.io-black-mode .rec-head h3 { color: #e8eaed; }
+html.io-black-mode .rec-head h3 em { color: #7d8388; }
+html.io-black-mode .rec-close { color: #8b9196; }
+html.io-black-mode .rec-close:hover { color: #4fc79b; }
+html.io-black-mode .rec-tab { background: #363738; color: #9aa0a6; }
+html.io-black-mode .rec-tab.active { background: #24b47e; color: #fff; }
+html.io-black-mode .rec-item { border-top-color: #363738; }
+html.io-black-mode .rec-code { color: #5fd3a5; }
+html.io-black-mode .rec-meta { color: #7d8388; }
+html.io-black-mode .rec-again { border-color: rgba(79, 199, 155, .55); color: #4fc79b; }
+html.io-black-mode .rec-again:hover { background: #17352a; }
+html.io-black-mode .rec-del { color: #8f959b; }
+html.io-black-mode .rec-del:hover { color: #f07b7b; }
+html.io-black-mode .rec-empty { color: #7d8388; }
+html.io-black-mode .rec-foot { border-top-color: #363738; color: #7d8388; }
 html.io-black-mode .empty,
 html.io-black-mode .group-title { color: #7d8388; }
 html.io-black-mode .empty-avail { color: #8b9196; }
 
 /* 底部第三方聊天组件（topurl.cn/chat.js 注入）的浅色面板一并压深，避免夜间底部一块发亮 */
+/* 容器自带 color:#444，光压背景会变成深灰字落深底。这里统一改浅，气泡、发件人、在线列表都靠继承 */
+html.io-black-mode #ctrm_ { color: #c6c9cf; }
 html.io-black-mode #ctrm_ .ctrm-title { background: rgba(38,40,42,.92) !important; color: #c6c9cf !important; }
 html.io-black-mode #ctrm_ .ctrm-panel { background: rgba(44,46,47,.92) !important; }
 html.io-black-mode #ctrm_ .ctrm-online { background: rgba(30,32,34,.92) !important; }
@@ -441,6 +583,8 @@ html.io-black-mode #ctrm_ .ctrm-title-close,
 html.io-black-mode #ctrm_ .ctrm-title-reconn { background: #3a3d40 !important; border-color: #4a4d50 !important; color: #c6c9cf !important; }
 html.io-black-mode #ctrm_ .ctrm-dialog-bubble { background: rgba(255,255,255,.08) !important; }
 html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
+/* 域名过滤层的白底也要压深，否则夜间会突然亮出一块 */
+html.io-black-mode #ctrm_ .ctrm-domain-filter { background: rgba(30,32,34,.95) !important; color: #c6c9cf !important; }
 </style>
 </head>
 <body>
@@ -493,7 +637,10 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 
 	<div class="list-title">
 		<h2>大厅列表<span class="avail-count" id="avail">可用 0 个</span></h2>
-		<button class="btn-refresh" id="refresh" type="button">刷新</button>
+		<div class="list-actions">
+			<button class="btn-refresh" id="recBtn" type="button"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3.2 12a8.8 8.8 0 1 0 2.6-6.2"/><path d="M3.2 4.2v4.2h4.2"/><path d="M12 7.8v4.4l2.6 1.8"/></svg>记录</button>
+			<button class="btn-refresh" id="refresh" type="button">刷新</button>
+		</div>
 	</div>
 	<div class="toolbar">
 		<input class="search" id="search" type="search" placeholder="搜索内容 / 说明 / 昵称" autocomplete="off">
@@ -507,6 +654,21 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 	<div class="more-wrap" id="more" style="display:none">
 		<button class="btn-more" id="loadMore" type="button">加载更多</button>
 		<div class="more-info" id="moreInfo"></div>
+	</div>
+</div>
+
+<div class="rec-mask" id="recMask" hidden>
+	<div class="rec-box" id="recBox" role="dialog" aria-modal="true" aria-label="我的记录" tabindex="-1">
+		<div class="rec-head">
+			<h3>我的记录<em>只存在这台设备</em></h3>
+			<button class="rec-close" id="recClose" type="button" aria-label="关闭"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg></button>
+		</div>
+		<div class="rec-tabs" id="recTabs">
+			<button class="rec-tab active" data-rec="mine" type="button">我发布的</button>
+			<button class="rec-tab" data-rec="used" type="button">我用过的</button>
+		</div>
+		<div class="rec-list" id="recList"></div>
+		<div class="rec-foot">只存本机，不会上传，最多 20 条</div>
 	</div>
 </div>
 <script>
@@ -647,6 +809,10 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		var u = String(raw == null ? '' : raw).trim();
 		if (!u) return '';
 		if (/[\s"'<>]/.test(u)) return '';
+		// 原始串里没有点，就不会是域名。必须放在补协议之前、对原文判断：
+		// 纯数字码（291369100）补成 https://291369100 后，浏览器会把它规范化成十进制 IPv4
+		// https://17.93.240.140/，hostname 里就有点了，下面那条检查拦不住
+		if (u.indexOf('.') < 0) return '';
 		if (/^[a-z][a-z0-9+.\-]*:/i.test(u) && !/^https?:\/\//i.test(u)) return '';
 		if (!/^https?:\/\//i.test(u)) u = 'https://' + u.replace(/^\/+/, '');
 		try {
@@ -703,7 +869,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 	function usedMap() {
 		try { return JSON.parse(localStorage.getItem('huzhu_used') || '{}'); } catch (e) { return {}; }
 	}
-	function markUsed(key) {
+	function markUsed(key, p) {
 		try {
 			var m = usedMap();
 			m[key] = Date.now();
@@ -712,9 +878,57 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			});
 			localStorage.setItem('huzhu_used', JSON.stringify(m));
 		} catch (e) {}
+		if (p) saveRecUsed(p);
 	}
 	function isUsed(key) {
 		return !!usedMap()[key];
+	}
+
+	/* ---------- 本机记录：我发布的 / 用过的 ---------- */
+	/* 只存 localStorage，不上传。记的是能回填的字段而不是纯文本，"再发"才有东西可填 */
+	var REC_MINE_KEY = 'huzhu_rec_mine';
+	var REC_USED_KEY = 'huzhu_rec_used';
+	var REC_MAX = 20;
+	var recTab = 'mine';
+
+	function readRec(key) {
+		try {
+			var a = JSON.parse(localStorage.getItem(key) || '[]');
+			return Array.isArray(a) ? a : [];
+		} catch (e) { return []; }
+	}
+	function writeRec(key, arr) {
+		try { localStorage.setItem(key, JSON.stringify(arr.slice(0, REC_MAX))); } catch (e) {}
+	}
+	/* 同一个码只留最近一次，否则同一活动反复发会把列表刷成一堆重复 */
+	function pushRec(key, item) {
+		if (!item || !item.code) return;
+		var list = readRec(key).filter(function (x) { return x && x.code !== item.code; });
+		list.unshift(item);
+		writeRec(key, list);
+	}
+	function saveRecMine(code, desc, link, need, until) {
+		pushRec(REC_MINE_KEY, {
+			code: code,
+			desc: desc || '',
+			link: link || '',
+			need: need || 0,
+			until: until || 0,
+			time: Date.now()
+		});
+	}
+	function saveRecUsed(p) {
+		pushRec(REC_USED_KEY, {
+			code: p.code,
+			desc: p.desc || '',
+			link: p.link || '',
+			need: p.need || 0,
+			until: p.until || 0,
+			time: Date.now()
+		});
+	}
+	function recKeyOf(tab) {
+		return tab === 'used' ? REC_USED_KEY : REC_MINE_KEY;
 	}
 
 	function todayKey() {
@@ -914,8 +1128,19 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			linkEl.href = p.link;
 			linkEl.target = '_blank';
 			linkEl.rel = 'noopener noreferrer';
-			linkEl.title = '在新窗口打开 ' + p.link;
-			linkEl.addEventListener('click', function (e) { e.stopPropagation(); });
+			linkEl.title = '打开 ' + p.link;
+			// 这一行本来就能点开，但看不出来能点。右侧补一个显式标记；
+			// 可用的帖子点它和点按钮一样计数，已满/过期的就直接开、不计数
+			if (!st.full && !st.expired) {
+				linkEl.classList.add('can-go');
+				linkEl.addEventListener('click', function (e) {
+					e.preventDefault();
+					e.stopPropagation();
+					handleOpen(p, null);
+				});
+			} else {
+				linkEl.addEventListener('click', function (e) { e.stopPropagation(); });
+			}
 
 			var lkIco = document.createElement('span');
 			lkIco.className = 'lk-ico';
@@ -925,8 +1150,13 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			lkHost.className = 'lk-host';
 			lkHost.textContent = linkHost(p.link);
 
+			var lkGo = document.createElement('span');
+			lkGo.className = 'lk-go';
+			lkGo.textContent = '打开 ↗';
+
 			linkEl.appendChild(lkIco);
 			linkEl.appendChild(lkHost);
+			linkEl.appendChild(lkGo);
 			main.appendChild(linkEl);
 		}
 
@@ -1152,6 +1382,8 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 	/* ---------- 自动刷新（与参考站一致的 9 秒） ---------- */
 	/* 参考站的做法：倒数到 0 时按钮变成「转圈 + 刷新中」并锁住点击，请求回来才恢复倒计时。
 	   这里同样走一遍，避免 1 秒直接跳回 9 秒、用户看不出到底刷没刷。 */
+	/* 常态是「循环箭头 + 剩余秒数」，跟左边「记录」的时钟图标同一套线条风格 */
+	var ICON_RF = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M20.8 12a8.8 8.8 0 1 1-2.6-6.2"/><path d="M20.8 4.2v4.2h-4.2"/></svg>';
 	function updateRefreshBtn() {
 		if (!refreshBtn) return;
 		if (refreshing) {
@@ -1165,7 +1397,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 		if (refreshBtn.classList.contains('is-refreshing')) {
 			refreshBtn.classList.remove('is-refreshing');
 		}
-		refreshBtn.textContent = '刷新 · ' + refreshLeft + 's';
+		refreshBtn.innerHTML = ICON_RF + refreshLeft + 's';
 	}
 	function endRefresh() {
 		refreshing = false;
@@ -1230,7 +1462,7 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			return incrCount(p.path);
 		}).then(function (res) {
 			if (!res || res.errno !== 0) throw new Error((res && res.errmsg) || '计数失败');
-			markUsed(p.key);
+			markUsed(p.key, p);
 			busy = false;
 			doRefresh();
 		}).catch(function (err) {
@@ -1244,21 +1476,27 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 	/* 内容是网址的帖子：点"打开"直接去活动页，不复制（复制也没意义，整条内容就是那个网址）。
 	   window.open 必须留在点击回调的同步段里，挪进 Promise 里会被浏览器当广告拦掉。 */
 	function handleOpen(p, btn) {
-		if (btn.disabled || busy) return;
+		// btn 可以为空：链接行上的「打开」也走这里，那时没有按钮要改文案
+		if (busy) return;
+		if (btn && btn.disabled) return;
 		busy = true;
-		btn.disabled = true;
-		btn.textContent = '打开中…';
+		if (btn) {
+			btn.disabled = true;
+			btn.textContent = '打开中…';
+		}
 		try { window.open(p.link, '_blank', 'noopener'); } catch (e) {}
 		incrCount(p.path).then(function (res) {
 			if (!res || res.errno !== 0) throw new Error((res && res.errmsg) || '计数失败');
-			markUsed(p.key);
+			markUsed(p.key, p);
 			busy = false;
-			btn.textContent = '已打开';
+			if (btn) btn.textContent = '已打开';
 			doRefresh();
 		}).catch(function (err) {
 			busy = false;
-			btn.disabled = false;
-			btn.textContent = '打开';
+			if (btn) {
+				btn.disabled = false;
+				btn.textContent = '打开';
+			}
 			showMsg('打开或计数失败：' + err.message, true);
 		});
 	}
@@ -1334,6 +1572,8 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			if (res && res.errno === 0) {
 				if (nick) { saveNick(nick); } else { clearNick(); }
 				addTodayCount();
+				// 存一份本机记录，过期后能一键把说明和链接带回表单
+				saveRecMine(code, desc, link, need, until);
 				document.getElementById('code').value = '';
 				document.getElementById('desc').value = '';
 				document.getElementById('link').value = '';
@@ -1370,6 +1610,157 @@ html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 			if (codeEl) codeEl.focus();
 		}
 	}
+
+	/* ---------- 记录面板 ---------- */
+	var recMask = document.getElementById('recMask');
+	var recListEl = document.getElementById('recList');
+	var recTabsEl = document.getElementById('recTabs');
+	var recBtn2 = document.getElementById('recBtn');
+	var recCloseBtn = document.getElementById('recClose');
+	var recBox = document.getElementById('recBox');
+	var ICON_AGAIN = '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a8.8 8.8 0 1 1-2.6-6.2"/><path d="M21 4.2v4.2h-4.2"/></svg>';
+	var ICON_DEL = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>';
+
+	function renderRec() {
+		if (!recListEl) return;
+		var tabs = recTabsEl ? recTabsEl.querySelectorAll('.rec-tab') : [];
+		for (var i = 0; i < tabs.length; i++) {
+			if (tabs[i].getAttribute('data-rec') === recTab) tabs[i].classList.add('active');
+			else tabs[i].classList.remove('active');
+		}
+		var list = readRec(recKeyOf(recTab));
+		recListEl.innerHTML = '';
+		if (!list.length) {
+			var empty = document.createElement('div');
+			empty.className = 'rec-empty';
+			empty.textContent = recTab === 'mine'
+				? '还没有发布记录'
+				: '还没有使用记录';
+			recListEl.appendChild(empty);
+			return;
+		}
+		list.forEach(function (it) {
+			var row = document.createElement('div');
+			row.className = 'rec-item';
+
+			var main = document.createElement('div');
+			main.className = 'rec-item-main';
+
+			var codeEl = document.createElement('div');
+			codeEl.className = 'rec-code';
+			codeEl.textContent = it.code;
+			// 说明不铺在列表里，鼠标停一下能看到就够了——密度照参考站，一条两行
+			var tip = it.desc || '';
+			if (it.until && it.until <= Date.now()) tip = (tip ? tip + '｜' : '') + '上一期的到期时间已过';
+			if (tip) codeEl.title = tip;
+			main.appendChild(codeEl);
+
+			var meta = document.createElement('div');
+			meta.className = 'rec-meta';
+			var bits = [fmtTime(it.time)];
+			if (it.link) bits.push(linkHost(it.link));
+			// 上一期的到期时间过了就标出来，提醒"再发"要重选时间
+			if (it.until) bits.push(it.until <= Date.now() ? '上期已过期' : '到期 ' + fmtTime(it.until));
+			meta.textContent = bits.join(' · ');
+			main.appendChild(meta);
+
+			var act = document.createElement('div');
+			act.className = 'rec-act';
+
+			if (recTab === 'mine') {
+				var again = document.createElement('button');
+				again.type = 'button';
+				again.className = 'rec-again';
+				again.title = '把说明、链接、人数带回发布表单';
+				again.innerHTML = ICON_AGAIN + '再发';
+				again.addEventListener('click', function () { refillRec(it); });
+				act.appendChild(again);
+			}
+
+			var del = document.createElement('button');
+			del.type = 'button';
+			del.className = 'rec-del';
+			del.title = '删除这条记录';
+			del.innerHTML = ICON_DEL;
+			del.addEventListener('click', function () {
+				var key = recKeyOf(recTab);
+				var arr = readRec(key).filter(function (x) { return x && x.code !== it.code; });
+				writeRec(key, arr);
+				renderRec();
+			});
+			act.appendChild(del);
+
+			row.appendChild(main);
+			row.appendChild(act);
+			recListEl.appendChild(row);
+		});
+	}
+
+	function openRec() {
+		if (!recMask) return;
+		recTab = 'mine';
+		renderRec();
+		toggleChat(false);
+		recMask.hidden = false;
+		// 焦点落在弹窗本身而不是关闭按钮上，否则一打开就顶着一圈焦点框
+		if (recBox) recBox.focus();
+	}
+	function closeRec(focusBack) {
+		if (!recMask) return;
+		recMask.hidden = true;
+		toggleChat(true);
+		if (focusBack !== false && recBtn2) recBtn2.focus();
+	}
+
+	/* 底部那个第三方聊天窗的 z-index 压不住（它自带 10001，还盖在遮罩之上），
+	   打开记录时先把它收起来，关掉再放出来，免得挡住弹窗下沿 */
+	function toggleChat(show) {
+		var c = document.getElementById('ctrm_');
+		if (!c) return;
+		c.style.display = show ? '' : 'none';
+	}
+
+	/* 再发：说明、链接、人数照搬；码和有效期留空——码是这一期的新码，到期时间要重选 */
+	function refillRec(it) {
+		var codeUrl = (it.code && !/\s/.test(it.code)) ? safeLink(it.code) : '';
+		closeRec(false);
+		document.getElementById('code').value = codeUrl || '';
+		document.getElementById('desc').value = it.desc || '';
+		document.getElementById('link').value = it.link || '';
+		document.getElementById('need').value = it.need ? String(it.need) : '';
+		document.getElementById('expAt').value = '';
+		// 清空真控件后要复位显示层，否则格子上还留着上一次的日期
+		syncAt();
+		setPubOpen(true);
+		showMsg(codeUrl ? '已带回上次的内容，改成这一期的就能发' : '说明和链接已填好，填个新码就能发', false);
+		var codeEl = document.getElementById('code');
+		if (codeEl) {
+			codeEl.focus();
+			setTimeout(function () {
+				if (codeEl.scrollIntoView) codeEl.scrollIntoView({ block: 'center', behavior: 'smooth' });
+			}, 120);
+		}
+	}
+
+	if (recBtn2) recBtn2.addEventListener('click', openRec);
+	if (recCloseBtn) recCloseBtn.addEventListener('click', closeRec);
+	if (recMask) {
+		recMask.addEventListener('click', function (e) {
+			if (e.target === recMask) closeRec();
+		});
+	}
+	if (recTabsEl) {
+		recTabsEl.addEventListener('click', function (e) {
+			var t = e.target;
+			var tab = t && t.getAttribute ? t.getAttribute('data-rec') : '';
+			if (!tab || tab === recTab) return;
+			recTab = tab;
+			renderRec();
+		});
+	}
+	document.addEventListener('keydown', function (e) {
+		if (e.key === 'Escape' && recMask && !recMask.hidden) closeRec();
+	});
 
 	if (pubToggle) {
 		pubToggle.addEventListener('click', function () {
