@@ -22,6 +22,8 @@
 	} catch (e) {}
 })();
 </script>
+<!-- 右下角浮窗用的图标字体，与首页同一套 -->
+<link rel="stylesheet" href="/assets/css/iconfont-3.03029.1.css">
 <style>
 * { box-sizing: border-box; }
 body {
@@ -604,6 +606,34 @@ html.io-black-mode #ctrm_ .ctrm-dialog-bubble { background: rgba(255,255,255,.08
 html.io-black-mode #ctrm_ .ctrm-dialog-time { color: #75797f !important; }
 /* 域名过滤层的白底也要压深，否则夜间会突然亮出一块 */
 html.io-black-mode #ctrm_ .ctrm-domain-filter { background: rgba(30,32,34,.95) !important; color: #c6c9cf !important; }
+
+/* ---------- 右下角浮窗：返回顶部 + 昼夜切换（对齐首页 #footer-tools 的外观） ---------- */
+/* 互助页底部有第三方聊天条（fixed 右下、z-index 10001），所以整体抬到它上方，避免互相遮挡 */
+#footer-tools { position: fixed; right: 20px; bottom: 76px; display: flex; flex-direction: column; gap: 8px; z-index: 100000; }
+#footer-tools .ft-btn {
+	width: 40px; height: 40px; padding: 0; display: flex; align-items: center; justify-content: center;
+	border: 0; border-radius: 50%; background: rgba(210, 210, 210, .5); color: #777; cursor: pointer;
+	transition: background-color .2s, color .2s, opacity .2s, transform .2s;
+	-webkit-tap-highlight-color: transparent;
+}
+#footer-tools .ft-btn:hover { background: rgba(200, 200, 200, .74); color: #444; }
+#footer-tools .ft-btn:focus-visible { outline: 2px solid #24b47e; outline-offset: 2px; }
+/* 图标字号对齐首页 #footer-tools .btn 的 1rem */
+#footer-tools .ft-btn i { font-size: 16px; line-height: 1; }
+#footer-tools #go-to-up { opacity: 0; transform: translateY(6px); pointer-events: none; }
+#footer-tools #go-to-up.on { opacity: 1; transform: none; pointer-events: auto; }
+/* 记录弹窗打开时让开，别压在遮罩上 */
+#recMask:not([hidden]) ~ #footer-tools { display: none; }
+/* 聊天窗展开时同样让开，避免压到聊天面板底部 */
+#footer-tools.chat-open { display: none; }
+html.io-black-mode #footer-tools .ft-btn { background: rgba(10, 10, 10, .4); color: #aaa; }
+html.io-black-mode #footer-tools .ft-btn:hover { background: rgba(40, 40, 40, .62); color: #fff; }
+@media screen and (max-width: 520px) {
+	/* 手机上聊天条更矮更靠底，浮窗跟着往下收，别离它太远 */
+	#footer-tools { right: 12px; bottom: 46px; gap: 7px; }
+	#footer-tools .ft-btn { width: 36px; height: 36px; }
+	#footer-tools .ft-btn i { font-size: 15px; }
+}
 </style>
 </head>
 <body>
@@ -1951,6 +1981,74 @@ html.io-black-mode #ctrm_ .ctrm-domain-filter { background: rgba(30,32,34,.95) !
 
 	loadList(false);
 	startAutoRefresh();
+})();
+</script>
+
+<!-- 右下角浮窗：返回顶部 + 昼夜切换，直接沿用首页那套 iconfont 图标，外观和主站一模一样 -->
+<div id="footer-tools">
+	<button class="ft-btn" id="go-to-up" type="button" title="返回顶部" aria-label="返回顶部">
+		<i class="iconfont icon-to-up"></i>
+	</button>
+	<button class="ft-btn" id="yejian" type="button" title="夜间模式" aria-label="切换到夜间模式">
+		<i class="mode-ico iconfont icon-night" id="modeIco"></i>
+	</button>
+</div>
+<script>
+(function () {
+	var root = document.documentElement;
+	var up = document.getElementById('go-to-up');
+	var tn = document.getElementById('yejian');
+	var ico = document.getElementById('modeIco');
+	function isDark() { return root.classList.contains('io-black-mode'); }
+	function syncTheme() {
+		var dark = isDark();
+		if (ico) {
+			ico.classList.remove(dark ? 'icon-night' : 'icon-light');
+			ico.classList.add(dark ? 'icon-light' : 'icon-night');
+		}
+		if (tn) {
+			tn.title = dark ? '日间模式' : '夜间模式';
+			tn.setAttribute('aria-label', dark ? '切换到日间模式' : '切换到夜间模式');
+		}
+	}
+	if (tn) tn.addEventListener('click', function () {
+		var on = !isDark();
+		root.classList.toggle('io-black-mode', on);
+		root.classList.toggle('night', on);
+		try { document.cookie = 'night=' + (on ? '1' : '0') + ';path=/;max-age=31536000'; } catch (e) {}
+		syncTheme();
+	});
+	if (up) {
+		up.addEventListener('click', function () { window.scrollTo({ top: 0, behavior: 'smooth' }); });
+		var onScroll = function () {
+			if (window.pageYOffset > 50) up.classList.add('on');
+			else up.classList.remove('on');
+		};
+		window.addEventListener('scroll', onScroll, { passive: true });
+		onScroll();
+	}
+	/* 聊天窗是外挂脚本异步注入的，它一展开就占住右下角，浮窗先让开，收起再回来 */
+	var tools = document.getElementById('footer-tools');
+	var chatEl = null;
+	function syncChat() {
+		if (!tools || !chatEl) return;
+		tools.classList.toggle('chat-open', !chatEl.classList.contains('ctrm-close'));
+	}
+	function bindChat() {
+		chatEl = document.getElementById('ctrm_');
+		if (!chatEl) return false;
+		new MutationObserver(syncChat).observe(chatEl, { attributes: true, attributeFilter: ['class'] });
+		syncChat();
+		return true;
+	}
+	if (!bindChat()) {
+		var chatTries = 0;
+		var chatTimer = setInterval(function () {
+			chatTries++;
+			if (bindChat() || chatTries > 40) clearInterval(chatTimer);
+		}, 250);
+	}
+	syncTheme();
 })();
 </script>
 </body>
