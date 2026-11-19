@@ -382,9 +382,9 @@ input:focus, textarea:focus, select:focus { border-color: #24b47e; background: #
 .rec-row { display: flex; align-items: flex-start; gap: 10px; }
 .rec-item-main { flex: 1 1 auto; min-width: 0; }
 .rec-code { font-size: 14px; font-weight: 600; color: #0e6b4a; word-break: break-all; line-height: 1.5; }
-/* 码本身是链接：整段可点、完整折行显示，浅下划线提示可点 */
-/* 码本身是链接：只显示两行，末尾省略号，样式不变，点了跳完整地址 */
-.rec-code.is-link { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; cursor: pointer; }
+/* 码本身是链接：只显示一行、行尾直接裁掉（不留省略号）；<a> 走 inline，点在文字外空白处不会误跳 */
+.rec-code.is-link { white-space: nowrap; overflow: hidden; }
+.rec-code.is-link a { color: inherit; cursor: pointer; }
 /* 时间/域名在左可省略，到期时间在右永不压缩，手机上就不会挤成两行 */
 .rec-meta { margin-top: 3px; font-size: 11.5px; color: #9aa0a6; display: flex; align-items: center; gap: 6px; line-height: 1.4; }
 .rec-meta-l { flex: 0 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1687,22 +1687,25 @@ html.io-black-mode #ctrm_ .ctrm-domain-filter { background: rgba(30,32,34,.95) !
 			var main = document.createElement('div');
 			main.className = 'rec-item-main';
 
-			// 码本身就是一个链接时，直接渲染成可点的 <a>，完整显示、点开即跳转
+			// 码本身就是一个链接时，外面套一层只露两行的容器，里面的 <a> 只覆盖文字本身
 			var codeUrl = (it.code && !/\s/.test(it.code)) ? safeLink(it.code) : '';
 			var codeEl;
 			if (codeUrl) {
-				codeEl = document.createElement('a');
+				codeEl = document.createElement('div');
 				codeEl.className = 'rec-code is-link';
-				codeEl.href = codeUrl;
-				codeEl.target = '_blank';
-				codeEl.rel = 'noopener noreferrer';
-				codeEl.title = it.code;
+				var codeA = document.createElement('a');
+				codeA.href = codeUrl;
+				codeA.target = '_blank';
+				codeA.rel = 'noopener noreferrer';
+				codeA.textContent = it.code;
+				codeA.title = it.code;
+				codeEl.appendChild(codeA);
 			} else {
 				codeEl = document.createElement('div');
 				codeEl.className = 'rec-code';
+				codeEl.textContent = it.code;
 				if (it.desc) codeEl.title = it.desc;
 			}
-			codeEl.textContent = it.code;
 			main.appendChild(codeEl);
 
 			var meta = document.createElement('div');
