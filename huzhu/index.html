@@ -382,10 +382,17 @@ input:focus, textarea:focus, select:focus { border-color: #24b47e; background: #
 .rec-row { display: flex; align-items: flex-start; gap: 10px; }
 .rec-item-main { flex: 1 1 auto; min-width: 0; }
 .rec-code { font-size: 14px; font-weight: 600; color: #0e6b4a; word-break: break-all; line-height: 1.5; }
+/* 码本身是链接：整段可点、完整折行显示，浅下划线提示可点 */
+/* 码本身是链接：只显示两行，末尾省略号，样式不变，点了跳完整地址 */
+.rec-code.is-link { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; overflow-wrap: anywhere; cursor: pointer; }
 /* 时间/域名在左可省略，到期时间在右永不压缩，手机上就不会挤成两行 */
 .rec-meta { margin-top: 3px; font-size: 11.5px; color: #9aa0a6; display: flex; align-items: center; gap: 6px; line-height: 1.4; }
 .rec-meta-l { flex: 0 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rec-meta-t { flex: 0 0 auto; white-space: nowrap; margin-left: auto; }
+/* meta 行里的域名：外观与原来一致，点它跳发布时填的完整链接 */
+.rec-host { color: inherit; cursor: pointer; }
+/* 说明文字里出现的网址：同样不改外观，能点就行 */
+.rec-inline-link { color: inherit; cursor: pointer; }
 /* 有说明的条目：meta 行挂一个小三角；字符与 meta 同字号，紧跟 content，不会孤零零飘在最右 */
 .rec-tag { flex: 0 0 auto; font-size: 11px; line-height: 1; color: #b0b6bc; position: relative; top: -1px; }
 .rec-item.open .rec-tag { color: #24b47e; }
@@ -567,6 +574,7 @@ html.io-black-mode .rec-tab { background: #363738; color: #9aa0a6; }
 html.io-black-mode .rec-tab.active { background: #24b47e; color: #fff; }
 html.io-black-mode .rec-item { border-top-color: #363738; }
 html.io-black-mode .rec-code { color: #5fd3a5; }
+html.io-black-mode .rec-code.is-link { color: #5fd3a5; }
 html.io-black-mode .rec-meta { color: #7d8388; }
 html.io-black-mode .rec-desc { color: #9aa0a6; }
 html.io-black-mode .rec-tag { color: #8f959b; }html.io-black-mode .rec-again { border-color: rgba(79, 199, 155, .55); color: #4fc79b; }
@@ -1632,6 +1640,25 @@ html.io-black-mode #ctrm_ .ctrm-domain-filter { background: rgba(30,32,34,.95) !
 	var ICON_AGAIN = '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M21 12a8.8 8.8 0 1 1-2.6-6.2"/><path d="M21 4.2v4.2h-4.2"/></svg>';
 	var ICON_DEL = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M18 6L6 18"/><path d="M6 6l12 12"/></svg>';
 
+	// 说明里写了网址就转成可点链接，外观仍是说明的灰字，不改任何样式
+	function fillLinkText(el, text) {
+		var re = /(https?:\/\/[^\s\u3000-\u303f\uff00-\uffef"'<>]+)/g;
+		var last = 0;
+		var m;
+		while ((m = re.exec(text)) !== null) {
+			if (m.index > last) el.appendChild(document.createTextNode(text.slice(last, m.index)));
+			var a = document.createElement('a');
+			a.className = 'rec-inline-link';
+			a.href = m[1];
+			a.target = '_blank';
+			a.rel = 'noopener noreferrer';
+			a.textContent = m[1];
+			el.appendChild(a);
+			last = m.index + m[1].length;
+		}
+		if (last < text.length) el.appendChild(document.createTextNode(text.slice(last)));
+	}
+
 	function renderRec() {
 		if (!recListEl) return;
 		var tabs = recTabsEl ? recTabsEl.querySelectorAll('.rec-tab') : [];
@@ -1660,20 +1687,44 @@ html.io-black-mode #ctrm_ .ctrm-domain-filter { background: rgba(30,32,34,.95) !
 			var main = document.createElement('div');
 			main.className = 'rec-item-main';
 
-			var codeEl = document.createElement('div');
-			codeEl.className = 'rec-code';
+			// 码本身就是一个链接时，直接渲染成可点的 <a>，完整显示、点开即跳转
+			var codeUrl = (it.code && !/\s/.test(it.code)) ? safeLink(it.code) : '';
+			var codeEl;
+			if (codeUrl) {
+				codeEl = document.createElement('a');
+				codeEl.className = 'rec-code is-link';
+				codeEl.href = codeUrl;
+				codeEl.target = '_blank';
+				codeEl.rel = 'noopener noreferrer';
+				codeEl.title = it.code;
+			} else {
+				codeEl = document.createElement('div');
+				codeEl.className = 'rec-code';
+				if (it.desc) codeEl.title = it.desc;
+			}
 			codeEl.textContent = it.code;
-			if (it.desc) codeEl.title = it.desc;
 			main.appendChild(codeEl);
 
 			var meta = document.createElement('div');
 			meta.className = 'rec-meta';
 			var metaL = document.createElement('span');
 			metaL.className = 'rec-meta-l';
-			var bits = [fmtTime(it.time)];
-			if (it.link) bits.push(linkHost(it.link));
-			metaL.textContent = bits.join(' · ');
-			metaL.title = metaL.textContent;
+			metaL.appendChild(document.createTextNode(fmtTime(it.time)));
+			// 发布时填的链接：只显示域名时点不动，这里把域名本身变成可点的链接
+			var linkUrl = it.link ? safeLink(it.link) : '';
+			if (linkUrl) {
+				metaL.appendChild(document.createTextNode(' · '));
+				var hostA = document.createElement('a');
+				hostA.className = 'rec-host';
+				hostA.href = linkUrl;
+				hostA.target = '_blank';
+				hostA.rel = 'noopener noreferrer';
+				hostA.textContent = linkHost(it.link);
+				hostA.title = it.link;
+				metaL.appendChild(hostA);
+			} else if (it.link) {
+				metaL.appendChild(document.createTextNode(' · ' + linkHost(it.link)));
+			}
 			meta.appendChild(metaL);
 			// 上一期的到期时间过了就标出来，提醒"再发"要重选时间
 			if (it.until) {
@@ -1726,12 +1777,12 @@ html.io-black-mode #ctrm_ .ctrm-domain-filter { background: rgba(30,32,34,.95) !
 			if (it.desc) {
 				var descEl = document.createElement('div');
 				descEl.className = 'rec-desc';
-				descEl.textContent = it.desc;
+				fillLinkText(descEl, it.desc);
 				descEl.hidden = true;
 				row.appendChild(descEl);
 				row.classList.add('has-desc');
 				row.addEventListener('click', function (e) {
-					if (e.target && e.target.closest && e.target.closest('button')) return;
+					if (e.target && e.target.closest && e.target.closest('button, a')) return;
 					var opening = !!descEl.hidden;
 					descEl.hidden = !opening;
 					if (opening) row.classList.add('open');
