@@ -1530,13 +1530,15 @@ if ('serviceWorker' in navigator) {
     document.addEventListener('click', function (e) {
         var el = e.target;
         while (el && el.nodeType === 1) {
-            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            if (el.tagName === 'A' && el.getAttribute('data-id')) break;
             el = el.parentNode;
         }
-        if (!el || el.nodeType !== 1) return;
+        if (!el || el.nodeType !== 1 || el.tagName !== 'A') return;
         var id = el.getAttribute('data-id') || '';
         var href = el.getAttribute('href') || '';
-        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        var isExternal = /^https?:\/\//i.test(href);
+        var isInternal = href.charAt(0) === '/' && href.charAt(1) !== '/' && href.charAt(1) !== '';
+        if (!HEX.test(id) || (!isExternal && !isInternal)) return;
         try {
             fetch(API, {
                 method: 'POST',
