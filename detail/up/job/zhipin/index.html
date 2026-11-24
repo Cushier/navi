@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>BOSS直聘 | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -664,7 +665,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.zhaopin.com/" target="_blank" data-id="rel-0"
+    <a href="https://www.zhaopin.com/" target="_blank" data-id="e1bcd0136a24d8995edb512f3b847a41"
       data-url="https://www.zhaopin.com/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="智联招聘-招聘_求职_找工作">
       <div class="card-body">
@@ -705,7 +706,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.51job.com/" target="_blank" data-id="rel-1"
+    <a href="https://www.51job.com/" target="_blank" data-id="b7bf1684f790b472c71eb244522b17e1"
       data-url="https://www.51job.com/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="招聘网_人才网_找工作_求职_上前程无忧">
       <div class="card-body">
@@ -746,7 +747,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.797rs.com/" target="_blank" data-id="rel-2"
+    <a href="https://www.797rs.com/" target="_blank" data-id="146cc054770942ad0d6044da9c442e9a"
       data-url="https://www.797rs.com/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="赣州招聘，赣州人才招聘网，创办于2008年">
       <div class="card-body">
@@ -787,7 +788,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.gz91.com/" target="_blank" data-id="rel-3"
+    <a href="https://www.gz91.com/" target="_blank" data-id="bcd092f7415bfaed3ce254cbf0680ab2"
       data-url="https://www.gz91.com/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="赣州招聘，赣州人才招聘网，创办于2003年">
       <div class="card-body">
@@ -838,7 +839,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.neea.edu.cn/" target="_blank" data-id="rel-4"
+    <a href="https://www.neea.edu.cn/" target="_blank" data-id="e29b959300cfe9c0af1d03817c6b2b4b"
       data-url="https://www.neea.edu.cn/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="中国教育考试网">
       <div class="card-body">
@@ -876,7 +877,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="http://www.jxeea.cn/" target="_blank" data-id="rel-5"
+    <a href="http://www.jxeea.cn/" target="_blank" data-id="b461d7aa9525e4b8ea7ea16123ad8077"
       data-url="http://www.jxeea.cn/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="江西省教育考试院">
       <div class="card-body">
@@ -1510,5 +1511,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

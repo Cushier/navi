@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>青年打字场 | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -680,7 +681,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.biancheng.love/typinghome" target="_blank" data-id="rel-0"
+    <a href="https://www.biancheng.love/typinghome" target="_blank" data-id="8afa894d181240be6b7a65aed8987548"
       data-url="https://www.biancheng.love/typinghome" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="编程派-打字修炼场">
       <div class="card-body">
@@ -721,7 +722,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.biancheng.love/typingarena" target="_blank" data-id="rel-1"
+    <a href="https://www.biancheng.love/typingarena" target="_blank" data-id="5fb54f4ef62d69b038233eb7362a171e"
       data-url="https://www.biancheng.love/typingarena" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="编程派-打字竞技场">
       <div class="card-body">
@@ -762,7 +763,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.nezhadazi.com/" target="_blank" data-id="rel-2"
+    <a href="https://www.nezhadazi.com/" target="_blank" data-id="9319b67c4d7210d7ea71513d62d14ebf"
       data-url="https://www.nezhadazi.com/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="面向中小学生的免费在线打字练习，提供指法课程、课文生词同步与实时速度测试">
       <div class="card-body">
@@ -803,7 +804,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://dazi.91xjr.com/" target="_blank" data-id="rel-3"
+    <a href="https://dazi.91xjr.com/" target="_blank" data-id="995b70684fc642d81587fe70b03a215a"
       data-url="https://dazi.91xjr.com/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="免费的在线打字练习平台">
       <div class="card-body">
@@ -844,7 +845,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://zty.pe/" target="_blank" data-id="rel-4"
+    <a href="https://zty.pe/" target="_blank" data-id="3759dc2f857c181de55adab3ebf9d334"
       data-url="https://zty.pe/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="单词打字飞机游戏">
       <div class="card-body">
@@ -893,7 +894,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.smartedu.cn/" target="_blank" data-id="rel-5"
+    <a href="https://www.smartedu.cn/" target="_blank" data-id="9a3856139bf712dd409ed6bc9d12d2b5"
       data-url="https://www.smartedu.cn/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="人人皆学，处处能学，时时可学">
       <div class="card-body">
@@ -1555,5 +1556,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

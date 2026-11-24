@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>菜鸟教程 | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -660,7 +661,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://coding.qq.com/" target="_blank" data-id="rel-0"
+    <a href="https://coding.qq.com/" target="_blank" data-id="0ed83a3b31a30223955f242bea1f664a"
       data-url="https://coding.qq.com/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="腾讯出品 6-18 岁青少年编程平台，图形化、Python、AI、硬件七个实验室，课程按学段划分">
       <div class="card-body">
@@ -701,7 +702,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://turtle.codemao.cn/" target="_blank" data-id="rel-1"
+    <a href="https://turtle.codemao.cn/" target="_blank" data-id="3b64f82ed64186f2c38a8d9ad57c36f4"
       data-url="https://turtle.codemao.cn/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="编程猫出品的图形化 Python 编辑器，拖积木同时看代码，网页版打开即用，也能装客户端">
       <div class="card-body">
@@ -742,7 +743,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.w3school.com.cn/" target="_blank" data-id="rel-2"
+    <a href="https://www.w3school.com.cn/" target="_blank" data-id="9584e026283a12e48055b64d8fd3136d"
       data-url="https://www.w3school.com.cn/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="2006 年上线的免费 Web 技术教程站，30 门课配参考手册、在线实例和测验，非盈利运营">
       <div class="card-body">
@@ -805,7 +806,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://github.com/" target="_blank" data-id="rel-3"
+    <a href="https://github.com/" target="_blank" data-id="008ec4453ff31513f43893cba7aa31c8"
       data-url="https://github.com/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="一个面向开源及私有软件项目的托管平台，因为只支持Git作为唯一的版本库格式进行托管，故名GitHub">
       <div class="card-body">
@@ -843,7 +844,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://gitee.com/" target="_blank" data-id="rel-4"
+    <a href="https://gitee.com/" target="_blank" data-id="14e836634e47d75e70a2fe9094a152af"
       data-url="https://gitee.com/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="国产代码托管与研发协作平台，本土开源项目大多落在这里；个人和私有仓库免费，团队协作超过 5 人要走企业版">
       <div class="card-body">
@@ -881,7 +882,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://git-scm.com/" target="_blank" data-id="rel-5"
+    <a href="https://git-scm.com/" target="_blank" data-id="fb8112370649a487828ae0b79db8369d"
       data-url="https://git-scm.com/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="分布式版本控制系统，2005 年为 Linux 内核开发而生，GPLv2 开源免费；核心只是个命令行工具，存代码的托管服务要另找 GitHub 或 Gitee">
       <div class="card-body">
@@ -1471,5 +1472,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

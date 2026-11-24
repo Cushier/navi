@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>PngImg | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -640,7 +641,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://pixabay.com/zh/" target="_blank" data-id="rel-0"
+    <a href="https://pixabay.com/zh/" target="_blank" data-id="b3f647db91bd6717e3575085060c22ed"
       data-url="https://pixabay.com/zh/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="免版税素材社区，收录照片、插画、矢量图、视频、音乐、音效、GIF 与 3D 模型，Pixabay License 允许免费商用、修改且无需署名">
       <div class="card-body">
@@ -681,7 +682,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://community-cn.eagle.cool/" target="_blank" data-id="rel-1"
+    <a href="https://community-cn.eagle.cool/" target="_blank" data-id="9ba4a0d12734068e2f1b4baffb5a9101"
       data-url="https://community-cn.eagle.cool/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="Eagle 官方设计资源社区，六个领域 2000&#43; 素材包免费下载，另有插件中心和设计导航">
       <div class="card-body">
@@ -740,7 +741,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.ghxi.com/" target="_blank" data-id="rel-2"
+    <a href="https://www.ghxi.com/" target="_blank" data-id="0d3fa55f3e36ceece003be8fdb331983"
       data-url="https://www.ghxi.com/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="长期更新的综合软件资源站，收录 Windows 与安卓绿色软件、系统工具、办公影像等分类，附教程与科技资讯；资源免费，会员仅享下载提速">
       <div class="card-body">
@@ -778,7 +779,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.52pojie.cn/" target="_blank" data-id="rel-3"
+    <a href="https://www.52pojie.cn/" target="_blank" data-id="90b4b96fa389a58e3c0c27627d04f21b"
       data-url="https://www.52pojie.cn/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="老牌非营利软件安全与逆向技术交流论坛，覆盖脱壳破解、移动安全、病毒分析、软件调试与编程语言，附逆向工具包与视频教程；平时邀请码注册，定时开放注册">
       <div class="card-body">
@@ -816,7 +817,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.ruancang.net/" target="_blank" data-id="rel-4"
+    <a href="https://www.ruancang.net/" target="_blank" data-id="e39b19766b17ceaff31b97e386a88007"
       data-url="https://www.ruancang.net/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="软仓是一个集合专业软件的导航网站，免费下载供学习使用，本站承诺无毒无广告，纯公益项目，不以此盈利">
       <div class="card-body">
@@ -854,7 +855,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://alternativeto.net/" target="_blank" data-id="rel-5"
+    <a href="https://alternativeto.net/" target="_blank" data-id="868fe1e5bccb6e8327c58ea9583e8424"
       data-url="https://alternativeto.net/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="软件替代品推荐站，输入一款软件即可找到功能相近的 Windows、Mac、Linux、iOS、Android 及在线替代方案，再前往替代品官网下载">
       <div class="card-body">
@@ -1448,5 +1449,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

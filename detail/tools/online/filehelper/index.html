@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>微信文件传输助手网页版 | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -674,7 +675,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://filehelper.weixin.qq.com/" target="_blank" data-id="rel-0"
+    <a href="https://filehelper.weixin.qq.com/" target="_blank" data-id="898e3cf85e12cf377b1508fc490af68b"
       data-url="https://filehelper.weixin.qq.com/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="使用文件传输助手，手机电脑轻松互传文件">
       <div class="card-body">
@@ -715,7 +716,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://cli.im/" target="_blank" data-id="rel-1"
+    <a href="https://cli.im/" target="_blank" data-id="d1c763d979b4f17762f4ab0be0ced59b"
       data-url="https://cli.im/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="免费生成二维码，扫码量、生码数和存储都不限，码长期有效，表单和数据统计也能用">
       <div class="card-body">
@@ -756,7 +757,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://tools.pdf24.org/" target="_blank" data-id="rel-2"
+    <a href="https://tools.pdf24.org/" target="_blank" data-id="0097aff3b344a0c5763a80c1860d8748"
       data-url="https://tools.pdf24.org/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="免费且易于使用的在线PDF工具">
       <div class="card-body">
@@ -797,7 +798,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.cleverpdf.com/cn" target="_blank" data-id="rel-3"
+    <a href="https://www.cleverpdf.com/cn" target="_blank" data-id="cb2a9ebdfb3e7df40e7c697838f625e8"
       data-url="https://www.cleverpdf.com/cn" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="44个功能强大的免费在线PDF转换器和工具">
       <div class="card-body">
@@ -838,7 +839,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://tinypng.com/cn/" target="_blank" data-id="rel-4"
+    <a href="https://tinypng.com/cn/" target="_blank" data-id="0df390202de94601822f1d6b5d3d2183"
       data-url="https://tinypng.com/cn/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="智能有损压缩 PNG、JPG、WebP、AVIF 等常见图片，肉眼难辨画质差异，拖放即可批量压缩并可转格式">
       <div class="card-body">
@@ -879,7 +880,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://recorder-online.com/zh" target="_blank" data-id="rel-5"
+    <a href="https://recorder-online.com/zh" target="_blank" data-id="e51e2f2e093b35a1789abdfaef81718f"
       data-url="https://recorder-online.com/zh" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="浏览器内直接录屏，免下载免注册，可选全屏、窗口或标签页与摄像头叠加，视频存本地后导出">
       <div class="card-body">
@@ -1460,5 +1461,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

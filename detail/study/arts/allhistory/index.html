@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>全历史 | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -662,7 +663,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="http://bzdt.ch.mnr.gov.cn/" target="_blank" data-id="rel-0"
+    <a href="http://bzdt.ch.mnr.gov.cn/" target="_blank" data-id="1af36490059af9ca10b60cef79058dee"
       data-url="http://bzdt.ch.mnr.gov.cn/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="标准地图依据中国和世界各国国界线画法标准编制而成，可用于新闻宣传用图、书刊报纸插图、广告展示背景图、工艺品设计底图等，也可作为编制公开版地图的参考底图。社会公众可以免费浏览、下载标准地图，直接使用标准地图时需要标注审图号">
       <div class="card-body">
@@ -703,7 +704,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.gushiwen.cn/" target="_blank" data-id="rel-1"
+    <a href="https://www.gushiwen.cn/" target="_blank" data-id="8f8ad66fc469875dbded4763a0e96707"
       data-url="https://www.gushiwen.cn/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="古诗文经典传承">
       <div class="card-body">
@@ -752,7 +753,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.smartedu.cn/" target="_blank" data-id="rel-2"
+    <a href="https://www.smartedu.cn/" target="_blank" data-id="9a3856139bf712dd409ed6bc9d12d2b5"
       data-url="https://www.smartedu.cn/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="人人皆学，处处能学，时时可学">
       <div class="card-body">
@@ -790,7 +791,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://le.ouchn.cn/" target="_blank" data-id="rel-3"
+    <a href="https://le.ouchn.cn/" target="_blank" data-id="e5f142efbeba6be4505b5dc3c3daa763"
       data-url="https://le.ouchn.cn/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="国家开放大学为推进教育公平、减少“数字鸿沟”，在现有“一路一网一平台”基础上打造的全新学习平台，面向社会免费开放">
       <div class="card-body">
@@ -828,7 +829,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.icourse163.org/" target="_blank" data-id="rel-4"
+    <a href="https://www.icourse163.org/" target="_blank" data-id="f65d8e2c9a0e9ca884723e367d424484"
       data-url="https://www.icourse163.org/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="教育部爱课程网携手网易云课堂打造的在线学习平台，汇集中国知名高校课程，与名师零距离">
       <div class="card-body">
@@ -866,7 +867,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://open.163.com/" target="_blank" data-id="rel-5"
+    <a href="https://open.163.com/" target="_blank" data-id="d85586d5134adbfe2c359faed162fb7e"
       data-url="https://open.163.com/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="汇集清华、北大、哈佛、耶鲁等世界名校共上千门课程，覆盖科学、经济、人文、哲学等22个领域，在这里你可以开拓视野看世界，获取有深度的好知识">
       <div class="card-body">
@@ -1528,5 +1529,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

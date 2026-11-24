@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>Pranx | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -669,7 +670,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.yikm.net/" target="_blank" data-id="rel-0"
+    <a href="https://www.yikm.net/" target="_blank" data-id="8c997f2ec6f8a2ec25a5e96e00e2698a"
       data-url="https://www.yikm.net/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="魂斗罗，超级玛丽，热血足球，三国志，合金弹头，拳皇。这些小时候的回忆，黑白电视机前玩着小霸王游戏机的那种感觉令人怀念，希望大家可以找回童年的快乐">
       <div class="card-body">
@@ -710,7 +711,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://oldswf.com/" target="_blank" data-id="rel-1"
+    <a href="https://oldswf.com/" target="_blank" data-id="4bedce7a32f66d2b35efd798bfc398ce"
       data-url="https://oldswf.com/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="专收老 Flash 小游戏的在线游戏站，网页里直接跑原版 SWF，不用装 Flash 插件；逃生解谜、冒险这类 2000 年代网页游戏按类型分块，中文译名也齐">
       <div class="card-body">
@@ -751,7 +752,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://enazo.cn/" target="_blank" data-id="rel-2"
+    <a href="https://enazo.cn/" target="_blank" data-id="9d6d0ebc94c02b5eb6c0341a7ccdc4c8"
       data-url="https://enazo.cn/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="不用登录就能玩的在线你画我猜，进房或自己开房直接开局；词库分 ACG 与生活两类，支持断线重连、无限撤销、压感笔刷，一局画完还能回放整段过程">
       <div class="card-body">
@@ -792,7 +793,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.zh.xiangqi.com/" target="_blank" data-id="rel-3"
+    <a href="https://www.zh.xiangqi.com/" target="_blank" data-id="43747096b0ceb3f190f078644f933de4"
       data-url="https://www.zh.xiangqi.com/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="中国象棋在线玩免费，全球真人人机对战">
       <div class="card-body">
@@ -833,7 +834,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://xiangqiai.com/" target="_blank" data-id="rel-4"
+    <a href="https://xiangqiai.com/" target="_blank" data-id="8d51867106733e5dd0f5700f0ad8cce2"
       data-url="https://xiangqiai.com/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="皮卡鱼引擎的网页版分析站，打开就能算任意局面的最佳着法；旁边一栏是云库现成结论和大师谱，残局还能直接给出几步杀，免费免安装">
       <div class="card-body">
@@ -874,7 +875,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://slowroads.io/" target="_blank" data-id="rel-5"
+    <a href="https://slowroads.io/" target="_blank" data-id="fd606da1e3cea263260cbe1b3e4c7c48"
       data-url="https://slowroads.io/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="在浏览器中享受无尽的驾驶禅意">
       <div class="card-body">
@@ -1449,5 +1450,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

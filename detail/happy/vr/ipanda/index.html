@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>熊猫全景直播 | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -671,7 +672,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.720yun.com/" target="_blank" data-id="rel-0"
+    <a href="https://www.720yun.com/" target="_blank" data-id="7667fd0583db91aadc44ea8ff173d909"
       data-url="https://www.720yun.com/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="国内的 VR 全景创作与展示平台，把拍好的全景图拼成能拖动的漫游作品，加热点、语音、导览，再发链接或微信卡片；免费版能上手，商业展示要去广告得付费">
       <div class="card-body">
@@ -712,7 +713,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://pf.bigpixel.cn/zh-CN.html" target="_blank" data-id="rel-1"
+    <a href="https://pf.bigpixel.cn/zh-CN.html" target="_blank" data-id="1c0cba8eb10b641427b6d0f4a7c2a5c6"
       data-url="https://pf.bigpixel.cn/zh-CN.html" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="上海景坤科技的超级全景作品集：一张照片几百亿到上千亿像素，从城市天际线一路放大到街上的人和窗口；覆盖七十多座城市与地标，网页直接看，免费">
       <div class="card-body">
@@ -753,7 +754,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.chnmuseum.cn/Portals/0/web/vr/" target="_blank" data-id="rel-2"
+    <a href="https://www.chnmuseum.cn/Portals/0/web/vr/" target="_blank" data-id="78fbbe9ac9e150ada72a90961c788728"
       data-url="https://www.chnmuseum.cn/Portals/0/web/vr/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="国家博物馆把办过的专题展都做成了 360° 实景展厅，鼠标拖着走就能像在馆内一样边走边看，从复兴之路到罗丹、伦勃朗都有；免费、不用预约">
       <div class="card-body">
@@ -794,7 +795,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://pano.dpm.org.cn/" target="_blank" data-id="rel-3"
+    <a href="https://pano.dpm.org.cn/" target="_blank" data-id="e85c468ffa143ea314f006cc81bf54a1"
       data-url="https://pano.dpm.org.cn/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="故宫的实景 360° 全景：从午门一路走到御花园，太和殿这些大殿还能进殿内看宝座和匾额，十个分区随时切换；官网免费，不用预约">
       <div class="card-body">
@@ -835,7 +836,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.e-dunhuang.com/" target="_blank" data-id="rel-4"
+    <a href="https://www.e-dunhuang.com/" target="_blank" data-id="dad60a59b3a9a0e37a9182e7abbc6c12"
       data-url="https://www.e-dunhuang.com/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="敦煌研究院的官方数字库：30 个精品洞窟的 720° 全景漫游，壁画按 300 DPI 采集，放大能看清笔触；浏览免费，还能按画面内容检索">
       <div class="card-body">
@@ -898,7 +899,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.ymck.pro/" target="_blank" data-id="rel-5"
+    <a href="https://www.ymck.pro/" target="_blank" data-id="be0c8c4c5765f91bd8294cf7fc357a67"
       data-url="https://www.ymck.pro/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="免费观第一站">
       <div class="card-body">
@@ -1520,5 +1521,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

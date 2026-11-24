@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>日常聊天室 | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -649,7 +650,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://flac.music.hi.cn/" target="_blank" data-id="rel-0"
+    <a href="https://flac.music.hi.cn/" target="_blank" data-id="2e2b3833c1b8f753b7927c8a8600b4c0"
       data-url="https://flac.music.hi.cn/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="无损音乐下载网，多站合一音乐搜索解决方案，可搜索、试听、免费下载音乐">
       <div class="card-body">
@@ -690,7 +691,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://music.163.com/" target="_blank" data-id="rel-1"
+    <a href="https://music.163.com/" target="_blank" data-id="00656384de592e99f13a7a6a4d6a554e"
       data-url="https://music.163.com/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="网易旗下的在线音乐平台，曲库、歌单、乐评、播客、有声书都在一处；网页版打开就能听，不用装客户端，免费曲目够日常，无损与下载要黑胶会员">
       <div class="card-body">
@@ -753,7 +754,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.ymck.pro/" target="_blank" data-id="rel-2"
+    <a href="https://www.ymck.pro/" target="_blank" data-id="be0c8c4c5765f91bd8294cf7fc357a67"
       data-url="https://www.ymck.pro/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="免费观第一站">
       <div class="card-body">
@@ -791,7 +792,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://gaze.red/" target="_blank" data-id="rel-3"
+    <a href="https://gaze.red/" target="_blank" data-id="1652e8ba965ce90bd6a0a4f58e0822f4"
       data-url="https://gaze.red/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="热门剧、热门番剧、冷门电影免费在线观看">
       <div class="card-body">
@@ -829,7 +830,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://tvbox.clbug.com/" target="_blank" data-id="rel-4"
+    <a href="https://tvbox.clbug.com/" target="_blank" data-id="c6a2278bf7146c1cfa1b0771c96fe5d4"
       data-url="https://tvbox.clbug.com/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="开源的电视盒子软件，填好源地址就能看海量高清影视；安卓手机、电视盒子、智能电视都能装">
       <div class="card-body">
@@ -867,7 +868,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://app.iyouhun.com/" target="_blank" data-id="rel-5"
+    <a href="https://app.iyouhun.com/" target="_blank" data-id="4f875c54222fdfd8b11233f98ba9a40a"
       data-url="https://app.iyouhun.com/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="精选 Android TV 电视盒子应用，覆盖影视、直播、K歌、教育、工具与游戏，提供 APK 下载与自动更新">
       <div class="card-body">
@@ -1489,5 +1490,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

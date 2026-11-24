@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>Kimi | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -671,7 +672,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://chatgpt.com/" target="_blank" data-id="rel-0"
+    <a href="https://chatgpt.com/" target="_blank" data-id="a2b7c1160d7f6eda8be66e2e3e5a9f82"
       data-url="https://chatgpt.com/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="回答问题、写作、创建图像、完成工作与编写代码，一站搞定；免费即可开始，也可下载桌面与手机应用">
       <div class="card-body">
@@ -712,7 +713,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.doubao.com/" target="_blank" data-id="rel-1"
+    <a href="https://www.doubao.com/" target="_blank" data-id="0cab24c59c4eb053549a3fd5d328a164"
       data-url="https://www.doubao.com/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="字节跳动旗下 AI 智能助手">
       <div class="card-body">
@@ -753,7 +754,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.qianwen.com/" target="_blank" data-id="rel-2"
+    <a href="https://www.qianwen.com/" target="_blank" data-id="3b582d10413f0908bd7ae4a1122feafe"
       data-url="https://www.qianwen.com/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="阿里官方 AI 助手，主打 AI 搜索、网页总结、AI PPT、AI 生图与录音纪要">
       <div class="card-body">
@@ -794,7 +795,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://yuanbao.tencent.com/" target="_blank" data-id="rel-3"
+    <a href="https://yuanbao.tencent.com/" target="_blank" data-id="72331e8b19947e1688f10bb2695ea9bb"
       data-url="https://yuanbao.tencent.com/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="腾讯旗下全能 AI 助手，支持混元与 DeepSeek 双模型，可对话、深度思考、读文件与联网搜索">
       <div class="card-body">
@@ -835,7 +836,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://chat.deepseek.com/" target="_blank" data-id="rel-4"
+    <a href="https://chat.deepseek.com/" target="_blank" data-id="c514755e7e8f630388f684eb7c33178f"
       data-url="https://chat.deepseek.com/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="深度求索（DeepSeek）助力编程代码开发、创意写作、文件处理等任务，支持文件上传及长文本对话，随时为您提供高效的AI支持。">
       <div class="card-body">
@@ -876,7 +877,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://bot.n.cn/" target="_blank" data-id="rel-5"
+    <a href="https://bot.n.cn/" target="_blank" data-id="fa663dd8b15b81e3672116548ed0eca8"
       data-url="https://bot.n.cn/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="360联合国内大模型发布的混合大模型助手">
       <div class="card-body">
@@ -1453,5 +1454,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

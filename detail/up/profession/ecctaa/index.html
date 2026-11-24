@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>全国税务师职业资格考试 | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -653,7 +654,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.cicpa.org.cn/" target="_blank" data-id="rel-0"
+    <a href="https://www.cicpa.org.cn/" target="_blank" data-id="3041baef8de5a1104ee0c5e0796c9169"
       data-url="https://www.cicpa.org.cn/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="注册会计师考试">
       <div class="card-body">
@@ -694,7 +695,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.ruankao.org.cn/" target="_blank" data-id="rel-1"
+    <a href="https://www.ruankao.org.cn/" target="_blank" data-id="cc00cb567d84d1b8c825088b93c82bf2"
       data-url="https://www.ruankao.org.cn/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="全国计算机技术与软件专业技术初、中、高级资格（水平）考试">
       <div class="card-body">
@@ -735,7 +736,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="http://kzp.mof.gov.cn/index.jsp" target="_blank" data-id="rel-2"
+    <a href="http://kzp.mof.gov.cn/index.jsp" target="_blank" data-id="66ecaba41698f4e1d5247d7e6fb0943b"
       data-url="http://kzp.mof.gov.cn/index.jsp" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="全国会计专业技术初、中、高级资格考试">
       <div class="card-body">
@@ -786,7 +787,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.neea.edu.cn/" target="_blank" data-id="rel-3"
+    <a href="https://www.neea.edu.cn/" target="_blank" data-id="e29b959300cfe9c0af1d03817c6b2b4b"
       data-url="https://www.neea.edu.cn/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="中国教育考试网">
       <div class="card-body">
@@ -824,7 +825,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="http://www.jxeea.cn/" target="_blank" data-id="rel-4"
+    <a href="http://www.jxeea.cn/" target="_blank" data-id="b461d7aa9525e4b8ea7ea16123ad8077"
       data-url="http://www.jxeea.cn/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="江西省教育考试院">
       <div class="card-body">
@@ -862,7 +863,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.chsi.com.cn/" target="_blank" data-id="rel-5"
+    <a href="https://www.chsi.com.cn/" target="_blank" data-id="bb8c31c0f4b450aef3d6f7666f4ea15d"
       data-url="https://www.chsi.com.cn/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="教育部学历查询网站、教育部高校招生阳光工程指定网站、全国硕士研究生招生报名和调剂指定网站">
       <div class="card-body">
@@ -1496,5 +1497,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

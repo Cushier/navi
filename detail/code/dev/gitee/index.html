@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>Gitee | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -682,7 +683,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://git-scm.com/" target="_blank" data-id="rel-0"
+    <a href="https://git-scm.com/" target="_blank" data-id="fb8112370649a487828ae0b79db8369d"
       data-url="https://git-scm.com/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="分布式版本控制系统，2005 年为 Linux 内核开发而生，GPLv2 开源免费；核心只是个命令行工具，存代码的托管服务要另找 GitHub 或 Gitee">
       <div class="card-body">
@@ -723,7 +724,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://vercel.com/" target="_blank" data-id="rel-1"
+    <a href="https://vercel.com/" target="_blank" data-id="36284bc271d3c7aed45209bb99d94989"
       data-url="https://vercel.com/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="前端与全栈部署平台，代码推上仓库就自动构建上线；免费的 Hobby 档只限个人非商业使用，挂广告或卖东西必须升 Pro">
       <div class="card-body">
@@ -764,7 +765,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.cloudflare-cn.com/" target="_blank" data-id="rel-2"
+    <a href="https://www.cloudflare-cn.com/" target="_blank" data-id="bfdebe9db04e6f4b4f24ac3791274a2e"
       data-url="https://www.cloudflare-cn.com/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="全球云网络服务商，免费档就送 DNS 解析、CDN、SSL 证书和不限量 DDoS 防护；想让中国大陆访问也快，得买企业版的中国网络，还要先有备案">
       <div class="card-body">
@@ -805,7 +806,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://cdn.bytedance.com/" target="_blank" data-id="rel-3"
+    <a href="https://cdn.bytedance.com/" target="_blank" data-id="e16d387686636f788d5bbe2623181f5a"
       data-url="https://cdn.bytedance.com/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="字节跳动静态资源库支持多协议、资源动态拼接、快速检索及资源的动态更新,安全、稳定、实时">
       <div class="card-body">
@@ -846,7 +847,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.staticfile.net/" target="_blank" data-id="rel-4"
+    <a href="https://www.staticfile.net/" target="_blank" data-id="fd36aa29586692714e080a3bd1404b09"
       data-url="https://www.staticfile.net/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="免费的前端开源库 CDN，jQuery、React、Vue 都能直接复制现成脚本地址；老教程里的 staticfile.org 已停止维护，域名换成了 staticfile.net">
       <div class="card-body">
@@ -887,7 +888,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://github.com/" target="_blank" data-id="rel-5"
+    <a href="https://github.com/" target="_blank" data-id="008ec4453ff31513f43893cba7aa31c8"
       data-url="https://github.com/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="一个面向开源及私有软件项目的托管平台，因为只支持Git作为唯一的版本库格式进行托管，故名GitHub">
       <div class="card-body">
@@ -1462,5 +1463,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

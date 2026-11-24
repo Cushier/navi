@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>cpolar | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -668,7 +669,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://uuyc.163.com/" target="_blank" data-id="rel-0"
+    <a href="https://uuyc.163.com/" target="_blank" data-id="cfbbfca4760b80de5caf58abb3eac087"
       data-url="https://uuyc.163.com/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="网易出品的多端远程控制软件，手机/平板/Mac/PC/TV 远控电脑，4K 144 帧低延迟，支持文件传输、远程开机、多屏协作、按键映射与手柄，核心功能免费">
       <div class="card-body">
@@ -709,7 +710,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://openp2p.cn/" target="_blank" data-id="rel-1"
+    <a href="https://openp2p.cn/" target="_blank" data-id="b0738b625563e233ecc799b8454621f5"
       data-url="https://openp2p.cn/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="开源免费的轻量级 P2P 内网穿透组网工具，设备组成私有网络直连或经节点转发，支持远程桌面、SSH、NAS、监控等跨内网访问，跨 Windows/Linux/macOS">
       <div class="card-body">
@@ -766,7 +767,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.bmcx.com/" target="_blank" data-id="rel-2"
+    <a href="https://www.bmcx.com/" target="_blank" data-id="203addb08bfd19cc5fb5de9f0db9c81b"
       data-url="https://www.bmcx.com/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="便民查询网（原 51240），把日常要查的东西收在一页：快递、车辆、身份证、天气、单位换算都能查，不用装软件">
       <div class="card-body">
@@ -804,7 +805,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://filehelper.weixin.qq.com/" target="_blank" data-id="rel-3"
+    <a href="https://filehelper.weixin.qq.com/" target="_blank" data-id="898e3cf85e12cf377b1508fc490af68b"
       data-url="https://filehelper.weixin.qq.com/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="使用文件传输助手，手机电脑轻松互传文件">
       <div class="card-body">
@@ -842,7 +843,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://cli.im/" target="_blank" data-id="rel-4"
+    <a href="https://cli.im/" target="_blank" data-id="d1c763d979b4f17762f4ab0be0ced59b"
       data-url="https://cli.im/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="免费生成二维码，扫码量、生码数和存储都不限，码长期有效，表单和数据统计也能用">
       <div class="card-body">
@@ -880,7 +881,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://tools.pdf24.org/" target="_blank" data-id="rel-5"
+    <a href="https://tools.pdf24.org/" target="_blank" data-id="0097aff3b344a0c5763a80c1860d8748"
       data-url="https://tools.pdf24.org/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="免费且易于使用的在线PDF工具">
       <div class="card-body">
@@ -1514,5 +1515,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>

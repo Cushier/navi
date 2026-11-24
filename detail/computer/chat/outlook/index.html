@@ -8,6 +8,7 @@
         content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="theme-color" content="#f9f9f9" />
     <title>Outlook | 网站指南 - 青年科技学习导航</title>
+    
     <link rel="shortcut icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico" />
     <link rel="manifest" href="/manifest.json" />
     
@@ -655,7 +656,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://mail.google.com/" target="_blank" data-id="rel-0"
+    <a href="https://mail.google.com/" target="_blank" data-id="804458cd9ca1d2c2720eb2b01f63939c"
       data-url="https://mail.google.com/" class="card no-c is-views mb-4 site-rel-0" data-toggle="tooltip"
       data-placement="bottom" title="Google 电子邮件服务">
       <div class="card-body">
@@ -696,7 +697,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://www.hi2future.com/" target="_blank" data-id="rel-1"
+    <a href="https://www.hi2future.com/" target="_blank" data-id="f39460779dd28f17ac03f566172df402"
       data-url="https://www.hi2future.com/" class="card no-c is-views mb-4 site-rel-1" data-toggle="tooltip"
       data-placement="bottom" title="写给未来的自己或爱人，设定日期后到时自动寄到邮箱，2012 年运行至今、永久免费">
       <div class="card-body">
@@ -737,7 +738,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://mail.qq.com/" target="_blank" data-id="rel-2"
+    <a href="https://mail.qq.com/" target="_blank" data-id="9a87e25f8b87934207b83748adc9f3e8"
       data-url="https://mail.qq.com/" class="card no-c is-views mb-4 site-rel-2" data-toggle="tooltip"
       data-placement="bottom" title="腾讯出品，必属精品">
       <div class="card-body">
@@ -792,7 +793,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://pairdrop.net/" target="_blank" data-id="rel-3"
+    <a href="https://pairdrop.net/" target="_blank" data-id="b05cb9d08f04dc132d17843439777aac"
       data-url="https://pairdrop.net/" class="card no-c is-views mb-4 site-rel-3" data-toggle="tooltip"
       data-placement="bottom" title="开源点对点文件传输，同网络自动发现设备，跨网络用配对码或公共房间，免安装免注册">
       <div class="card-body">
@@ -830,7 +831,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://wormhole.app/" target="_blank" data-id="rel-4"
+    <a href="https://wormhole.app/" target="_blank" data-id="437ec67ddf641fa3f384c2e7938b4e7b"
       data-url="https://wormhole.app/" class="card no-c is-views mb-4 site-rel-4" data-toggle="tooltip"
       data-placement="bottom" title="让你能以端到端加密和自动过期链接的方式分享文件">
       <div class="card-body">
@@ -868,7 +869,7 @@
 
 <div class="url-card col-6 col-sm-6 col-md-4 ">
   <div class="url-body default">
-    <a href="https://picgo.app/" target="_blank" data-id="rel-5"
+    <a href="https://picgo.app/" target="_blank" data-id="20a8bf1fa9c392a4779357b9cd2d34f9"
       data-url="https://picgo.app/" class="card no-c is-views mb-4 site-rel-5" data-toggle="tooltip"
       data-placement="bottom" title="开源免费的图片上传工具，截图拖进去就得到图床链接，GitHub、腾讯云、七牛都支持">
       <div class="card-body">
@@ -1480,5 +1481,33 @@ if ('serviceWorker' in navigator) {
 }
 </script>
   
+<script>
+(function () {
+    var API = 'https://comment.qnkjxx.top/api/article';
+    var HEX = /^[0-9a-f]{32}$/;
+    document.addEventListener('click', function (e) {
+        var el = e.target;
+        while (el && el.nodeType === 1) {
+            if (el.tagName === 'A' && el.getAttribute('data-id') && /(^|\s)is-views(\s|$)/.test(el.className)) break;
+            el = el.parentNode;
+        }
+        if (!el || el.nodeType !== 1) return;
+        var id = el.getAttribute('data-id') || '';
+        var href = el.getAttribute('href') || '';
+        if (!HEX.test(id) || href.indexOf('http') !== 0) return;
+        try {
+            fetch(API, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ path: '/hit/' + id + '/' }),
+                keepalive: true,
+                mode: 'cors',
+                credentials: 'omit'
+            }).catch(function () {});
+        } catch (err) {}
+    }, true);
+})();
+</script>
+
 </body>
 </html>
