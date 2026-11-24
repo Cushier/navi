@@ -46,7 +46,7 @@
     <script type="text/javascript" src="/assets/js/content-search.js"  id="content-search-js"></script>
     <script src="https://cdn.staticfile.org/three.js/0.160.0/three.min.js"></script>
     <script src="/assets/js/photo-sphere-viewer/core/index.min.js"></script>
-    <script src="/assets/js/photo-sphere-viewer/equirectangular-tiles-adapter/equirectangular-tiles.min.js"></script>
+    <script src="/assets/js/photo-sphere-viewer/equirectangular-tiles-adapter/index.js"></script>
     <script src="/assets/js/photo-sphere-viewer/gallery-plugin/index.js"></script>
     <script src="/assets/js/photo-sphere-viewer/markers-plugin/index.js"></script>
     
@@ -689,9 +689,19 @@
 如需线下实地走访校园，可联系黄老师预约接待：<a href="tel:18720072818" target="_blank">18720072818</a>（微信同号）
 <p><div id="viewer"></div></p>
 <script>
+  // 切片全景：整图按 8 列 4 行切开，先加载 low.jpg 低清底图，再按视野逐块加载高清切片
+  const tiled = (base, width, cols = 8, rows = 4) => ({
+    baseUrl: base + "/low.jpg",
+    width: width,
+    cols: cols,
+    rows: rows,
+    tileUrl: (col, row) => base + "/tile_" + col + "_" + row + ".jpg",
+  });
+
   const viewer = new PhotoSphereViewer.Viewer({
     container: document.querySelector("#viewer"),
-    panorama: "/assets/images/quanjing.jpg",
+    adapter: PhotoSphereViewer.EquirectangularTilesAdapter,
+    panorama: tiled("/assets/images/quanjing", 8192),
     defaultZoomLvl:0,
     loadingTxt:"加载中……",
     mousewheelCtrlKey:true,
@@ -705,67 +715,67 @@
                   id: '1',
                   name: '前广场',
                   thumbnail: '/assets/images/360/qianguangchangs.jpg',
-                  panorama: '/assets/images/360/qianguangchang.jpg',
+                  panorama: tiled("/assets/images/360/qianguangchang", 8000),
               },
               {
                   id: '2',
                   name: '足球场',
                   thumbnail: '/assets/images/360/zuqiuchangs.jpg',
-                  panorama: '/assets/images/360/zuqiuchang.jpg',
+                  panorama: tiled("/assets/images/360/zuqiuchang", 8000),
               },
               {
                   id: '3',
                   name: '羽毛球场',
                   thumbnail: '/assets/images/360/yumaoqiuchangs.jpg',
-                  panorama: '/assets/images/360/yumaoqiuchang.jpg',
+                  panorama: tiled("/assets/images/360/yumaoqiuchang", 8000),
               },
               {
                   id: '4',
                   name: '篮球场',
                   thumbnail: '/assets/images/360/lanqiuchangs.jpg',
-                  panorama: '/assets/images/360/lanqiuchang.jpg',
+                  panorama: tiled("/assets/images/360/lanqiuchang", 8000),
               },
               {
                   id: '5',
                   name: '教室',
                   thumbnail: '/assets/images/360/jiaoshis.jpg',
-                  panorama: '/assets/images/360/jiaoshi.jpg',
+                  panorama: tiled("/assets/images/360/jiaoshi", 8000),
               },
               {
                   id: '6',
                   name: '机房',
                   thumbnail: '/assets/images/360/jifangs.jpg',
-                  panorama: '/assets/images/360/jifang.jpg',
+                  panorama: tiled("/assets/images/360/jifang", 8000),
               },
               {
                   id: '7',
                   name: '新能源汽车实训室',
                   thumbnail: '/assets/images/360/xinnengyuanqicheshixunshis.jpg',
-                  panorama: '/assets/images/360/xinnengyuanqicheshixunshi.jpg',
+                  panorama: tiled("/assets/images/360/xinnengyuanqicheshixunshi", 8000),
               },
               {
                   id: '8',
                   name: '美容美体实训室',
                   thumbnail: '/assets/images/360/meirongmeitishixunshis.jpg',
-                  panorama: '/assets/images/360/meirongmeitishixunshi.jpg',
+                  panorama: tiled("/assets/images/360/meirongmeitishixunshi", 8000),
               },
               {
                   id: '9',
                   name: '食堂',
                   thumbnail: '/assets/images/360/shitangs.jpg',
-                  panorama: '/assets/images/360/shitang.jpg',
+                  panorama: tiled("/assets/images/360/shitang", 8000),
               },              
               {
                   id: '10',
                   name: '宿舍1',
                   thumbnail: '/assets/images/360/sushe1s.jpg',
-                  panorama: '/assets/images/360/sushe1.jpg',
+                  panorama: tiled("/assets/images/360/sushe1", 8000),
               },
               {
                   id: '11',
                   name: '宿舍2',
                   thumbnail: '/assets/images/360/sushe2s.jpg',
-                  panorama: '/assets/images/360/sushe2.jpg',
+                  panorama: tiled("/assets/images/360/sushe2", 8000),
               }
           ],
       }],
