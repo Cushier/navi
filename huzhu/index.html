@@ -652,7 +652,7 @@ html.io-black-mode #footer-tools .ft-btn:hover { background: rgba(40, 40, 40, .6
 		<div class="pub-body" id="pubBody" hidden>
 			<div class="field">
 				<label><span class="req">*</span>内容<em>必填，互助码、活动页链接、分享内容</em></label>
-				<input id="code" maxlength="200" placeholder="例如：88888888，或 https://example.com/act" autocomplete="off">
+				<input id="code" maxlength="1000" placeholder="例如：88888888，或 https://example.com/act" autocomplete="off">
 			</div>
 			<div class="field-pair">
 				<div class="field">
@@ -673,7 +673,7 @@ html.io-black-mode #footer-tools .ft-btn:hover { background: rgba(40, 40, 40, .6
 			</div>
 			<div class="field">
 				<label>链接<em>选填，活动页 / 互助页地址，http 或 https 开头</em></label>
-				<input id="link" maxlength="300" placeholder="例如：https://example.com/act" autocomplete="off" inputmode="url">
+				<input id="link" maxlength="1000" placeholder="例如：https://example.com/act" autocomplete="off" inputmode="url">
 			</div>
 			<div class="field">
 				<label>昵称<em>选填，不填显示「匿名访客」</em></label>
@@ -1588,10 +1588,18 @@ html.io-black-mode #footer-tools .ft-btn:hover { background: rgba(40, 40, 40, .6
 		var link = safeLink(linkRaw);
 
 		if (!code) { showMsg('请先填写互助码 / 内容', true); return; }
+		// 顶到输入框上限就说明可能有被截掉的部分，宁可让用户回头核一遍，也别发出一条错链接
+		if (code.length >= 1000 || linkRaw.length >= 1000) {
+			showMsg('内容或链接已达 1000 字符上限，尾部可能被截断，请核对地址是否完整', true);
+			return;
+		}
 		// 留空就是不限人数；填了就必须是有效数字，0 和负数不认
 		if (needRaw !== '' && (!need || need < 1)) { showMsg('人数留空表示不限，要填请写 1~20', true); return; }
 		if (need > 20) need = 20;
 		if (linkRaw && !link) { showMsg('链接格式不对，请填 http 或 https 开头的地址', true); return; }
+		// 「内容」本身就是一条链接时，链接字段再填一遍是重复，省下几百字符（带多重参数的
+		// 活动页地址动辄三五百字符，两条都写容易顶到服务端长度上限）
+		if (link && safeLink(code) === link) link = '';
 
 		if (todayCount() >= DAILY_LIMIT) {
 			showMsg('今天的发布额度（' + DAILY_LIMIT + ' 条）已用完，明天再来', true);
@@ -1642,6 +1650,22 @@ html.io-black-mode #footer-tools .ft-btn:hover { background: rgba(40, 40, 40, .6
 			publishBtn.textContent = '发布';
 		});
 	}
+
+	/* 粘贴超长内容时立刻说清楚，别让 maxlength 静默砍掉尾巴：
+	   421 字符的活动页地址被截到 200，发出去的链接点开就跑到别的页面去了 */
+	function guardPaste(id, max) {
+		var el = document.getElementById(id);
+		if (!el) return;
+		el.addEventListener('paste', function (e) {
+			var t = '';
+			try { t = (e.clipboardData || window.clipboardData).getData('text') || ''; } catch (err) {}
+			if (t && t.length > max) {
+				showMsg('粘贴的内容 ' + t.length + ' 字符，超过上限 ' + max + ' 字符，尾部会被截掉', true);
+			}
+		});
+	}
+	guardPaste('code', 1000);
+	guardPaste('link', 1000);
 
 	/* ---------- 初始化 ---------- */
 	var pubToggle = document.getElementById('pubToggle');

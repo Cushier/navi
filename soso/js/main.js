@@ -7,10 +7,10 @@ window.addEventListener('load', function () {
         var DEFAULT_PLAYLIST_ID = '9874829261';
 
         // 歌单解析API列表（按稳定性排列，逐个尝试，失败自动切换下一个）
-        // 按实测速度排序：快源优先，失效源保留在后面兜底
+        // 实测 injahow 会按歌单 id 缓存旧列表（加歌后不更新），故 qijieya 优先、injahow 退居第二兜底
         var METING_APIS = [
-            'https://api.injahow.cn/meting/?type=playlist&id=',
             'https://api.qijieya.cn/meting/?type=playlist&id=',
+            'https://api.injahow.cn/meting/?type=playlist&id=',
             'https://api.i-meto.com/meting/api?server=netease&type=playlist&id=',
             'https://meting.jmstrand.cn/?type=playlist&id='
         ];
