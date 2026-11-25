@@ -1182,10 +1182,11 @@ html.io-black-mode #footer-tools .ft-btn:hover { background: rgba(40, 40, 40, .6
 			// 可用的帖子点它和点按钮一样计数，已满/过期的就直接开、不计数
 			if (!st.full && !st.expired) {
 				linkEl.classList.add('can-go');
+				// 这本身就是个带 target=_blank 的 <a>，让它按浏览器原生方式打开；
+				// 再 preventDefault 后用合成点击去开，等于开两次或者被拦，手机上尤其明显
 				linkEl.addEventListener('click', function (e) {
-					e.preventDefault();
 					e.stopPropagation();
-					handleOpen(p, null);
+					bumpUsed(p);
 				});
 			} else {
 				linkEl.addEventListener('click', function (e) { e.stopPropagation(); });
@@ -1522,18 +1523,49 @@ html.io-black-mode #footer-tools .ft-btn:hover { background: rgba(40, 40, 40, .6
 		});
 	}
 
+	/* 用一个真 <a target="_blank"> 走浏览器原生打开：手机上（尤其内置浏览器 / webview）
+	   window.open 经常被当广告拦掉，表现就是点了没反应、或者干脆原地刷新一下；
+	   「记录」弹窗里那些链接就是这么打开的，用户实测能开，所以这里统一成同一种方式。 */
+	function openBlank(url) {
+		if (!url) return false;
+		try {
+			var a = document.createElement('a');
+			a.href = url;
+			a.target = '_blank';
+			a.rel = 'noopener noreferrer';
+			// display:none 的 <a> 在部分手机浏览器里点不动，挪到屏幕外、仍保持可见
+			a.style.position = 'fixed';
+			a.style.left = '-9999px';
+			a.style.top = '0';
+			document.body.appendChild(a);
+			a.click();
+			// 立刻移除有打断跳转的风险，等一会儿再收
+			setTimeout(function () {
+				try { if (a.parentNode) a.parentNode.removeChild(a); } catch (e) {}
+			}, 800);
+			return true;
+		} catch (e) {
+			try { window.open(url, '_blank', 'noopener'); } catch (e2) {}
+			return false;
+		}
+	}
+
 	/* 内容是网址的帖子：点"打开"直接去活动页，不复制（复制也没意义，整条内容就是那个网址）。
-	   window.open 必须留在点击回调的同步段里，挪进 Promise 里会被浏览器当广告拦掉。 */
+	   打开这一步不等 busy：之前只要有一条请求还挂着（计数慢、或复制失败没收尾），
+	   全局 busy 会把后面的「打开」全卡死，手机上表现就是点了没反应。 */
 	function handleOpen(p, btn) {
 		// btn 可以为空：链接行上的「打开」也走这里，那时没有按钮要改文案
-		if (busy) return;
 		if (btn && btn.disabled) return;
-		busy = true;
+		openBlank(p.link);
 		if (btn) {
 			btn.disabled = true;
 			btn.textContent = '打开中…';
 		}
-		try { window.open(p.link, '_blank', 'noopener'); } catch (e) {}
+		if (busy) {
+			if (btn) { btn.disabled = false; btn.textContent = '打开'; }
+			return;
+		}
+		busy = true;
 		incrCount(p.path).then(function (res) {
 			if (!res || res.errno !== 0) throw new Error((res && res.errmsg) || '计数失败');
 			markUsed(p.key, p);
@@ -1548,6 +1580,18 @@ html.io-black-mode #footer-tools .ft-btn:hover { background: rgba(40, 40, 40, .6
 			}
 			showMsg('打开或计数失败：' + err.message, true);
 		});
+	}
+
+	/* 链接行本身是 <a> 原生打开，不用再开一次，只补一次使用计数 */
+	function bumpUsed(p) {
+		if (busy) return;
+		busy = true;
+		incrCount(p.path).then(function (res) {
+			if (!res || res.errno !== 0) throw new Error((res && res.errmsg) || '计数失败');
+			markUsed(p.key, p);
+			busy = false;
+			doRefresh();
+		}).catch(function () { busy = false; });
 	}
 
 	/* 已满 / 本机已领过的码：只复制，不计数。计数再加也没意义，反而会刷出 6/5 这种进度 */
