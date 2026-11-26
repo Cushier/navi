@@ -50,6 +50,9 @@
   .warn.show{display:block}
   .result{margin-top:16px;display:none}
   .result.show{display:block}
+  .sphere{display:none;height:min(58vh,520px);background:#000;border:1px solid var(--line);
+          border-radius:14px;overflow:hidden;margin-bottom:10px}
+  .sphere.show{display:block}
   .viewer{background:#000;border:1px solid var(--line);border-radius:14px;overflow-x:auto;overflow-y:hidden}
   .viewer img{display:block;height:min(46vh,420px);width:auto;max-width:none}
   .note{color:var(--dim);font-size:12px;margin-top:8px}
@@ -65,7 +68,7 @@
     <h1>网页全景拍摄</h1>
     <a href="/">返回导航</a>
   </header>
-  <p class="sub">举着手机原地转一圈，页面自动抓拍并拼成一张全景长图。全程在本地完成，照片不会上传。</p>
+  <p class="sub">举着手机原地转一圈，页面自动抓拍、拼好，直接就能在球面上拖着看。全程在本地完成，照片不会上传。</p>
 
   <div class="warn" id="wx-tip">当前是微信内置浏览器，拿不到相机。请点右上角「···」，选「在浏览器打开」。</div>
 
@@ -92,13 +95,15 @@
       <div class="err" id="err"></div>
       <div class="row" id="after" style="display:none">
         <button id="btn-retry">重新拍</button>
-        <button id="btn-download">下载全景图</button>
+        <button id="btn-download-eq">下载球面图</button>
+        <button id="btn-download">下载长图</button>
       </div>
     </div>
   </div>
 
   <div class="result" id="result">
-    <div class="viewer"><img id="pano" alt="拼接后的全景图"></div>
+    <div class="sphere" id="sphere"></div>
+    <div class="viewer" id="flat"><img id="pano" alt="拼接后的全景图"></div>
     <p class="note" id="result-note"></p>
   </div>
 
@@ -106,6 +111,7 @@
     <li>把手机横过来，像举相机一样拿稳，站定别走动。</li>
     <li>点开始后有 3 秒准备时间，然后慢慢原地转一圈。</li>
     <li>转的过程中页面到角度会自动拍摄，不用手动点。</li>
+    <li>镜头略高于胸口、稍微上仰一点，拍出来的天空更完整；脚下那圈会补成雾状。</li>
   </ol>
 </div>
 
@@ -118,6 +124,8 @@
   var OUT_W = 960;
   var isWeChat = /MicroMessenger/i.test(navigator.userAgent);
   var FAKE = /fake=1/.test(location.search);
+  var EQVIEW = /eq=1/.test(location.search);
+  var CIRCULAR = /circular=1/.test(location.search);
 
   var video = document.getElementById('cam');
   var idle = document.getElementById('idle');
@@ -136,6 +144,9 @@
   var result = document.getElementById('result');
   var panoEl = document.getElementById('pano');
   var resultNote = document.getElementById('result-note');
+  var sphereEl = document.getElementById('sphere');
+  var flatEl = document.getElementById('flat');
+  var btnDownloadEq = document.getElementById('btn-download-eq');
 
   if (isWeChat) document.getElementById('wx-tip').classList.add('show');
 
@@ -150,7 +161,10 @@
     needDeg: 0,
     timerId: null,
     panoBlob: null,
-    panoUrl: null
+    panoUrl: null,
+    eqBlob: null,
+    eqUrl: null,
+    angleMode: false
   };
 
   var grab = document.createElement('canvas');
@@ -174,8 +188,16 @@
     btnMain.disabled = false;
     btnMain.textContent = '开始拍摄';
     if (S.panoUrl) { URL.revokeObjectURL(S.panoUrl); S.panoUrl = null; }
+    if (S.eqUrl) { URL.revokeObjectURL(S.eqUrl); S.eqUrl = null; }
     panoEl.removeAttribute('src');
     S.panoBlob = null;
+    S.eqBlob = null;
+    sphereEl.classList.remove('show');
+    flatEl.style.display = '';
+    if (PSV && PSV.viewer) {
+      try { PSV.viewer.destroy(); } catch (e) {}
+      PSV.viewer = null;
+    }
   }
 
   async function startCamera() {
@@ -300,6 +322,7 @@
     setBar(0);
 
     var angleMode = FAKE ? false : await enableOrientation(permPromise);
+    S.angleMode = angleMode;
     S.capturing = true;
     btnMain.textContent = '拍摄中…';
     setPhase('3 秒后开始，请举稳手机');
@@ -341,19 +364,12 @@
       var out = await stitch(S.frames, OUT_W, function (p, label) {
         setBar(p);
         if (label) setPhase(label);
-      });
-      S.panoBlob = out.blob;
-      S.panoUrl = URL.createObjectURL(out.blob);
-      panoEl.src = S.panoUrl;
-      result.classList.add('show');
-      resultNote.textContent = '尺寸 ' + out.width + ' × ' + out.height + ' · ' +
-        Math.round(out.blob.size / 1024) + ' KB · 全程本地处理，没有上传';
+      }, { circular: S.angleMode });
       setPhase('完成');
       setBar(1);
-      idle.innerHTML = '<div>拍摄完成，全景图在下面，可以横向拖动查看</div>';
+      idle.innerHTML = '<div>拍好了，下面就是可以转动的球面全景</div>';
       idle.style.display = 'flex';
-      after.style.display = 'flex';
-      btnMain.style.display = 'none';
+      await presentResult(out);
     } catch (e) {
       console.error(e);
       fail('拼接失败：' + ((e && e.message) || e));
@@ -522,7 +538,69 @@
     return n ? s / n : 0;
   }
 
-  async function stitch(blobs, outW, onProgress) {
+  // 先缩到小尺寸再放大，用双线性插值当模糊用（Safari 上 canvas filter 不稳，不依赖它）
+  function softStretch(ctx, src, sx, sy, sw, sh, dx, dy, dw, dh, k) {
+    var t = document.createElement('canvas');
+    t.width = Math.max(2, Math.round(dw / k));
+    t.height = Math.max(2, Math.round(dh / k));
+    var c = t.getContext('2d');
+    c.drawImage(src, sx, sy, sw, sh, 0, 0, t.width, t.height);
+    ctx.drawImage(t, 0, 0, t.width, t.height, dx, dy, dw, dh);
+  }
+
+  function edgeColor(src, sy, sh) {
+    var t = document.createElement('canvas');
+    t.width = 32; t.height = 1;
+    var c = t.getContext('2d', { willReadFrequently: true });
+    c.drawImage(src, 0, sy, src.width, sh, 0, 0, 32, 1);
+    var d = c.getImageData(0, 0, 32, 1).data;
+    var r = 0, g = 0, b = 0;
+    for (var i = 0; i < 32; i++) { r += d[i * 4]; g += d[i * 4 + 1]; b += d[i * 4 + 2]; }
+    return [Math.round(r / 32), Math.round(g / 32), Math.round(b / 32)];
+  }
+
+  // 水平带 → 等距柱状 2:1：实拍带放中间，上下用边缘拉伸 + 同色雾化补满，转成球面时不露黑边
+  function toEquirect(band) {
+    var W = Math.min(4096, Math.max(2400, Math.round(band.width / 2) * 2));
+    var H = Math.round(W / 2);
+    var bandH = Math.round(H * 0.38);
+    var y0 = Math.round((H - bandH) / 2);
+
+    var eq = document.createElement('canvas');
+    eq.width = W; eq.height = H;
+    var g = eq.getContext('2d');
+
+    var e1 = Math.max(4, Math.round(band.height * 0.04));
+    var cTop = edgeColor(band, 0, e1);
+    var cBot = edgeColor(band, Math.max(0, band.height - e1), e1);
+
+    g.fillStyle = 'rgb(' + cTop.join(',') + ')';
+    g.fillRect(0, 0, W, H);
+
+    // 上下用整段天空/地面做拉伸源，抬头低头能看到渐变的层次，而不是一块死色板
+    softStretch(g, band, 0, 0, band.width, Math.round(band.height * 0.18),
+      0, 0, W, y0 + Math.round(bandH * 0.10), 8);
+    softStretch(g, band, 0, Math.round(band.height * 0.82), band.width, Math.round(band.height * 0.18),
+      0, y0 + bandH - Math.round(bandH * 0.08), W, H - (y0 + bandH - Math.round(bandH * 0.08)), 18);
+
+    g.drawImage(band, 0, 0, band.width, band.height, 0, y0, W, bandH);
+
+    var gt = g.createLinearGradient(0, 0, 0, y0 + bandH * 0.25);
+    gt.addColorStop(0, 'rgba(' + cTop.join(',') + ',0.62)');
+    gt.addColorStop(1, 'rgba(' + cTop.join(',') + ',0)');
+    g.fillStyle = gt;
+    g.fillRect(0, 0, W, y0 + bandH * 0.25);
+
+    var gb = g.createLinearGradient(0, H, 0, y0 + bandH - bandH * 0.2);
+    gb.addColorStop(0, 'rgba(' + cBot.join(',') + ',0.82)');
+    gb.addColorStop(1, 'rgba(' + cBot.join(',') + ',0)');
+    g.fillStyle = gb;
+    g.fillRect(0, y0 + bandH - bandH * 0.2, W, H - (y0 + bandH - bandH * 0.2));
+
+    return eq;
+  }
+
+  async function stitch(blobs, outW, onProgress, opts) {
     var imgs = [];
     for (var i = 0; i < blobs.length; i++) {
       imgs.push(await loadImg(blobs[i]));
@@ -585,13 +663,21 @@
       await new Promise(function (r2) { setTimeout(r2, 0); });
     }
 
-    var totalW = Math.round(dxOut[dxOut.length - 1] + outW);
+    var rawW = Math.round(dxOut[dxOut.length - 1] + outW);
+    var totalW = rawW;
+    if (opts && opts.circular && imgs.length > 2) {
+      // 12 帧按 30° 等分转满一圈：整圈应等于 12 段位移，尾部多出来的重叠要裁掉，否则球面上会看到重复
+      var avgStep = dxOut[dxOut.length - 1] / (imgs.length - 1);
+      var crop = outW - Math.round(avgStep);
+      if (crop > outW * 0.05 && crop < outW * 0.75) totalW = rawW - crop;
+    }
+
     var pano = document.createElement('canvas');
-    pano.width = totalW;
+    pano.width = rawW;
     pano.height = outH;
     var pctx = pano.getContext('2d');
     pctx.fillStyle = '#000';
-    pctx.fillRect(0, 0, totalW, outH);
+    pctx.fillRect(0, 0, rawW, outH);
 
     var tmp = document.createElement('canvas');
     tmp.width = outW; tmp.height = outH;
@@ -625,12 +711,123 @@
       if (q % 3 === 0) await new Promise(function (r3) { setTimeout(r3, 0); });
     }
 
+    var out = pano;
+    if (totalW < rawW) {
+      var cut = document.createElement('canvas');
+      cut.width = totalW; cut.height = outH;
+      cut.getContext('2d').drawImage(pano, 0, 0, totalW, outH, 0, 0, totalW, outH);
+      out = cut;
+    }
+
     var blob = await new Promise(function (res, rej) {
-      try { pano.toBlob(function (b) { b ? res(b) : rej(new Error('导出失败')); }, 'image/jpeg', 0.9); }
+      try { out.toBlob(function (b) { b ? res(b) : rej(new Error('导出失败')); }, 'image/jpeg', 0.9); }
+      catch (e) { rej(e); }
+    });
+    onProgress && onProgress(0.94, '生成球面图');
+    var eq = toEquirect(out);
+    var eqBlob = await new Promise(function (res, rej) {
+      try { eq.toBlob(function (b) { b ? res(b) : rej(new Error('导出失败')); }, 'image/jpeg', 0.9); }
       catch (e) { rej(e); }
     });
     onProgress && onProgress(1, '完成');
-    return { blob: blob, width: totalW, height: outH };
+    return {
+      blob: blob, width: totalW, height: outH,
+      eqBlob: eqBlob, eqWidth: eq.width, eqHeight: eq.height
+    };
+  }
+
+  // ---------- 球面视图（按需加载，没拍之前不下载脚本） ----------
+  var PSV = { loading: null, viewer: null };
+
+  function ensureViewer() {
+    if (window.PhotoSphereViewer) return Promise.resolve();
+    if (PSV.loading) return PSV.loading;
+    PSV.loading = new Promise(function (res, rej) {
+      var css = document.createElement('link');
+      css.rel = 'stylesheet';
+      css.href = '/assets/js/photo-sphere-viewer/core/index.min.css';
+      document.head.appendChild(css);
+      var s1 = document.createElement('script');
+      s1.src = '/assets/js/three.min.js';
+      s1.onload = function () {
+        var s2 = document.createElement('script');
+        s2.src = '/assets/js/photo-sphere-viewer/core/index.min.js';
+        s2.onload = function () { res(); };
+        s2.onerror = function () { rej(new Error('球面视图加载失败')); };
+        document.head.appendChild(s2);
+      };
+      s1.onerror = function () { rej(new Error('3D 引擎加载失败')); };
+      document.head.appendChild(s1);
+    });
+    return PSV.loading;
+  }
+
+  function showSphere(url) {
+    return ensureViewer().then(function () {
+      if (!PSV.viewer) {
+        PSV.viewer = new PhotoSphereViewer.Viewer({
+          container: sphereEl,
+          panorama: url,
+          navbar: false,
+          loadingImg: false,
+          touchmoveTwoFingers: false,
+          mousewheelCtrlKey: false,
+          defaultYaw: 0,
+          defaultPitch: 0,
+          minFov: 25,
+          maxFov: 90
+        });
+      } else {
+        PSV.viewer.setPanorama(url, { showLoader: false });
+      }
+      sphereEl.classList.add('show');
+      flatEl.style.display = 'none';
+      return true;
+    }).catch(function (e) {
+      console.warn('球面视图不可用：', e);
+      sphereEl.classList.remove('show');
+      flatEl.style.display = '';
+      return false;
+    });
+  }
+
+  function fileName(prefix) {
+    var d = new Date();
+    var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+    return prefix + '-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' +
+      pad(d.getHours()) + pad(d.getMinutes()) + '.jpg';
+  }
+
+  async function presentResult(out) {
+    S.panoBlob = out.blob;
+    S.panoUrl = URL.createObjectURL(out.blob);
+    panoEl.src = S.panoUrl;
+    S.eqBlob = out.eqBlob || null;
+    S.eqUrl = out.eqBlob ? URL.createObjectURL(out.eqBlob) : null;
+
+    result.classList.add('show');
+    after.style.display = 'flex';
+    btnMain.style.display = 'none';
+    btnDownloadEq.style.display = S.eqBlob ? '' : 'none';
+
+    if (EQVIEW) {
+      panoEl.src = S.eqUrl || S.panoUrl;
+      flatEl.style.display = '';
+      resultNote.textContent = '球面图调试视图 · ' + out.eqWidth + ' × ' + out.eqHeight;
+      return;
+    }
+
+    resultNote.textContent = '正在准备球面视图…';
+
+    var ok = false;
+    if (S.eqUrl) ok = await showSphere(S.eqUrl);
+    if (ok) {
+      resultNote.textContent = '球面全景 ' + out.eqWidth + ' × ' + out.eqHeight +
+        ' · 拖动转视角，双指缩放';
+    } else {
+      resultNote.textContent = '长图 ' + out.width + ' × ' + out.height +
+        ' · 球面视图没加载出来，可以左右拖动看';
+    }
   }
 
   // ---------- 交互 ----------
@@ -658,47 +855,54 @@
     btnMain.style.display = '';
   });
 
-  btnDownload.addEventListener('click', function () {
-    if (!S.panoBlob || !S.panoUrl) return;
-    var d = new Date();
-    var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
-    var name = 'pano-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' +
-      pad(d.getHours()) + pad(d.getMinutes()) + '.jpg';
+  function saveBlob(url, name) {
     var a = document.createElement('a');
-    a.href = S.panoUrl;
+    a.href = url;
     a.download = name;
     document.body.appendChild(a);
     a.click();
     setTimeout(function () { a.remove(); }, 300);
+  }
+
+  btnDownload.addEventListener('click', function () {
+    if (!S.panoUrl) return;
+    saveBlob(S.panoUrl, fileName('pano-flat'));
+  });
+
+  btnDownloadEq.addEventListener('click', function () {
+    if (!S.eqUrl) return;
+    saveBlob(S.eqUrl, fileName('pano-sphere'));
   });
 
   // ---------- 自测（?selftest=1） ----------
   async function selftest() {
     var scene = buildScene(4000, 400, 12345);
+    var step = CIRCULAR ? 180 : 150;
 
     var blobs = [];
     for (var k = 0; k < 12; k++) {
       var c = document.createElement('canvas');
       c.width = 600; c.height = 400;
       var cx = c.getContext('2d');
-      cx.drawImage(scene, k * 150, 0, 600, 400, 0, 0, 600, 400);
+      cx.drawImage(scene, k * step, 0, 600, 400, 0, 0, 600, 400);
       var b = await new Promise(function (r) { c.toBlob(r, 'image/jpeg', 0.95); });
       blobs.push(b);
     }
 
     var t0 = performance.now();
-    var res = await stitch(blobs, 960, function () {});
-    var expect = Math.round((11 * 150 + 600) * 960 / 600);
-    console.log('SELFTEST width=' + res.width + ' expected=' + expect +
+    var res = await stitch(blobs, 960, function () {}, { circular: CIRCULAR });
+    var expect = CIRCULAR
+      ? Math.round(12 * step * 960 / 600)
+      : Math.round((11 * step + 600) * 960 / 600);
+    window.__selftest = 'width=' + res.width + ' expected=' + expect +
       ' errPx=' + Math.abs(res.width - expect) + ' ms=' + Math.round(performance.now() - t0) +
-      ' sizeKB=' + Math.round(res.blob.size / 1024));
+      ' eq=' + res.eqWidth + 'x' + res.eqHeight + ' sizeKB=' + Math.round(res.blob.size / 1024);
+    console.log('SELFTEST ' + window.__selftest);
     setPhase('自测完成');
-    S.panoBlob = res.blob;
-    S.panoUrl = URL.createObjectURL(res.blob);
-    panoEl.src = S.panoUrl;
-    result.classList.add('show');
-    resultNote.textContent = '自测结果 ' + res.width + ' × ' + res.height + ' · ' +
-      Math.round(res.blob.size / 1024) + ' KB';
+    await presentResult(res);
+    resultNote.textContent = '自测 · 长图 ' + res.width + ' × ' + res.height +
+      '（应为 ' + expect + '，差 ' + Math.abs(res.width - expect) + ' 像素） · 球面 ' +
+      res.eqWidth + ' × ' + res.eqHeight;
   }
 
   if (/selftest=1/.test(location.search)) {
