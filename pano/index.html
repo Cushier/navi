@@ -350,6 +350,9 @@ var PASS_HASH = '88eea08d184bf65d34c956593b85c77c55e993f7296ebccfaf1430bf5871268
 var DEFAULT_NICK = '站长';
 var GUEST_NICK = '访客';
 var GUEST_MAIL = 'guest_pano@qnkjxx.top';
+var DPR = Math.min(3, window.devicePixelRatio || 1);
+/* 列表缩略按屏幕密度取，660 在高分屏上是糊的 */
+var THUMB_W = Math.min(1280, Math.max(660, Math.round(464 * DPR)));
 
 var S = { page: 1, totalPages: 1, loading: false, posts: [], viewer: null, soft: null, pendingBlob: null, pendingUrl: '' };
 
@@ -400,6 +403,41 @@ function signOf(url) {
 
 function thumbUrl(u, w) {
 	return String(u).replace('/image/upload/', '/image/upload/c_limit,w_' + (w || 660) + ',q_auto,f_auto/');
+}
+
+/* GPU 能吃多大的纹理：多数手机 4096，新旗舰 8192 */
+function maxTexSize() {
+	try {
+		var c = document.createElement('canvas');
+		var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+		if (!gl) return 4096;
+		var m = Number(gl.getParameter(gl.MAX_TEXTURE_SIZE)) || 4096;
+		return m;
+	} catch (e) { return 4096; }
+}
+
+/* 浏览器 canvas 上限：iPhone 约 16.7MP（4096×4096），安卓能到 8192 宽。
+   超过上限时 canvas 静默画白，所以画一个角再读回来验证。 */
+function maxPanoWidth() {
+	if (S.panoW) return S.panoW;
+	var mem = navigator.deviceMemory || 0;
+	var start = mem >= 6 ? 8192 : (mem >= 4 ? 7168 : 6144);
+	var cands = [start, 7168, 6144, 5120, 4096];
+	for (var i = 0; i < cands.length; i++) {
+		var w = cands[i], h = Math.round(w / 2);
+		try {
+			var c = document.createElement('canvas');
+			c.width = w; c.height = h;
+			var g = c.getContext('2d');
+			g.fillStyle = 'rgb(128,128,128)';
+			g.fillRect(w - 8, h - 8, 8, 8);
+			var px = g.getImageData(w - 1, h - 1, 1, 1).data;
+			c.width = 0; c.height = 0; c = null;
+			if (px[3] === 255 && px[0] > 90 && px[0] < 166) { S.panoW = w; return w; }
+		} catch (e) {}
+	}
+	S.panoW = 4096;
+	return 4096;
 }
 
 /* Waline 的英文报错翻成人话 */
@@ -514,7 +552,7 @@ function renderCard(c, p, kids) {
 	var im = document.createElement('img');
 	im.loading = 'lazy';
 	im.alt = '全景';
-	im.src = thumbUrl(p.img, 660);
+	im.src = thumbUrl(p.img, THUMB_W);
 	im.addEventListener('click', function () { openViewer(p.img, p.text); });
 	shot.appendChild(im);
 	var hint = document.createElement('span');
@@ -695,8 +733,10 @@ function openViewer(rawUrl, title) {
 	vTitle.textContent = title ? title.slice(0, 40) : '全景';
 	viewerEl.classList.add('on');
 	sphereEl.innerHTML = '<div class="loading">正在取图…</div>';
-	var big = thumbUrl(rawUrl, 2048);
-	vFoot.innerHTML = '按住拖动看四周，双指或滚轮缩放 · <a href="' + esc(big) + '" target="_blank" rel="noopener">直接看大图</a>';
+	/* 按 GPU 纹理上限取图，别一律压到 2048 */
+	var tex = Math.min(maxTexSize(), 6144);
+	var big = thumbUrl(rawUrl, tex);
+	vFoot.innerHTML = '按住拖动看四周，双指或滚轮缩放 · <a href="' + esc(thumbUrl(rawUrl, 6144)) + '" target="_blank" rel="noopener">直接看大图</a>';
 
 	if (window.PhotoSphereViewer && window.THREE && hasWebGL()) {
 		sphereEl.innerHTML = '';
@@ -717,7 +757,7 @@ function openViewer(rawUrl, title) {
 			return;
 		} catch (e) {}
 	}
-	showSoft(big);
+	showSoft(thumbUrl(rawUrl, Math.min(3072, Math.round(430 * DPR * 2))));
 }
 
 function closeViewer() {
@@ -736,7 +776,7 @@ function showSoft(url) {
 	var img = new Image();
 	img.crossOrigin = 'anonymous';
 	img.onload = function () {
-		var w = Math.min(2048, img.naturalWidth);
+		var w = Math.min(Math.max(2048, Math.min(3072, Math.round(430 * DPR * 2))), img.naturalWidth);
 		var h = Math.round(w / 2);
 		var cv = document.createElement('canvas');
 		cv.width = w; cv.height = h;
@@ -925,7 +965,8 @@ fileEl.addEventListener('change', function () {
 	if (!f) return;
 	pubTip.textContent = '处理中…';
 	pubGo.disabled = true;
-	prepare(f).then(function (blob) {
+	prepare(f).then(function (o) {
+		var blob = o.blob;
 		S.pendingBlob = blob;
 		S.pendingUrl = URL.createObjectURL(blob);
 		pickEl.classList.add('has');
@@ -933,7 +974,7 @@ fileEl.addEventListener('change', function () {
 		var pv = document.createElement('img');
 		pv.src = S.pendingUrl;
 		pickEl.appendChild(pv);
-		pubTip.textContent = '图准备好了，' + Math.round(blob.size / 1024) + ' KB';
+		pubTip.textContent = '图准备好了 ' + o.w + '×' + o.h + '，' + Math.round(blob.size / 1024) + ' KB';
 		pubTip.className = 'tip ok';
 		pubGo.disabled = false;
 	}).catch(function (err) {
@@ -965,7 +1006,9 @@ function softStretch(ctx, src, sx, sy, sw, sh, dx, dy, dw, dh, k) {
 
 /* 横向长条 → 2:1 等距柱状：实拍带放中间，上下用边缘拉伸 + 同色雾补满 */
 function toEquirect(band, bandRatio) {
-	var W = Math.min(4096, Math.max(2400, Math.round(band.width / 2) * 2));
+	var maxW = maxPanoWidth();
+	var W = Math.min(maxW, Math.max(2400, Math.round(band.width / 2) * 2));
+	if (W > maxW) W = Math.max(2400, maxW - (maxW % 2));
 	var H = Math.round(W / 2);
 	var bandH = Math.round(H * (bandRatio || 0.55));
 	if (bandH > H) bandH = H;
@@ -994,16 +1037,17 @@ function toEquirect(band, bandRatio) {
 	return eq;
 }
 
-/* 2:1 输入直接缩到 4096×2048；其它比例居中裁成 2:1 */
+/* 2:1 输入按设备上限缩成等距柱状；其它比例居中裁成 2:1 */
 function toEquirectDirect(img) {
-	var W = 4096, H = 2048;
-	var cv = document.createElement('canvas');
-	cv.width = W; cv.height = H;
-	var g = cv.getContext('2d');
 	var r = img.naturalWidth / img.naturalHeight;
 	var sw, sh, sx, sy;
 	if (r > 2) { sh = img.naturalHeight; sw = sh * 2; sx = (img.naturalWidth - sw) / 2; sy = 0; }
 	else { sw = img.naturalWidth; sh = sw / 2; sx = 0; sy = (img.naturalHeight - sh) / 2; }
+	var W = Math.min(maxPanoWidth(), Math.round(sw / 2) * 2);
+	var H = Math.round(W / 2);
+	var cv = document.createElement('canvas');
+	cv.width = W; cv.height = H;
+	var g = cv.getContext('2d');
 	g.drawImage(img, sx, sy, sw, sh, 0, 0, W, H);
 	return cv;
 }
@@ -1017,6 +1061,23 @@ function loadImg(src) {
 	});
 }
 
+/* 图床单文件硬上限 10MB，先在 9.6MB 内尽量保质量 */
+function encodeUnder(cv, cap) {
+	var qs = [0.95, 0.9, 0.84, 0.76, 0.68];
+	return new Promise(function (res, rej) {
+		var i = 0;
+		var go = function () {
+			cv.toBlob(function (b) {
+				if (!b) { rej(new Error('压缩失败，换一张试试')); return; }
+				if (b.size <= cap || i >= qs.length - 1) { res(b); return; }
+				i++;
+				go();
+			}, 'image/jpeg', qs[i]);
+		};
+		go();
+	});
+}
+
 function prepare(file) {
 	return new Promise(function (res, rej) {
 		var u = URL.createObjectURL(file);
@@ -1026,10 +1087,9 @@ function prepare(file) {
 			if (r < 1.7) { URL.revokeObjectURL(u); rej(new Error('这张不是长条（' + w + '×' + h + '），请选手机相机「全景」模式扫出来的那张')); return; }
 			var cv = (r > 2.3) ? toEquirect(img, 0.55) : toEquirectDirect(img);
 			URL.revokeObjectURL(u);
-			cv.toBlob(function (b) {
-				if (!b) { rej(new Error('压缩失败，换一张试试')); return; }
-				res(b);
-			}, 'image/jpeg', 0.85);
+			encodeUnder(cv, 9.6 * 1024 * 1024).then(function (b) {
+				res({ blob: b, w: cv.width, h: cv.height });
+			}).catch(rej);
 		}).catch(function (e) { URL.revokeObjectURL(u); rej(e); });
 	});
 }
