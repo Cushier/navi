@@ -50,8 +50,8 @@
   .warn.show{display:block}
   .result{margin-top:16px;display:none}
   .result.show{display:block}
-  .sphere{display:none;height:min(58vh,520px);background:#000;border:1px solid var(--line);
-          border-radius:14px;overflow:hidden;margin-bottom:10px}
+  .sphere{display:none;width:100%;aspect-ratio:1/0.85;max-height:min(58vh,520px);background:#000;
+          border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:10px}
   .sphere.show{display:block}
   .viewer{background:#000;border:1px solid var(--line);border-radius:14px;overflow-x:auto;overflow-y:hidden}
   .viewer img{display:block;height:min(46vh,420px);width:auto;max-width:none}
@@ -95,8 +95,8 @@
       <div class="err" id="err"></div>
       <div class="row" id="after" style="display:none">
         <button id="btn-retry">重新拍</button>
-        <button id="btn-download-eq">下载球面图</button>
-        <button id="btn-download">下载长图</button>
+        <button id="btn-download-eq">存球面图</button>
+        <button id="btn-download">存长图</button>
       </div>
     </div>
   </div>
@@ -126,6 +126,8 @@
   var FAKE = /fake=1/.test(location.search);
   var EQVIEW = /eq=1/.test(location.search);
   var CIRCULAR = /circular=1/.test(location.search);
+  var SOFTMODE = /soft=1/.test(location.search);
+  var JITTER = /jitter=1/.test(location.search);
 
   var video = document.getElementById('cam');
   var idle = document.getElementById('idle');
@@ -194,6 +196,9 @@
     S.eqBlob = null;
     sphereEl.classList.remove('show');
     flatEl.style.display = '';
+    SOFT.eq = null;
+    SOFT.yaw = 0;
+    SOFT.pitch = 0;
     if (PSV && PSV.viewer) {
       try { PSV.viewer.destroy(); } catch (e) {}
       PSV.viewer = null;
@@ -444,9 +449,9 @@
     return c;
   }
 
-  // 模拟一路摄像头：画面按时间匀速横向平移（每 1.1 秒 150px，与抓帧间隔对齐）
+  // 模拟一路摄像头：画面按时间匀速横向平移（每 1.1 秒走 36% 帧宽，和真机每 30° 抓一帧的比例接近）
   function makeFakeStream() {
-    var scene = buildScene(6000, 720, 99);
+    var scene = buildScene(7000, 720, 99);
     var c = document.createElement('canvas');
     c.width = 1280; c.height = 720;
     var ctx = c.getContext('2d');
@@ -454,7 +459,7 @@
     function drawAt(px) { ctx.drawImage(scene, px, 0, 1280, 720, 0, 0, 1280, 720); }
     drawAt(0);
     (function loop(t) {
-      var px = Math.min(scene.width - 1280, Math.round((t - t0) / 1100 * 150));
+      var px = Math.min(scene.width - 1280, Math.round((t - t0) / 1100 * 460));
       drawAt(px);
       requestAnimationFrame(loop);
     })(performance.now());
@@ -527,6 +532,27 @@
       }
     }
     return best;
+  }
+
+  // 在重叠区里挑一条缝：这一列上前后两帧的差最小，在这里切过去最不容易看出来
+  function pickSeam(A, B, tPrev, tCur, ovF, w, h) {
+    var dxA = Math.round(tCur.x);
+    var dyA = Math.round(tCur.y);
+    var y0 = Math.round(h * 0.16), y1 = Math.round(h * 0.84);
+    var gap = Math.max(3, Math.min(10, Math.round(ovF * 0.06)));
+    var bestX = Math.round(ovF / 2), bestE = Infinity;
+    for (var sx = gap; sx <= ovF - gap; sx += 2) {
+      if (dxA + sx >= w || sx >= w) break;
+      var e = 0, cnt = 0;
+      for (var y = y0; y < y1; y += 2) {
+        var yy = y + dyA;
+        if (yy < 0 || yy >= h) continue;
+        e += Math.abs(B[y * w + sx] - A[yy * w + dxA + sx]);
+        cnt++;
+      }
+      if (cnt && e / cnt < bestE) { bestE = e / cnt; bestX = sx; }
+    }
+    return bestX;
   }
 
   function regionMean(G, w, x0, y0, tw, th, h) {
@@ -621,7 +647,10 @@
     }
 
     var dxOut = [0];
+    var dyOut = [0];
     var ratios = [1];
+    var tips = [{ x: 0, y: 0 }];
+    var steps = [];
     var shift = 0;
     var lastDx = Math.round(fW * 0.55);
 
@@ -631,24 +660,50 @@
       });
       var gx = Math.round(c.x * fW / cW);
       var gy = Math.round(c.y * fH / cH);
+      // 粗匹配只是给个方向。差太多说明它被纹理骗了（白墙、玻璃、重复的窗格），
+      // 这时以「上一帧用过的位移」为准更靠谱——人转圈的速度不会突变。
+      var guess = Math.abs(gx - lastDx) > Math.round(fW * 0.25) ? lastDx : gx;
       var f = matchOffset(fine[m - 1], fW, fH, fine[m], fW, fH, {
         band: 0.30,
-        xFrom: Math.max(0.05, (gx - 5) / fW),
-        xTo: Math.min(0.95, (gx + 5) / fW),
+        xFrom: Math.max(0.05, (guess - 5) / fW),
+        xTo: Math.min(0.95, (guess + 5) / fW),
         yMax: 3
       });
+      var f2 = null;
+      if (!(f.score >= 0.45)) {
+        // 窄窗口没匹配上，就在上一帧位移附近再放宽一点找一次
+        f2 = matchOffset(fine[m - 1], fW, fH, fine[m], fW, fH, {
+          band: 0.30,
+          xFrom: Math.max(0.05, (lastDx - 14) / fW),
+          xTo: Math.min(0.95, (lastDx + 14) / fW),
+          yMax: 4
+        });
+      }
       var useX, useY;
-      if (f.score >= 0.45 && Math.abs(f.x - gx) <= 6) {
+      if (f.score >= 0.45 && Math.abs(f.x - gx) <= 8) {
         useX = f.x; useY = f.y;
+      } else if (f2 && f2.score >= 0.45) {
+        useX = f2.x; useY = f2.y;
       } else if (c.score >= 0.45) {
         useX = gx; useY = gy;
       } else {
         useX = lastDx; useY = 0;
       }
-      if (useX < Math.round(fW * 0.22) || useX > Math.round(fW * 0.92)) useX = lastDx;
+      if (useX < Math.round(fW * 0.15) || useX > Math.round(fW * 0.92)) {
+        // 越界的值不采用，退回前面几帧的中位数，避免一个坏值把后面全部拖偏
+        if (steps.length) {
+          var ss = steps.slice().sort(function (p1, p2) { return p1 - p2; });
+          useX = ss[Math.floor(ss.length / 2)];
+        } else {
+          useX = lastDx;
+        }
+      }
       lastDx = useX;
+      steps.push(useX);
+      tips.push({ x: useX, y: useY });
       shift += useX * (outW / fW);
       dxOut.push(shift);
+      dyOut.push(dyOut[m - 1] + Math.round(useY * outW / fW));
 
       var bandTw = Math.round(fW * 0.30);
       var thF = fH - 3;
@@ -663,6 +718,42 @@
       await new Promise(function (r2) { setTimeout(r2, 0); });
     }
 
+    // 举着手机转一圈，每帧之间的位移本来应该差不多。某一帧对着大白墙或玻璃时匹配会跑偏，
+    // 算出来的位移突然偏大或偏小，摊到画面上就是同一处东西出现两次。用中位数把这几个离群值拉回来。
+    // 陀螺仪按角度触发时位移本该很均匀，阈值收紧；按时间抓帧时转速本来就不稳，只抓明显错的值。
+    if (steps.length > 2) {
+      var tol = (opts && opts.circular) ? 0.40 : 0.62;
+      var sortedStep = steps.slice().sort(function (s1, s2) { return s1 - s2; });
+      var medStep = sortedStep[Math.floor(sortedStep.length / 2)];
+      var adjusted = false;
+      for (var s3 = 0; s3 < steps.length; s3++) {
+        if (medStep > 0 && Math.abs(steps[s3] - medStep) > medStep * tol) {
+          steps[s3] = medStep;
+          tips[s3 + 1].x = medStep;
+          adjusted = true;
+        }
+      }
+      if (adjusted) {
+        var acc3 = 0;
+        for (var s4 = 0; s4 < steps.length; s4++) {
+          acc3 += steps[s4];
+          dxOut[s4 + 1] = Math.round(acc3 * (outW / fW));
+        }
+        // 位移改过了，重叠区跟着变，曝光比值也要重算，否则接缝两侧亮度会差一截
+        var bandTw2 = Math.round(fW * 0.30);
+        var thF2 = fH - 3;
+        for (var s5 = 1; s5 < imgs.length; s5++) {
+          var ty = tips[s5].y;
+          var ya = ty > 0 ? ty : 0;
+          var yb = ty < 0 ? -ty : 0;
+          var ma = regionMean(fine[s5 - 1], fW, tips[s5].x, ya, bandTw2, thF2);
+          var mb = regionMean(fine[s5], fW, 0, yb, bandTw2, thF2);
+          var rr = mb > 8 ? ma / mb : 1;
+          ratios[s5] = Math.max(0.82, Math.min(1.22, rr));
+        }
+      }
+    }
+
     var rawW = Math.round(dxOut[dxOut.length - 1] + outW);
     var totalW = rawW;
     if (opts && opts.circular && imgs.length > 2) {
@@ -672,37 +763,57 @@
       if (crop > outW * 0.05 && crop < outW * 0.75) totalW = rawW - crop;
     }
 
+    // 手举着转一圈，画面会轻微上下晃。对齐时算出来的纵向偏差要真的用上，
+    // 否则天花板这类线条会在接缝处断成两截。
+    var maxDy = 0, minDy = 0;
+    for (var dIdx = 0; dIdx < dyOut.length; dIdx++) {
+      if (dyOut[dIdx] > maxDy) maxDy = dyOut[dIdx];
+      if (dyOut[dIdx] < minDy) minDy = dyOut[dIdx];
+    }
+    var pad = Math.max(Math.abs(minDy), Math.abs(maxDy));
+    var panoH = outH + pad * 2;
+
     var pano = document.createElement('canvas');
     pano.width = rawW;
-    pano.height = outH;
+    pano.height = panoH;
     var pctx = pano.getContext('2d');
     pctx.fillStyle = '#000';
-    pctx.fillRect(0, 0, rawW, outH);
+    pctx.fillRect(0, 0, rawW, panoH);
 
     var tmp = document.createElement('canvas');
-    tmp.width = outW; tmp.height = outH;
+    tmp.width = outW; tmp.height = panoH;
     var tctx = tmp.getContext('2d');
     var right = 0;
 
     for (var q = 0; q < imgs.length; q++) {
       var x = Math.round(dxOut[q]);
       tctx.globalCompositeOperation = 'source-over';
-      tctx.clearRect(0, 0, outW, outH);
+      tctx.clearRect(0, 0, outW, panoH);
       tctx.filter = 'brightness(' + ratios[q].toFixed(3) + ')';
-      tctx.drawImage(imgs[q], 0, 0, outW, outH);
+      tctx.drawImage(imgs[q], 0, pad + dyOut[q], outW, outH);
       tctx.filter = 'none';
 
       var ov = Math.max(0, Math.min(outW, right - x));
       if (ov > 2) {
-        // 遮罩必须铺满整幅再按渐变透明，否则 destination-in 会把渐变以外的区域一起清掉
+        // 两帧在重叠区里是同一片景物，只是差几个像素。整段半透明叠合会让边缘留下双影，
+        // 改成在差异最小的地方切一刀：缝左边用前一帧、右边用这一帧，缝上只留几像素过渡。
+        var ovF = Math.round(ov * fW / outW);
+        var cutF = ovF > 16
+          ? pickSeam(fine[q - 1], fine[q], tips[q - 1], tips[q], ovF, fW, fH)
+          : Math.round(ovF / 2);
+        var sxOut = Math.max(1, Math.min(ov - 1, Math.round(cutF * outW / fW)));
+        var f0 = Math.max(0, (sxOut - 2) / outW);
+        var f1 = Math.min(1, (sxOut + 2) / outW);
+        if (f1 <= f0) f1 = Math.min(1, f0 + 0.002);
+
         tctx.globalCompositeOperation = 'destination-in';
         var grad = tctx.createLinearGradient(0, 0, outW, 0);
-        var stopAt = Math.max(0.001, Math.min(1, ov / outW));
         grad.addColorStop(0, 'rgba(0,0,0,0)');
-        grad.addColorStop(stopAt, 'rgba(0,0,0,1)');
+        grad.addColorStop(f0, 'rgba(0,0,0,0)');
+        grad.addColorStop(f1, 'rgba(0,0,0,1)');
         grad.addColorStop(1, 'rgba(0,0,0,1)');
         tctx.fillStyle = grad;
-        tctx.fillRect(0, 0, outW, outH);
+        tctx.fillRect(0, 0, outW, panoH);
         tctx.globalCompositeOperation = 'source-over';
       }
       pctx.drawImage(tmp, x, 0);
@@ -711,11 +822,14 @@
       if (q % 3 === 0) await new Promise(function (r3) { setTimeout(r3, 0); });
     }
 
+    // 只留所有帧都覆盖到的那一条，上下因抖动多出来的边角不要
+    var cropY = pad + maxDy;
+    var outH2 = outH - (maxDy - minDy);
     var out = pano;
-    if (totalW < rawW) {
+    if (totalW < rawW || outH2 < panoH || cropY > 0) {
       var cut = document.createElement('canvas');
-      cut.width = totalW; cut.height = outH;
-      cut.getContext('2d').drawImage(pano, 0, 0, totalW, outH, 0, 0, totalW, outH);
+      cut.width = totalW; cut.height = outH2;
+      cut.getContext('2d').drawImage(pano, 0, cropY, totalW, outH2, 0, 0, totalW, outH2);
       out = cut;
     }
 
@@ -732,11 +846,164 @@
     onProgress && onProgress(1, '完成');
     return {
       blob: blob, width: totalW, height: outH,
+      steps: steps.map(function (v) { return Math.round(v * (outW / fW)); }),
+      dips: dyOut,
       eqBlob: eqBlob, eqWidth: eq.width, eqHeight: eq.height
     };
   }
 
   // ---------- 球面视图（按需加载，没拍之前不下载脚本） ----------
+  // ---------- 没有 WebGL 时的软件球面渲染（国产浏览器/省电模式常见） ----------
+  function hasWebGL() {
+    try {
+      var c = document.createElement('canvas');
+      return !!(window.WebGLRenderingContext &&
+        (c.getContext('webgl') || c.getContext('experimental-webgl')));
+    } catch (e) { return false; }
+  }
+
+  var SOFT = { canvas: null, ctx: null, eq: null, yaw: 0, pitch: 0, fov: 80,  pending: false, steps: 0 };
+
+  function initSoftCanvas() {
+    var cv = document.createElement('canvas');
+    cv.style.cssText = 'width:100%;height:100%;display:block;touch-action:none;cursor:grab';
+    sphereEl.innerHTML = '';
+    sphereEl.appendChild(cv);
+    SOFT.canvas = cv;
+    SOFT.ctx = cv.getContext('2d');
+
+    var dragging = false, lastX = 0, lastY = 0, pinch = 0;
+
+    cv.addEventListener('pointerdown', function (e) {
+      dragging = true; lastX = e.clientX; lastY = e.clientY;
+      try { cv.setPointerCapture(e.pointerId); } catch (err) {}
+    });
+    cv.addEventListener('pointermove', function (e) {
+      if (!dragging) return;
+      var dx = e.clientX - lastX, dy = e.clientY - lastY;
+      lastX = e.clientX; lastY = e.clientY;
+      var k = (SOFT.fov / (cv.clientWidth || 320)) * Math.PI / 180;
+      SOFT.yaw -= dx * k;
+      SOFT.pitch = Math.max(-85 * Math.PI / 180,
+        Math.min(85 * Math.PI / 180, SOFT.pitch - dy * k));
+      drawSoft();
+    });
+    cv.addEventListener('pointerup', function () { dragging = false; });
+    cv.addEventListener('pointercancel', function () { dragging = false; });
+    cv.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      SOFT.fov = Math.max(35, Math.min(115, SOFT.fov + (e.deltaY > 0 ? 6 : -6)));
+      drawSoft();
+    }, { passive: false });
+    cv.addEventListener('touchmove', function (e) {
+      if (e.touches.length !== 2) return;
+      e.preventDefault();
+      var d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX,
+        e.touches[0].clientY - e.touches[1].clientY);
+      if (pinch) {
+        SOFT.fov = Math.max(35, Math.min(115, SOFT.fov * pinch / Math.max(1, d)));
+        drawSoft();
+      }
+      pinch = d;
+    }, { passive: false });
+    cv.addEventListener('touchend', function () { pinch = 0; });
+
+    window.addEventListener('resize', function () { if (SOFT.canvas) resizeSoft(); });
+  }
+
+  function resizeSoft() {
+    if (!SOFT.canvas) return;
+    var box = sphereEl.getBoundingClientRect();
+    var aspect = box.width / Math.max(1, box.height);
+    var W = 460;
+    var H = Math.max(150, Math.round(W / aspect));
+    // 手机竖屏容器高、像素多，逐像素渲染会卡，总量压到 15 万以内
+    var total = W * H;
+    if (total > 150000) {
+      var s = Math.sqrt(150000 / total);
+      W = Math.max(200, Math.round(W * s));
+      H = Math.max(150, Math.round(H * s));
+    }
+    SOFT.canvas.width = W;
+    SOFT.canvas.height = H;
+    SOFT.steps = 0;
+    drawSoft();
+  }
+
+  function drawSoft() {
+    if (!SOFT.eq || !SOFT.canvas || SOFT.pending) return;
+    SOFT.pending = true;
+    requestAnimationFrame(function () {
+      SOFT.pending = false;
+      var eq = SOFT.eq, d = eq.data, dw = eq.w, dh = eq.h;
+      var W = SOFT.canvas.width, H = SOFT.canvas.height;
+      var ctx = SOFT.ctx;
+      var img = ctx.createImageData(W, H);
+      var out = img.data;
+      var aspect = W / H;
+      var tanH = Math.tan(SOFT.fov * Math.PI / 360);
+      var cp = Math.cos(SOFT.pitch), sp = Math.sin(SOFT.pitch);
+      var cy = Math.cos(SOFT.yaw), sy = Math.sin(SOFT.yaw);
+      var t0 = performance.now();
+      var oi = 0;
+      for (var v = 0; v < H; v++) {
+        var py = ((1 - 2 * (v + 0.5) / H) * tanH) / aspect;
+        for (var u = 0; u < W; u++) {
+          var px = (2 * (u + 0.5) / W - 1) * tanH;
+          var y1 = py * cp - sp;
+          var z1 = py * sp + cp;
+          var x2 = px * cy + z1 * sy;
+          var z2 = -px * sy + z1 * cy;
+          var len = Math.sqrt(x2 * x2 + y1 * y1 + z2 * z2);
+          var phi = Math.asin(y1 / len);
+          var lam = Math.atan2(x2, z2);
+          var ix = ((lam / 6.2831853 + 0.5) * dw) | 0;
+          var iy = ((0.5 - phi / 3.14159265) * dh) | 0;
+          if (ix >= dw) ix -= dw;
+          if (ix < 0) ix += dw;
+          if (iy >= dh) iy = dh - 1;
+          if (iy < 0) iy = 0;
+          var si = (iy * dw + ix) * 4;
+          out[oi++] = d[si];
+          out[oi++] = d[si + 1];
+          out[oi++] = d[si + 2];
+          out[oi++] = 255;
+        }
+      }
+      ctx.putImageData(img, 0, 0);
+      // 手机渲染慢就自动降分辨率，保证拖动不卡
+      if (performance.now() - t0 > 45 && SOFT.steps < 3 && SOFT.canvas.width > 220) {
+        SOFT.steps++;
+        SOFT.canvas.width = Math.round(SOFT.canvas.width * 0.78);
+        SOFT.canvas.height = Math.round(SOFT.canvas.height * 0.78);
+        setTimeout(drawSoft, 0);
+      }
+    });
+  }
+
+  function showSoftSphere(url) {
+    return new Promise(function (resolve, reject) {
+      var im = new Image();
+      im.onload = function () {
+        var t = document.createElement('canvas');
+        t.width = 2048; t.height = 1024;
+        var tc = t.getContext('2d', { willReadFrequently: true });
+        tc.drawImage(im, 0, 0, 2048, 1024);
+        SOFT.eq = { data: tc.getImageData(0, 0, 2048, 1024).data, w: 2048, h: 1024 };
+        if (!SOFT.canvas) initSoftCanvas();
+        SOFT.yaw = 0;
+        SOFT.pitch = 0;
+        SOFT.fov = 80;
+        sphereEl.classList.add('show');
+        flatEl.style.display = 'none';
+        resizeSoft();
+        resolve(true);
+      };
+      im.onerror = function () { reject(new Error('球面图打不开')); };
+      im.src = url;
+    });
+  }
+
   var PSV = { loading: null, viewer: null };
 
   function ensureViewer() {
@@ -763,6 +1030,7 @@
   }
 
   function showSphere(url) {
+    if (!hasWebGL()) return Promise.resolve(false);
     return ensureViewer().then(function () {
       if (!PSV.viewer) {
         PSV.viewer = new PhotoSphereViewer.Viewer({
@@ -810,6 +1078,20 @@
     btnMain.style.display = 'none';
     btnDownloadEq.style.display = S.eqBlob ? '' : 'none';
 
+    // 调试：把长图按原始像素铺在页面左上，方便逐个接缝看有没有双影
+    if (!EQVIEW && /band=1/.test(location.search)) {
+      flatEl.style.cssText = 'position:fixed;left:0;top:0;z-index:99;background:#000;overflow:auto';
+      panoEl.style.height = 'auto';
+      panoEl.style.width = out.width + 'px';
+      return;
+    }
+
+    if (/dbg=1/.test(location.search)) {
+      resultNote.textContent = 'dx ' + (out.steps || []).join(' / ') + ' ｜ dy ' + (out.dips || []).join(',');
+      flatEl.style.display = 'none';
+      return;
+    }
+
     if (EQVIEW) {
       panoEl.src = S.eqUrl || S.panoUrl;
       flatEl.style.display = '';
@@ -819,11 +1101,20 @@
 
     resultNote.textContent = '正在准备球面视图…';
 
-    var ok = false;
-    if (S.eqUrl) ok = await showSphere(S.eqUrl);
+    var ok = false, soft = false;
+    if (S.eqUrl) {
+      ok = SOFTMODE ? false : await showSphere(S.eqUrl);
+      if (!ok) {
+        try {
+          ok = await showSoftSphere(S.eqUrl);
+          soft = true;
+        } catch (e) { console.warn('软件球面也没起来：', e); ok = false; }
+      }
+    }
     if (ok) {
-      resultNote.textContent = '球面全景 ' + out.eqWidth + ' × ' + out.eqHeight +
-        ' · 拖动转视角，双指缩放';
+      resultNote.textContent = soft
+        ? '球面全景 ' + out.eqWidth + ' × ' + out.eqHeight + ' · 本机没开 3D 加速，已用软件渲染 · 拖动看'
+        : '球面全景 ' + out.eqWidth + ' × ' + out.eqHeight + ' · 拖动转视角，双指缩放';
     } else {
       resultNote.textContent = '长图 ' + out.width + ' × ' + out.height +
         ' · 球面视图没加载出来，可以左右拖动看';
@@ -876,15 +1167,19 @@
 
   // ---------- 自测（?selftest=1） ----------
   async function selftest() {
-    var scene = buildScene(4000, 400, 12345);
+    var scene = buildScene(4000, 420, 12345);
     var step = CIRCULAR ? 180 : 150;
+    // ?jitter=1：给每帧加一点上下抖动和半像素水平误差，模拟手持拍摄，用来检查接缝处有没有双影
+    var jitY = JITTER ? [0, 1, -1, 2, -2, 1, 0, -1, 2, -2, 1, 0] : null;
 
     var blobs = [];
     for (var k = 0; k < 12; k++) {
       var c = document.createElement('canvas');
       c.width = 600; c.height = 400;
       var cx = c.getContext('2d');
-      cx.drawImage(scene, k * step, 0, 600, 400, 0, 0, 600, 400);
+      var jy = jitY ? jitY[k] : 0;
+      var hx = (JITTER && k % 2) ? 1 : 0;
+      cx.drawImage(scene, k * step + hx, 10 + jy, 600, 400, 0, 0, 600, 400);
       var b = await new Promise(function (r) { c.toBlob(r, 'image/jpeg', 0.95); });
       blobs.push(b);
     }
@@ -908,6 +1203,11 @@
   if (/selftest=1/.test(location.search)) {
     setPhase('自测中');
     setTimeout(selftest, 200);
+  }
+
+  // 无交互环境（headless 截图/回归）用来自动跑一遍
+  if (/auto=1/.test(location.search)) {
+    setTimeout(function () { btnMain.click(); }, 400);
   }
 })();
 </script>
