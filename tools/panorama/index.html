@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>网页全景拍摄 · 青年科技学习导航</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0e1012">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:,">
+<style>
+  :root{
+    --bg:#0e1012; --card:#171a1d; --line:#262a2e;
+    --text:#e8eaed; --dim:#98a0a8; --accent:#e74c3c; --ok:#3fb950;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;background:var(--bg);color:var(--text)}
+  body{font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+       min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:0 14px 40px}
+  .wrap{width:100%;max-width:720px}
+  header{display:flex;align-items:center;justify-content:space-between;padding:18px 0 10px}
+  header h1{font-size:17px;margin:0;font-weight:600;letter-spacing:.3px}
+  header a{color:var(--dim);text-decoration:none;font-size:13px;border:1px solid var(--line);
+           padding:4px 10px;border-radius:999px}
+  header a:hover{color:var(--text);border-color:#3a4046}
+  .sub{color:var(--dim);font-size:13px;margin:2px 0 16px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+  .stage{position:relative;background:#000;aspect-ratio:16/9}
+  .stage video{width:100%;height:100%;object-fit:contain;display:block;background:#000}
+  .stage .tip{position:absolute;left:0;right:0;bottom:0;padding:10px 14px;
+              background:linear-gradient(to top,rgba(0,0,0,.75),rgba(0,0,0,0));
+              font-size:13px;color:#dfe3e8;display:flex;justify-content:space-between;gap:10px}
+  .stage .idle{position:absolute;inset:0;display:flex;flex-direction:column;
+               align-items:center;justify-content:center;gap:10px;color:#7d858d;font-size:13px;text-align:center;padding:0 24px}
+  .stage .idle svg{opacity:.5}
+  .bar{height:8px;background:#22262a;border-radius:999px;overflow:hidden}
+  .bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:999px;transition:width .2s linear}
+  .meta{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 16px 4px;font-size:13px;color:var(--dim)}
+  .meta b{color:var(--text);font-weight:600}
+  .pad{padding:0 16px 16px}
+  button{font:inherit;cursor:pointer;border-radius:12px;border:1px solid var(--line);
+         background:#20242a;color:var(--text);padding:11px 18px}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  .primary{width:100%;margin-top:12px;padding:14px;font-size:16px;font-weight:600;
+           border:none;background:var(--accent);color:#fff}
+  .primary:active{transform:translateY(1px)}
+  .row{display:flex;gap:10px;margin-top:12px}
+  .row button{flex:1}
+  .warn{background:#2a1f1c;border:1px solid #4a2f28;color:#f0b9ae;border-radius:12px;
+        padding:10px 14px;font-size:13px;margin-bottom:14px;display:none}
+  .warn.show{display:block}
+  .result{margin-top:16px;display:none}
+  .result.show{display:block}
+  .viewer{background:#000;border:1px solid var(--line);border-radius:14px;overflow-x:auto;overflow-y:hidden}
+  .viewer img{display:block;height:min(46vh,420px);width:auto;max-width:none}
+  .note{color:var(--dim);font-size:12px;margin-top:8px}
+  .err{color:#ff8f80;font-size:13px;margin-top:10px;min-height:18px}
+  .steps{color:var(--dim);font-size:13px;margin:14px 2px 0;padding-left:18px}
+  .steps li{margin:4px 0}
+  @media (min-width:720px){ .stage{aspect-ratio:16/9} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>网页全景拍摄</h1>
+    <a href="/">返回导航</a>
+  </header>
+  <p class="sub">举着手机原地转一圈，页面自动抓拍并拼成一张全景长图。全程在本地完成，照片不会上传。</p>
+
+  <div class="warn" id="wx-tip">当前是微信内置浏览器，拿不到相机。请点右上角「···」，选「在浏览器打开」。</div>
+
+  <div class="card">
+    <div class="stage">
+      <video id="cam" playsinline muted autoplay></video>
+      <div class="idle" id="idle">
+        <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6">
+          <path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h1.6l1.2-2h6.4l1.2 2h1.6A2.5 2.5 0 0 1 21 8.5v9A2.5 2.5 0 0 1 18.5 20h-13A2.5 2.5 0 0 1 3 17.5z"/>
+          <circle cx="12" cy="13" r="3.4"/>
+        </svg>
+        <div>点下面的按钮开始，会请求使用相机</div>
+      </div>
+      <div class="tip" id="tip" style="display:none"><span id="tip-left"></span><span id="tip-right"></span></div>
+    </div>
+
+    <div class="meta">
+      <span>进度 <b id="cnt">0 / 12</b></span>
+      <span id="phase">等待开始</span>
+    </div>
+    <div class="pad">
+      <div class="bar"><i id="bar"></i></div>
+      <button class="primary" id="btn-main">开始拍摄</button>
+      <div class="err" id="err"></div>
+      <div class="row" id="after" style="display:none">
+        <button id="btn-retry">重新拍</button>
+        <button id="btn-download">下载全景图</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="result" id="result">
+    <div class="viewer"><img id="pano" alt="拼接后的全景图"></div>
+    <p class="note" id="result-note"></p>
+  </div>
+
+  <ol class="steps">
+    <li>把手机横过来，像举相机一样拿稳，站定别走动。</li>
+    <li>点开始后有 3 秒准备时间，然后慢慢原地转一圈。</li>
+    <li>转的过程中页面到角度会自动拍摄，不用手动点。</li>
+  </ol>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var FRAME_COUNT = 12;
+  var STEP_DEG = 30;
+  var OUT_W = 960;
+  var isWeChat = /MicroMessenger/i.test(navigator.userAgent);
+  var FAKE = /fake=1/.test(location.search);
+
+  var video = document.getElementById('cam');
+  var idle = document.getElementById('idle');
+  var idleHTML = idle.innerHTML;
+  var tip = document.getElementById('tip');
+  var tipLeft = document.getElementById('tip-left');
+  var tipRight = document.getElementById('tip-right');
+  var cntEl = document.getElementById('cnt');
+  var phaseEl = document.getElementById('phase');
+  var barEl = document.getElementById('bar');
+  var btnMain = document.getElementById('btn-main');
+  var btnRetry = document.getElementById('btn-retry');
+  var btnDownload = document.getElementById('btn-download');
+  var after = document.getElementById('after');
+  var errEl = document.getElementById('err');
+  var result = document.getElementById('result');
+  var panoEl = document.getElementById('pano');
+  var resultNote = document.getElementById('result-note');
+
+  if (isWeChat) document.getElementById('wx-tip').classList.add('show');
+
+  var S = {
+    stream: null,
+    frames: [],
+    capturing: false,
+    busy: false,
+    orientReady: false,
+    lastAlpha: null,
+    turn: 0,
+    needDeg: 0,
+    timerId: null,
+    panoBlob: null,
+    panoUrl: null
+  };
+
+  var grab = document.createElement('canvas');
+  var gctx = grab.getContext('2d');
+
+  function setPhase(t) { phaseEl.textContent = t; }
+  function setCount(n) { cntEl.textContent = n + ' / ' + FRAME_COUNT; }
+  function setBar(p) { barEl.style.width = Math.max(0, Math.min(100, p * 100)) + '%'; }
+  function fail(msg) { errEl.textContent = msg; }
+
+  function resetUI() {
+    setPhase('等待开始');
+    setCount(0);
+    setBar(0);
+    fail('');
+    result.classList.remove('show');
+    after.style.display = 'none';
+    tip.style.display = 'none';
+    idle.innerHTML = idleHTML;
+    idle.style.display = 'flex';
+    btnMain.disabled = false;
+    btnMain.textContent = '开始拍摄';
+    if (S.panoUrl) { URL.revokeObjectURL(S.panoUrl); S.panoUrl = null; }
+    panoEl.removeAttribute('src');
+    S.panoBlob = null;
+  }
+
+  async function startCamera() {
+    if (S.stream) return;
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      if (!FAKE) throw new Error('这个浏览器没有开放相机接口，请换用 Chrome、Safari 或 Edge');
+    }
+    var stream = FAKE ? makeFakeStream() : await navigator.mediaDevices.getUserMedia({
+      audio: false,
+      video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+    });
+    S.stream = stream;
+    video.srcObject = stream;
+    await video.play();
+    idle.style.display = 'none';
+    tip.style.display = 'flex';
+    await new Promise(function (resolve) {
+      var t0 = Date.now();
+      (function wait() {
+        if (video.videoWidth > 0 || Date.now() - t0 > 3000) return resolve();
+        setTimeout(wait, 120);
+      })();
+    });
+  }
+
+  function stopCamera() {
+    if (S.stream) {
+      S.stream.getTracks().forEach(function (t) { t.stop(); });
+      S.stream = null;
+    }
+    video.srcObject = null;
+  }
+
+  async function enableOrientation(permPromise) {
+    try {
+      if (typeof DeviceOrientationEvent === 'undefined') return false;
+      if (permPromise) {
+        var r = await permPromise;
+        if (r !== 'granted') return false;
+      }
+      window.addEventListener('deviceorientation', onOrient, true);
+      S.orientReady = true;
+      // 等一个 alpha 值，拿不到就退回定时模式
+      await new Promise(function (r) { setTimeout(r, 900); });
+      return S.lastAlpha !== null;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function onOrient(e) {
+    if (!e.alpha && e.alpha !== 0) return;
+    var a = e.alpha;
+    if (S.lastAlpha === null) { S.lastAlpha = a; return; }
+    var d = a - S.lastAlpha;
+    if (d > 180) d -= 360;
+    if (d < -180) d += 360;
+    if (Math.abs(d) > 25) { S.lastAlpha = a; return; }
+    S.turn += Math.abs(d);
+    S.lastAlpha = a;
+    if (S.capturing) {
+      tipRight.textContent = '已转 ' + Math.round(S.turn) + '°';
+      if (S.turn >= S.needDeg) {
+        S.needDeg += STEP_DEG;
+        takeFrame();
+      }
+    }
+  }
+
+  function takeFrame() {
+    if (!S.capturing) return;
+    var w = video.videoWidth, h = video.videoHeight;
+    if (!w || !h) return;
+    grab.width = w; grab.height = h;
+    gctx.drawImage(video, 0, 0, w, h);
+    grab.toBlob(function (b) {
+      if (!b) return;
+      S.frames.push(b);
+      setCount(S.frames.length);
+      setBar(S.frames.length / FRAME_COUNT);
+      if (S.frames.length >= FRAME_COUNT) finishCapture();
+    }, 'image/jpeg', 0.92);
+  }
+
+  function tickTimer() {
+    if (!S.capturing) return;
+    takeFrame();
+  }
+
+  async function beginCapture(permPromise) {
+    errEl.textContent = '';
+    result.classList.remove('show');
+    after.style.display = 'none';
+    btnMain.disabled = true;
+
+    try {
+      setPhase('正在启动相机');
+      await startCamera();
+    } catch (e) {
+      btnMain.disabled = false;
+      var name = (e && e.name) || '';
+      if (name === 'NotAllowedError' || name === 'SecurityError') fail('相机权限被拒绝，请在地址栏的权限设置里允许后重试');
+      else if (name === 'NotFoundError' || name === 'OverconstrainedError') fail('没有检测到可用的摄像头');
+      else if (name === 'NotReadableError') fail('摄像头被其他应用占用，关掉相机类应用再试');
+      else fail(String((e && e.message) || e));
+      setPhase('等待开始');
+      return;
+    }
+
+    if (video.videoWidth <= video.videoHeight) {
+      fail('现在是竖屏，请把手机横过来再点开始（横屏才能拍出横向全景）');
+      stopCamera();
+      btnMain.disabled = false;
+      setPhase('等待开始');
+      return;
+    }
+
+    S.frames = [];
+    S.turn = 0;
+    S.needDeg = STEP_DEG;
+    setCount(0);
+    setBar(0);
+
+    var angleMode = FAKE ? false : await enableOrientation(permPromise);
+    S.capturing = true;
+    btnMain.textContent = '拍摄中…';
+    setPhase('3 秒后开始，请举稳手机');
+    tipLeft.textContent = '慢慢原地转一圈，别停顿';
+
+    var n = 3;
+    var cd = setInterval(function () {
+      n -= 1;
+      if (n > 0) { setPhase(n + ' 秒后开始，请举稳手机'); return; }
+      clearInterval(cd);
+      setPhase('转动中');
+      if (angleMode) {
+        // 转到位就自动拍，起始先拍一张
+        takeFrame();
+        if (S.frames.length === FRAME_COUNT) return;
+      } else {
+        setPhase('没有陀螺仪数据，按时间自动拍');
+        takeFrame();
+        S.timerId = setInterval(tickTimer, 1100);
+      }
+    }, 1000);
+  }
+
+  function stopTimers() {
+    if (S.timerId) { clearInterval(S.timerId); S.timerId = null; }
+  }
+
+  async function finishCapture() {
+    if (!S.capturing && S.frames.length < 2) return;
+    S.capturing = false;
+    stopTimers();
+    stopCamera();
+    btnMain.textContent = '正在拼接…';
+    setPhase('正在拼接');
+    tip.style.display = 'none';
+    idle.style.display = 'none';
+
+    try {
+      var out = await stitch(S.frames, OUT_W, function (p, label) {
+        setBar(p);
+        if (label) setPhase(label);
+      });
+      S.panoBlob = out.blob;
+      S.panoUrl = URL.createObjectURL(out.blob);
+      panoEl.src = S.panoUrl;
+      result.classList.add('show');
+      resultNote.textContent = '尺寸 ' + out.width + ' × ' + out.height + ' · ' +
+        Math.round(out.blob.size / 1024) + ' KB · 全程本地处理，没有上传';
+      setPhase('完成');
+      setBar(1);
+      idle.innerHTML = '<div>拍摄完成，全景图在下面，可以横向拖动查看</div>';
+      idle.style.display = 'flex';
+      after.style.display = 'flex';
+      btnMain.style.display = 'none';
+    } catch (e) {
+      console.error(e);
+      fail('拼接失败：' + ((e && e.message) || e));
+      setPhase('拼接失败');
+      after.style.display = 'flex';
+      btnMain.style.display = 'none';
+    }
+  }
+
+  // ---------- 图像处理 ----------
+
+  // 合成一张有纹理的场景，供自测和 ?fake=1 的模拟摄像头使用
+  function buildScene(w, h, seed) {
+    var c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    var x = c.getContext('2d');
+    var s = seed || 7;
+    function rnd() { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; }
+
+    var horizon = Math.round(h * 0.62);
+
+    var sky = x.createLinearGradient(0, 0, 0, horizon);
+    sky.addColorStop(0, '#1c2a44');
+    sky.addColorStop(0.55, '#42536e');
+    sky.addColorStop(1, '#9a7a5e');
+    x.fillStyle = sky;
+    x.fillRect(0, 0, w, horizon);
+
+    for (var L = 0; L < 2; L++) {
+      x.fillStyle = L ? 'rgba(56,64,78,.92)' : 'rgba(74,86,104,.86)';
+      x.beginPath();
+      x.moveTo(0, horizon);
+      var n2 = L ? 26 : 18, step = w / n2;
+      for (var k = 0; k <= n2; k++) {
+        var hh = horizon - (L ? 22 : 40) - Math.abs(Math.sin(k * 1.7 + L * 3)) * (L ? 50 : 92) - rnd() * 16;
+        x.lineTo(k * step, hh);
+      }
+      x.lineTo(w, horizon);
+      x.closePath();
+      x.fill();
+    }
+
+    var ground = x.createLinearGradient(0, horizon, 0, h);
+    ground.addColorStop(0, '#2f3433');
+    ground.addColorStop(1, '#121517');
+    x.fillStyle = ground;
+    x.fillRect(0, horizon, w, h - horizon);
+
+    var nb = Math.round(w / 140);
+    for (var b = 0; b < nb; b++) {
+      var bw = 56 + rnd() * 130, bh = 50 + rnd() * (h * 0.32), bx = rnd() * (w - bw);
+      x.fillStyle = 'rgba(20,23,29,' + (0.7 + rnd() * 0.22) + ')';
+      x.fillRect(bx, horizon - bh, bw, bh);
+      var cols = Math.max(1, Math.round(bw / 21)), rows = Math.max(1, Math.round(bh / 25));
+      for (var rr2 = 0; rr2 < rows; rr2++) {
+        for (var cc2 = 0; cc2 < cols; cc2++) {
+          if (rnd() > 0.46) continue;
+          x.fillStyle = 'hsla(' + Math.floor(28 + rnd() * 46) + ',86%,' + Math.floor(50 + rnd() * 26) + '%,' + (0.5 + rnd() * 0.45) + ')';
+          x.fillRect(bx + 5 + cc2 * (bw - 10) / cols, horizon - bh + 7 + rr2 * (bh - 13) / rows, 6, 9);
+        }
+      }
+    }
+
+    for (var i = 0; i < Math.round(w / 18); i++) {
+      x.fillStyle = 'hsla(' + Math.floor(78 + rnd() * 44) + ',20%,' + Math.floor(16 + rnd() * 26) + '%,.8)';
+      var r = 3 + rnd() * 9;
+      x.beginPath();
+      x.arc(rnd() * w, horizon + rnd() * (h - horizon), r, 0, Math.PI * 2);
+      x.fill();
+    }
+
+    return c;
+  }
+
+  // 模拟一路摄像头：画面按时间匀速横向平移（每 1.1 秒 150px，与抓帧间隔对齐）
+  function makeFakeStream() {
+    var scene = buildScene(6000, 720, 99);
+    var c = document.createElement('canvas');
+    c.width = 1280; c.height = 720;
+    var ctx = c.getContext('2d');
+    var t0 = performance.now();
+    function drawAt(px) { ctx.drawImage(scene, px, 0, 1280, 720, 0, 0, 1280, 720); }
+    drawAt(0);
+    (function loop(t) {
+      var px = Math.min(scene.width - 1280, Math.round((t - t0) / 1100 * 150));
+      drawAt(px);
+      requestAnimationFrame(loop);
+    })(performance.now());
+    return c.captureStream(30);
+  }
+
+  function loadImg(blob) {
+    return new Promise(function (res, rej) {
+      var url = URL.createObjectURL(blob);
+      var img = new Image();
+      img.onload = function () { URL.revokeObjectURL(url); res(img); };
+      img.onerror = function (e) { URL.revokeObjectURL(url); rej(new Error('图片解码失败')); };
+      img.src = url;
+    });
+  }
+
+  function toGray(img, w, h) {
+    var c = document.createElement('canvas');
+    c.width = w; c.height = h;
+    var ctx = c.getContext('2d', { willReadFrequently: true });
+    ctx.drawImage(img, 0, 0, w, h);
+    var d = ctx.getImageData(0, 0, w, h).data;
+    var g = new Float32Array(w * h);
+    for (var i = 0, j = 0; i < g.length; i++, j += 4) {
+      g[i] = d[j] * 0.299 + d[j + 1] * 0.587 + d[j + 2] * 0.114;
+    }
+    return g;
+  }
+
+  // 在 A 里找 B 左条带的位置（归一化互相关），返回 A 坐标
+  function matchOffset(A, aw, ah, B, bw, bh, opt) {
+    var tw = Math.round(bw * opt.band);
+    var yMax = opt.yMax;
+    var th = bh - yMax;
+    var x0 = Math.max(1, Math.round(aw * opt.xFrom));
+    var x1 = Math.min(aw - tw - 1, Math.round(aw * opt.xTo));
+    var best = { score: -2, x: x0, y: 0 };
+    var n = tw * th;
+
+    for (var d = -yMax; d <= yMax; d++) {
+      var ay = d > 0 ? d : 0;
+      var by = d < 0 ? -d : 0;
+      if (ay + th > ah || by + th > bh) continue;
+
+      var tsum = 0, tsq = 0;
+      for (var j = 0; j < th; j++) {
+        var rowB = (by + j) * bw;
+        for (var i = 0; i < tw; i++) {
+          var v = B[rowB + i];
+          tsum += v; tsq += v * v;
+        }
+      }
+      var tm = tsum / n, tv = tsq / n - tm * tm;
+      if (tv <= 1e-2) continue;
+
+      for (var x = x0; x <= x1; x++) {
+        var cross = 0, asum = 0, asq = 0;
+        for (var jj = 0; jj < th; jj++) {
+          var rowA = (ay + jj) * aw + x;
+          var rowBB = (by + jj) * bw;
+          for (var ii = 0; ii < tw; ii++) {
+            var av = A[rowA + ii], bv = B[rowBB + ii];
+            cross += av * bv; asum += av; asq += av * av;
+          }
+        }
+        var am = asum / n, avv = asq / n - am * am;
+        if (avv <= 1e-2) continue;
+        var score = (cross / n - am * tm) / (Math.sqrt(avv * tv) + 1e-9);
+        if (score > best.score) best = { score: score, x: x, y: d };
+      }
+    }
+    return best;
+  }
+
+  function regionMean(G, w, x0, y0, tw, th, h) {
+    var s = 0, n = 0;
+    for (var j = 0; j < th; j++) {
+      var row = (y0 + j) * w;
+      for (var i = 0; i < tw; i++) { s += G[row + x0 + i]; n++; }
+    }
+    return n ? s / n : 0;
+  }
+
+  async function stitch(blobs, outW, onProgress) {
+    var imgs = [];
+    for (var i = 0; i < blobs.length; i++) {
+      imgs.push(await loadImg(blobs[i]));
+      onProgress && onProgress(0.05 + 0.15 * (i / blobs.length), '解码画面 ' + (i + 1) + '/' + blobs.length);
+      await new Promise(function (r) { setTimeout(r, 0); });
+    }
+
+    var srcW = imgs[0].naturalWidth || imgs[0].width;
+    var srcH = imgs[0].naturalHeight || imgs[0].height;
+    var outH = Math.round(outW * srcH / srcW);
+    var cW = 160, cH = Math.round(cW * srcH / srcW);
+    var fW = 480, fH = Math.round(fW * srcH / srcW);
+
+    var coarse = [], fine = [];
+    for (var k = 0; k < imgs.length; k++) {
+      coarse.push(toGray(imgs[k], cW, cH));
+      fine.push(toGray(imgs[k], fW, fH));
+    }
+
+    var dxOut = [0];
+    var ratios = [1];
+    var shift = 0;
+    var lastDx = Math.round(fW * 0.55);
+
+    for (var m = 1; m < imgs.length; m++) {
+      var c = matchOffset(coarse[m - 1], cW, cH, coarse[m], cW, cH, {
+        band: 0.30, xFrom: 0.18, xTo: 0.92, yMax: Math.max(4, Math.round(cH * 0.10))
+      });
+      var gx = Math.round(c.x * fW / cW);
+      var gy = Math.round(c.y * fH / cH);
+      var f = matchOffset(fine[m - 1], fW, fH, fine[m], fW, fH, {
+        band: 0.30,
+        xFrom: Math.max(0.05, (gx - 5) / fW),
+        xTo: Math.min(0.95, (gx + 5) / fW),
+        yMax: 3
+      });
+      var useX, useY;
+      if (f.score >= 0.45 && Math.abs(f.x - gx) <= 6) {
+        useX = f.x; useY = f.y;
+      } else if (c.score >= 0.45) {
+        useX = gx; useY = gy;
+      } else {
+        useX = lastDx; useY = 0;
+      }
+      if (useX < Math.round(fW * 0.22) || useX > Math.round(fW * 0.92)) useX = lastDx;
+      lastDx = useX;
+      shift += useX * (outW / fW);
+      dxOut.push(shift);
+
+      var bandTw = Math.round(fW * 0.30);
+      var thF = fH - 3;
+      var yA = useY > 0 ? useY : 0;
+      var yB = useY < 0 ? -useY : 0;
+      var mA = regionMean(fine[m - 1], fW, useX, yA, bandTw, thF);
+      var mB = regionMean(fine[m], fW, 0, yB, bandTw, thF);
+      var r = mB > 8 ? mA / mB : 1;
+      ratios.push(Math.max(0.82, Math.min(1.22, r)));
+
+      onProgress && onProgress(0.2 + 0.65 * (m / (imgs.length - 1)), '对齐画面 ' + (m + 1) + '/' + imgs.length);
+      await new Promise(function (r2) { setTimeout(r2, 0); });
+    }
+
+    var totalW = Math.round(dxOut[dxOut.length - 1] + outW);
+    var pano = document.createElement('canvas');
+    pano.width = totalW;
+    pano.height = outH;
+    var pctx = pano.getContext('2d');
+    pctx.fillStyle = '#000';
+    pctx.fillRect(0, 0, totalW, outH);
+
+    var tmp = document.createElement('canvas');
+    tmp.width = outW; tmp.height = outH;
+    var tctx = tmp.getContext('2d');
+    var right = 0;
+
+    for (var q = 0; q < imgs.length; q++) {
+      var x = Math.round(dxOut[q]);
+      tctx.globalCompositeOperation = 'source-over';
+      tctx.clearRect(0, 0, outW, outH);
+      tctx.filter = 'brightness(' + ratios[q].toFixed(3) + ')';
+      tctx.drawImage(imgs[q], 0, 0, outW, outH);
+      tctx.filter = 'none';
+
+      var ov = Math.max(0, Math.min(outW, right - x));
+      if (ov > 2) {
+        // 遮罩必须铺满整幅再按渐变透明，否则 destination-in 会把渐变以外的区域一起清掉
+        tctx.globalCompositeOperation = 'destination-in';
+        var grad = tctx.createLinearGradient(0, 0, outW, 0);
+        var stopAt = Math.max(0.001, Math.min(1, ov / outW));
+        grad.addColorStop(0, 'rgba(0,0,0,0)');
+        grad.addColorStop(stopAt, 'rgba(0,0,0,1)');
+        grad.addColorStop(1, 'rgba(0,0,0,1)');
+        tctx.fillStyle = grad;
+        tctx.fillRect(0, 0, outW, outH);
+        tctx.globalCompositeOperation = 'source-over';
+      }
+      pctx.drawImage(tmp, x, 0);
+      right = Math.max(right, x + outW);
+      onProgress && onProgress(0.85 + 0.1 * (q / imgs.length), '合成画面');
+      if (q % 3 === 0) await new Promise(function (r3) { setTimeout(r3, 0); });
+    }
+
+    var blob = await new Promise(function (res, rej) {
+      try { pano.toBlob(function (b) { b ? res(b) : rej(new Error('导出失败')); }, 'image/jpeg', 0.9); }
+      catch (e) { rej(e); }
+    });
+    onProgress && onProgress(1, '完成');
+    return { blob: blob, width: totalW, height: outH };
+  }
+
+  // ---------- 交互 ----------
+
+  btnMain.addEventListener('click', function () {
+    if (S.busy) return;
+    S.busy = true;
+    // iOS 要求在用户手势这一帧里申请陀螺仪权限，所以先同步发起，再启动相机
+    var perm = null;
+    try {
+      if (typeof DeviceOrientationEvent !== 'undefined' &&
+          typeof DeviceOrientationEvent.requestPermission === 'function') {
+        perm = DeviceOrientationEvent.requestPermission().catch(function () { return 'denied'; });
+      }
+    } catch (e) { perm = Promise.resolve('denied'); }
+    beginCapture(perm).finally(function () { S.busy = false; });
+  });
+
+  btnRetry.addEventListener('click', function () {
+    stopCamera();
+    stopTimers();
+    S.capturing = false;
+    S.frames = [];
+    resetUI();
+    btnMain.style.display = '';
+  });
+
+  btnDownload.addEventListener('click', function () {
+    if (!S.panoBlob || !S.panoUrl) return;
+    var d = new Date();
+    var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
+    var name = 'pano-' + d.getFullYear() + pad(d.getMonth() + 1) + pad(d.getDate()) + '-' +
+      pad(d.getHours()) + pad(d.getMinutes()) + '.jpg';
+    var a = document.createElement('a');
+    a.href = S.panoUrl;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { a.remove(); }, 300);
+  });
+
+  // ---------- 自测（?selftest=1） ----------
+  async function selftest() {
+    var scene = buildScene(4000, 400, 12345);
+
+    var blobs = [];
+    for (var k = 0; k < 12; k++) {
+      var c = document.createElement('canvas');
+      c.width = 600; c.height = 400;
+      var cx = c.getContext('2d');
+      cx.drawImage(scene, k * 150, 0, 600, 400, 0, 0, 600, 400);
+      var b = await new Promise(function (r) { c.toBlob(r, 'image/jpeg', 0.95); });
+      blobs.push(b);
+    }
+
+    var t0 = performance.now();
+    var res = await stitch(blobs, 960, function () {});
+    var expect = Math.round((11 * 150 + 600) * 960 / 600);
+    console.log('SELFTEST width=' + res.width + ' expected=' + expect +
+      ' errPx=' + Math.abs(res.width - expect) + ' ms=' + Math.round(performance.now() - t0) +
+      ' sizeKB=' + Math.round(res.blob.size / 1024));
+    setPhase('自测完成');
+    S.panoBlob = res.blob;
+    S.panoUrl = URL.createObjectURL(res.blob);
+    panoEl.src = S.panoUrl;
+    result.classList.add('show');
+    resultNote.textContent = '自测结果 ' + res.width + ' × ' + res.height + ' · ' +
+      Math.round(res.blob.size / 1024) + ' KB';
+  }
+
+  if (/selftest=1/.test(location.search)) {
+    setPhase('自测中');
+    setTimeout(selftest, 200);
+  }
+})();
+</script>
+</body>
+</html>
