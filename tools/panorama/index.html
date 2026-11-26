@@ -43,6 +43,8 @@
   .primary{width:100%;margin-top:12px;padding:14px;font-size:16px;font-weight:600;
            border:none;background:var(--accent);color:#fff}
   .primary:active{transform:translateY(1px)}
+  .ghost{width:100%;margin-top:10px;padding:11px;font-size:14px;color:var(--dim);
+         background:transparent;border:1px dashed var(--line)}
   .row{display:flex;gap:10px;margin-top:12px}
   .row button{flex:1}
   .warn{background:#2a1f1c;border:1px solid #4a2f28;color:#f0b9ae;border-radius:12px;
@@ -92,6 +94,8 @@
     <div class="pad">
       <div class="bar"><i id="bar"></i></div>
       <button class="primary" id="btn-main">开始拍摄</button>
+      <button class="ghost" id="btn-import">已经有全景照片？从相册选一张</button>
+      <input type="file" id="file-pano" accept="image/*" style="display:none">
       <div class="err" id="err"></div>
       <div class="row" id="after" style="display:none">
         <button id="btn-retry">重新拍</button>
@@ -140,6 +144,8 @@
   var barEl = document.getElementById('bar');
   var btnMain = document.getElementById('btn-main');
   var btnRetry = document.getElementById('btn-retry');
+  var btnImport = document.getElementById('btn-import');
+  var picker = document.getElementById('file-pano');
   var btnDownload = document.getElementById('btn-download');
   var after = document.getElementById('after');
   var errEl = document.getElementById('err');
@@ -147,6 +153,8 @@
   var panoEl = document.getElementById('pano');
   var resultNote = document.getElementById('result-note');
   var sphereEl = document.getElementById('sphere');
+  var stageEl = document.querySelector('.stage');
+  var metaEl = document.querySelector('.meta');
   var flatEl = document.getElementById('flat');
   var btnDownloadEq = document.getElementById('btn-download-eq');
 
@@ -160,6 +168,9 @@
     orientReady: false,
     lastAlpha: null,
     turn: 0,
+    net: 0,
+    angles: [],
+    srcW: 0,
     needDeg: 0,
     timerId: null,
     panoBlob: null,
@@ -185,6 +196,12 @@
     result.classList.remove('show');
     after.style.display = 'none';
     tip.style.display = 'none';
+    stageEl.style.display = '';
+    metaEl.style.display = '';
+    barEl.parentNode.style.display = '';
+    btnImport.style.display = '';
+    btnRetry.textContent = '重新拍';
+    btnMain.style.display = '';
     idle.innerHTML = idleHTML;
     idle.style.display = 'flex';
     btnMain.disabled = false;
@@ -262,6 +279,7 @@
     if (d < -180) d += 360;
     if (Math.abs(d) > 25) { S.lastAlpha = a; return; }
     S.turn += Math.abs(d);
+    S.net += d;
     S.lastAlpha = a;
     if (S.capturing) {
       tipRight.textContent = '已转 ' + Math.round(S.turn) + '°';
@@ -278,9 +296,11 @@
     if (!w || !h) return;
     grab.width = w; grab.height = h;
     gctx.drawImage(video, 0, 0, w, h);
+    var shotAngle = S.angleMode ? S.net : null;
     grab.toBlob(function (b) {
       if (!b) return;
       S.frames.push(b);
+      S.angles.push(shotAngle);
       setCount(S.frames.length);
       setBar(S.frames.length / FRAME_COUNT);
       if (S.frames.length >= FRAME_COUNT) finishCapture();
@@ -322,6 +342,9 @@
 
     S.frames = [];
     S.turn = 0;
+    S.net = 0;
+    S.angles = [];
+    S.srcW = video.videoWidth || 0;
     S.needDeg = STEP_DEG;
     setCount(0);
     setBar(0);
@@ -366,10 +389,12 @@
     idle.style.display = 'none';
 
     try {
-      var out = await stitch(S.frames, OUT_W, function (p, label) {
+      // 每帧输出宽度跟着摄像头实际给的画面走，比源还宽就是白放大，只会更糊
+      var outW = Math.min(1080, Math.max(640, S.srcW || 960));
+      var out = await stitch(S.frames, outW, function (p, label) {
         setBar(p);
         if (label) setPhase(label);
-      }, { circular: S.angleMode });
+      }, { circular: S.angleMode, angles: S.angles });
       setPhase('完成');
       setBar(1);
       idle.innerHTML = '<div>拍好了，下面就是可以转动的球面全景</div>';
@@ -586,10 +611,11 @@
   }
 
   // 水平带 → 等距柱状 2:1：实拍带放中间，上下用边缘拉伸 + 同色雾化补满，转成球面时不露黑边
-  function toEquirect(band) {
+  function toEquirect(band, bandRatio) {
     var W = Math.min(4096, Math.max(2400, Math.round(band.width / 2) * 2));
     var H = Math.round(W / 2);
-    var bandH = Math.round(H * 0.38);
+    var bandH = Math.round(H * (bandRatio || 0.38));
+    if (bandH > H) bandH = H;
     var y0 = Math.round((H - bandH) / 2);
 
     var eq = document.createElement('canvas');
@@ -709,19 +735,77 @@
       var thF = fH - 3;
       var yA = useY > 0 ? useY : 0;
       var yB = useY < 0 ? -useY : 0;
-      var mA = regionMean(fine[m - 1], fW, useX, yA, bandTw, thF);
+      var uxc = Math.max(0, Math.min(fW - bandTw - 2, useX));
+      var mA = regionMean(fine[m - 1], fW, uxc, yA, bandTw, thF);
       var mB = regionMean(fine[m], fW, 0, yB, bandTw, thF);
-      var r = mB > 8 ? mA / mB : 1;
+      var r = (mB > 8 && isFinite(mA)) ? mA / mB : 1;
       ratios.push(Math.max(0.82, Math.min(1.22, r)));
 
       onProgress && onProgress(0.2 + 0.65 * (m / (imgs.length - 1)), '对齐画面 ' + (m + 1) + '/' + imgs.length);
       await new Promise(function (r2) { setTimeout(r2, 0); });
     }
 
-    // 举着手机转一圈，每帧之间的位移本来应该差不多。某一帧对着大白墙或玻璃时匹配会跑偏，
-    // 算出来的位移突然偏大或偏小，摊到画面上就是同一处东西出现两次。用中位数把这几个离群值拉回来。
-    // 陀螺仪按角度触发时位移本该很均匀，阈值收紧；按时间抓帧时转速本来就不稳，只抓明显错的值。
-    if (steps.length > 2) {
+    // 位移改过之后重叠区也跟着变，曝光比值和接缝位置都要按新位移重算
+    var recalcRatios = function () {
+      var bTw = Math.round(fW * 0.30);
+      var tF = fH - 3;
+      for (var r1 = 1; r1 < imgs.length; r1++) {
+        var ux = Math.max(1, Math.min(fW - bTw - 2,
+          Math.round((dxOut[r1] - dxOut[r1 - 1]) * fW / outW)));
+        var ty3 = tips[r1].y;
+        var ya3 = ty3 > 0 ? ty3 : 0;
+        var yb3 = ty3 < 0 ? -ty3 : 0;
+        var m1 = regionMean(fine[r1 - 1], fW, ux, ya3, bTw, tF);
+        var m2 = regionMean(fine[r1], fW, 0, yb3, bTw, tF);
+        ratios[r1] = (m2 > 8 && isFinite(m1)) ? Math.max(0.82, Math.min(1.22, m1 / m2)) : 1;
+      }
+    };
+
+    // ---- 有陀螺仪角度就优先用角度定位 ----
+    // 位移直接由「这一帧转了多少度」换算，不再依赖图像匹配。
+    // 对着白墙、玻璃、重复窗格这些没特征的地方，像素匹配必然失效，角度不会。
+    var angUsed = false;
+    var angs = (opts && opts.angles) || [];
+    if (angs.length === imgs.length && angs.length > 2) {
+      var baseA = angs[0];
+      var adiff = [];
+      var aOk = (baseA !== null && baseA !== undefined);
+      for (var a1 = 1; a1 < angs.length && aOk; a1++) {
+        if (angs[a1] === null || angs[a1] === undefined) { aOk = false; break; }
+        var da = angs[a1] - baseA;
+        if (Math.abs(da) > 200) { aOk = false; break; }
+        adiff.push(da);
+      }
+      var totalA = 0;
+      for (var a2 = 0; a2 < adiff.length; a2++) totalA += adiff[a2];
+      if (aOk && Math.abs(totalA) > 120) {
+        // 拿像素匹配的结果和角度之比反推镜头水平视角（度），取中位数，个别帧匹配失败不影响
+        var hfovs = [];
+        for (var a3 = 0; a3 < adiff.length; a3++) {
+          var dxp = steps[a3] * (outW / fW);
+          if (dxp > outW * 0.10 && Math.abs(adiff[a3]) > 6) {
+            hfovs.push(Math.abs(adiff[a3]) * outW / dxp);
+          }
+        }
+        if (hfovs.length) {
+          hfovs.sort(function (f1, f2) { return f1 - f2; });
+          var hfov = hfovs[Math.floor(hfovs.length / 2)];
+          if (hfov >= 28 && hfov <= 120) {
+            var accA = 0;
+            for (var a4 = 0; a4 < adiff.length; a4++) {
+              accA += adiff[a4] * outW / hfov;
+              dxOut[a4 + 1] = Math.round(accA);
+              tips[a4 + 1].x = Math.round(adiff[a4] * fW / hfov);
+            }
+            angUsed = true;
+            recalcRatios();
+          }
+        }
+      }
+    }
+
+    // ---- 没有角度时：把明显跑偏的位移用中位数拉回来 ----
+    if (!angUsed && steps.length > 2) {
       var tol = (opts && opts.circular) ? 0.40 : 0.62;
       var sortedStep = steps.slice().sort(function (s1, s2) { return s1 - s2; });
       var medStep = sortedStep[Math.floor(sortedStep.length / 2)];
@@ -739,18 +823,7 @@
           acc3 += steps[s4];
           dxOut[s4 + 1] = Math.round(acc3 * (outW / fW));
         }
-        // 位移改过了，重叠区跟着变，曝光比值也要重算，否则接缝两侧亮度会差一截
-        var bandTw2 = Math.round(fW * 0.30);
-        var thF2 = fH - 3;
-        for (var s5 = 1; s5 < imgs.length; s5++) {
-          var ty = tips[s5].y;
-          var ya = ty > 0 ? ty : 0;
-          var yb = ty < 0 ? -ty : 0;
-          var ma = regionMean(fine[s5 - 1], fW, tips[s5].x, ya, bandTw2, thF2);
-          var mb = regionMean(fine[s5], fW, 0, yb, bandTw2, thF2);
-          var rr = mb > 8 ? ma / mb : 1;
-          ratios[s5] = Math.max(0.82, Math.min(1.22, rr));
-        }
+        recalcRatios();
       }
     }
 
@@ -1139,8 +1212,7 @@
 
   btnRetry.addEventListener('click', function () {
     stopCamera();
-    stopTimers();
-    S.capturing = false;
+    stopTimers();    S.capturing = false;
     S.frames = [];
     resetUI();
     btnMain.style.display = '';
@@ -1165,6 +1237,97 @@
     saveBlob(S.eqUrl, fileName('pano-sphere'));
   });
 
+  btnImport.addEventListener('click', function () { picker.click(); });
+  picker.addEventListener('change', function () {
+    var f = picker.files && picker.files[0];
+    picker.value = '';
+    if (!f) return;
+    result.classList.remove('show');
+    after.style.display = 'none';
+    setBar(0);
+    importPano(f);
+  });
+
+  // ---------- 倒入手机相机自带的全景照片，直接球面化 ----------
+  // 系统相机的全景模式是硬件/系统级拼接（陀螺仪对齐 + 多频带融合），质量比网页里拿 12 帧硬拼高得多。
+  // 这条路只在本机读文件、本机处理，不联网。
+  async function importPano(file) {
+    setPhase('正在读照片');
+    errEl.textContent = '';
+    var img;
+    try { img = await loadImg(file); }
+    catch (e) { fail('这张图打不开，换一张试试'); return; }
+
+    var iw = img.naturalWidth, ih = img.naturalHeight;
+    var ratio = iw / ih;
+    if (ratio < 1.7) {
+      fail('这张不像全景长条（' + iw + '×' + ih + '），请选手机相机「全景」模式扫出来的那张');
+      setPhase('等待开始');
+      return;
+    }
+
+    // 系统全景图上下常有没扫到的黑边，找出来裁掉
+    var sw = Math.min(1200, iw);
+    var sh = Math.max(8, Math.round(sw * ih / iw));
+    var probe = document.createElement('canvas');
+    probe.width = sw; probe.height = sh;
+    var pctx2 = probe.getContext('2d', { willReadFrequently: true });
+    pctx2.drawImage(img, 0, 0, sw, sh);
+    var pd = pctx2.getImageData(0, 0, sw, sh).data;
+    function rowMean(y) {
+      var s = 0, cnt = 0;
+      for (var x = 0; x < sw; x += 4) {
+        var i = (y * sw + x) * 4;
+        s += (pd[i] + pd[i + 1] + pd[i + 2]) / 3; cnt++;
+      }
+      return cnt ? s / cnt : 0;
+    }
+    var topR = 0, botR = sh;
+    while (topR < sh * 0.3 && rowMean(topR) < 24) topR++;
+    while (botR > sh * 0.7 && rowMean(botR - 1) < 24) botR--;
+    var keepTop = topR / sh, keepBot = botR / sh;
+    if (keepBot - keepTop < 0.5) { keepTop = 0; keepBot = 1; }
+
+    var bandW2 = Math.min(4096, iw);
+    var bandH2 = Math.max(8, Math.round(ih * (keepBot - keepTop) * bandW2 / iw));
+    var band2 = document.createElement('canvas');
+    band2.width = bandW2; band2.height = bandH2;
+    band2.getContext('2d').drawImage(img,
+      0, Math.round(keepTop * ih), iw, Math.round((keepBot - keepTop) * ih),
+      0, 0, bandW2, bandH2);
+
+    var eqCanvas;
+    if (ratio > 2.3) {
+      // 横向长条：按 55% 高度放进 2:1 图，上下补雾
+      eqCanvas = toEquirect(band2, 0.55);
+    } else {
+      // 本来就是 2:1 的等距柱状（全景相机直出），拉成严格 2:1
+      eqCanvas = document.createElement('canvas');
+      eqCanvas.width = 4096; eqCanvas.height = 2048;
+      eqCanvas.getContext('2d').drawImage(band2, 0, 0, bandW2, bandH2, 0, 0, 4096, 2048);
+    }
+
+    setPhase('正在生成球面');
+    var bandBlob = await new Promise(function (r) { band2.toBlob(r, 'image/jpeg', 0.92); });
+    var eqBlob = await new Promise(function (r) { eqCanvas.toBlob(r, 'image/jpeg', 0.92); });
+
+    idle.style.display = 'none';
+    tip.style.display = 'none';
+    stageEl.style.display = 'none';
+    metaEl.style.display = 'none';
+    barEl.parentNode.style.display = 'none';
+    btnImport.style.display = 'none';
+    btnRetry.textContent = '换一张';
+    setPhase('完成');
+    setBar(1);
+    S.frames = [];
+    setCount(0);
+    await presentResult({
+      blob: bandBlob, width: bandW2, height: bandH2,
+      eqBlob: eqBlob, eqWidth: eqCanvas.width, eqHeight: eqCanvas.height
+    });
+  }
+
   // ---------- 自测（?selftest=1） ----------
   async function selftest() {
     var scene = buildScene(4000, 420, 12345);
@@ -1185,7 +1348,13 @@
     }
 
     var t0 = performance.now();
-    var res = await stitch(blobs, 960, function () {}, { circular: CIRCULAR });
+    // ?angtest=1：喂一组等分的角度，走「角度定位」分支，验证算出来的宽度和像素匹配一致
+    var angles = null;
+    if (/angtest=1/.test(location.search)) {
+      angles = [];
+      for (var ai = 0; ai < 12; ai++) angles.push(ai * 30);
+    }
+    var res = await stitch(blobs, 960, function () {}, { circular: CIRCULAR, angles: angles });
     var expect = CIRCULAR
       ? Math.round(12 * step * 960 / 600)
       : Math.round((11 * step + 600) * 960 / 600);
@@ -1208,6 +1377,14 @@
   // 无交互环境（headless 截图/回归）用来自动跑一遍
   if (/auto=1/.test(location.search)) {
     setTimeout(function () { btnMain.click(); }, 400);
+  }
+
+  // 调试：造一张模拟的系统全景长条，直接走「从相册导入」那条路
+  if (/demo=1/.test(location.search)) {
+    setTimeout(function () {
+      var c = buildScene(8000, 1200, 99);
+      c.toBlob(function (b) { if (b) importPano(b); }, 'image/jpeg', 0.9);
+    }, 300);
   }
 })();
 </script>
