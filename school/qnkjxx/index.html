@@ -687,100 +687,260 @@
 <h1 id="学校360全景参观">学校360°全景参观</h1>
 <p>不用到校，手机拖动画面即可完整浏览校园前广场、足球场、羽毛球场、标准教室、计算机实训机房、学生宿舍六大实景区域，直观了解校园食宿、教学环境。
 如需线下实地走访校园，可联系黄老师预约接待：<a href="tel:18720072818" target="_blank">18720072818</a>（微信同号）
+<style>
+.pano2d { position: relative; width: 100%; height: 0; padding-bottom: 50%; background: #0b0d10; overflow: hidden; touch-action: none; cursor: grab; border-radius: 8px; }
+.pano2d .p2-track { position: absolute; top: 0; left: 0; height: 100%; display: flex; will-change: transform; }
+.pano2d .p2-track img { height: 100%; width: auto; display: block; pointer-events: none; user-select: none; }
+.pano2d .p2-hint { position: absolute; left: 0; right: 0; bottom: 0; padding: 7px 10px; font-size: 12px; line-height: 1.6; color: #d7dbe1; background: linear-gradient(transparent, rgba(0,0,0,.72)); pointer-events: none; }
+.pano2d-nav { display: flex; gap: 8px; overflow-x: auto; padding: 10px 2px 2px; -webkit-overflow-scrolling: touch; }
+.pano2d-nav button { flex: none; padding: 0; border: 0; border-radius: 6px; overflow: hidden; background: #1b1e24; cursor: pointer; opacity: .6; transition: opacity .15s; }
+.pano2d-nav button.on { opacity: 1; box-shadow: 0 0 0 2px #3a7afe; }
+.pano2d-nav img { display: block; width: 74px; height: 37px; object-fit: cover; }
+.pano2d-nav span { display: block; padding: 3px 6px 4px; font-size: 11px; color: #cfd4db; white-space: nowrap; }
+</style>
 <p><div id="viewer"></div></p>
+<div id="pano2d" class="pano2d" style="display:none"></div>
 <script>
+(function () {
   // 切片全景：整图按 8 列 4 行切开，先加载 low.jpg 低清底图，再按视野逐块加载高清切片
-  const tiled = (base, width, cols = 8, rows = 4) => ({
-    baseUrl: base + "/low.jpg",
-    width: width,
-    cols: cols,
-    rows: rows,
-    tileUrl: (col, row) => base + "/tile_" + col + "_" + row + ".jpg",
-  });
+  var tiled = function (base, width, cols, rows) {
+    cols = cols || 8;
+    rows = rows || 4;
+    return {
+      baseUrl: base + "/low.jpg",
+      width: width,
+      cols: cols,
+      rows: rows,
+      tileUrl: function (col, row) { return base + "/tile_" + col + "_" + row + ".jpg"; },
+    };
+  };
 
-  const viewer = new PhotoSphereViewer.Viewer({
-    container: document.querySelector("#viewer"),
-    adapter: PhotoSphereViewer.EquirectangularTilesAdapter,
-    panorama: tiled("/assets/images/quanjing", 8192),
-    defaultZoomLvl:0,
-    loadingTxt:"加载中……",
-    mousewheelCtrlKey:true,
-    mousewheel:false,
-    plugins: [
-      //多图
-      [PhotoSphereViewer.GalleryPlugin, {
+  // 平面模式用的场景表：low 版是 2000×1000 的等距柱状图，拖动即可看一圈
+  var SCENES = [
+    { name: '校园全景', thumb: '/assets/images/quanjing/low.jpg', flat: '/assets/images/quanjing/low.jpg' },
+    { name: '前广场', thumb: '/assets/images/360/qianguangchangs.jpg', flat: '/assets/images/360/qianguangchang/low.jpg' },
+    { name: '足球场', thumb: '/assets/images/360/zuqiuchangs.jpg', flat: '/assets/images/360/zuqiuchang/low.jpg' },
+    { name: '羽毛球场', thumb: '/assets/images/360/yumaoqiuchangs.jpg', flat: '/assets/images/360/yumaoqiuchang/low.jpg' },
+    { name: '篮球场', thumb: '/assets/images/360/lanqiuchangs.jpg', flat: '/assets/images/360/lanqiuchang/low.jpg' },
+    { name: '教室', thumb: '/assets/images/360/jiaoshis.jpg', flat: '/assets/images/360/jiaoshi/low.jpg' },
+    { name: '机房', thumb: '/assets/images/360/jifangs.jpg', flat: '/assets/images/360/jifang/low.jpg' },
+    { name: '新能源汽车实训室', thumb: '/assets/images/360/xinnengyuanqicheshixunshis.jpg', flat: '/assets/images/360/xinnengyuanqicheshixunshi/low.jpg' },
+    { name: '美容美体实训室', thumb: '/assets/images/360/meirongmeitishixunshis.jpg', flat: '/assets/images/360/meirongmeitishixunshi/low.jpg' },
+    { name: '食堂', thumb: '/assets/images/360/shitangs.jpg', flat: '/assets/images/360/shitang/low.jpg' },
+    { name: '宿舍1', thumb: '/assets/images/360/sushe1s.jpg', flat: '/assets/images/360/sushe1/low.jpg' },
+    { name: '宿舍2', thumb: '/assets/images/360/sushe2s.jpg', flat: '/assets/images/360/sushe2/low.jpg' },
+  ];
+
+  // 有的浏览器能拿到 WebGL 上下文却渲染不出东西，所以除了取上下文还要读一个常量
+  function webglOK() {
+    if (/[?&]nogpu=1/.test(location.search)) return false; // 调试：在好设备上也能看平面模式
+    try {
+      var c = document.createElement('canvas');
+      var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
+      return !!(gl && gl.getParameter && gl.getParameter(gl.VERSION));
+    } catch (e) { return false; }
+  }
+
+  // 3D 不可用时的平面全景：两张相同的等距柱状图首尾相接，左右拖动循环看一圈
+  function flatMode() {
+    var holder = document.getElementById('viewer');
+    if (holder) holder.style.display = 'none';
+    var box = document.getElementById('pano2d');
+    if (!box) return;
+    box.style.display = 'block';
+
+    var track = document.createElement('div');
+    track.className = 'p2-track';
+    var ia = new Image(), ib = new Image();
+    track.appendChild(ia);
+    track.appendChild(ib);
+    box.appendChild(track);
+
+    var hint = document.createElement('div');
+    hint.className = 'p2-hint';
+    box.appendChild(hint);
+
+    var nav = document.createElement('div');
+    nav.className = 'pano2d-nav';
+    box.parentNode.insertBefore(nav, box.nextSibling);
+
+    var off = 0, w1 = 0, drag = false, lx = 0;
+
+    function width1() {
+      var r = ia.getBoundingClientRect();
+      if (r.width) return r.width;
+      return box.clientHeight * ia.naturalWidth / Math.max(1, ia.naturalHeight) || 0;
+    }
+    function apply() {
+      if (w1) {
+        while (off <= -w1) off += w1;
+        while (off > 0) off -= w1;
+      }
+      track.style.transform = 'translateX(' + Math.round(off) + 'px)';
+    }
+    function load(i) {
+      var s = SCENES[i];
+      var done = function () {
+        w1 = width1();
+        off = 0;
+        apply();
+      };
+      ia.onload = done;
+      ib.onload = done;
+      ia.src = s.flat;
+      ib.src = s.flat;
+      hint.textContent = '这个浏览器没开 3D 加速，已用平面模式，左右拖动看一圈';
+      for (var k = 0; k < nav.children.length; k++) {
+        nav.children[k].className = (k === i ? 'on' : '');
+      }
+    }
+
+    var stop = function () { drag = false; };
+    if (window.PointerEvent) {
+      box.addEventListener('pointerdown', function (e) {
+        drag = true;
+        lx = e.clientX;
+        try { box.setPointerCapture(e.pointerId); } catch (er) {}
+      });
+      box.addEventListener('pointermove', function (e) {
+        if (!drag) return;
+        off += e.clientX - lx;
+        lx = e.clientX;
+        apply();
+      });
+      box.addEventListener('pointerup', stop);
+      box.addEventListener('pointercancel', stop);
+    } else {
+      // 老内核（部分手机自带浏览器）没有 PointerEvent，退化为 touch
+      box.addEventListener('touchstart', function (e) {
+        drag = true;
+        lx = e.touches[0].clientX;
+      }, { passive: true });
+      box.addEventListener('touchmove', function (e) {
+        if (!drag) return;
+        var x = e.touches[0].clientX;
+        off += x - lx;
+        lx = x;
+        apply();
+        e.preventDefault();
+      }, { passive: false });
+      box.addEventListener('touchend', stop);
+      box.addEventListener('touchcancel', stop);
+    }
+    box.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      off -= e.deltaY;
+      apply();
+    }, { passive: false });
+
+    window.addEventListener('resize', function () {
+      w1 = width1();
+      apply();
+    });
+
+    SCENES.forEach(function (s, i) {
+      var b = document.createElement('button');
+      b.innerHTML = '<a data-fancybox="article-gallery" href="' + s.thumb + '"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="' + s.thumb + '"  alt=""></a><span>' + s.name + '</span>';
+      b.addEventListener('click', function () { load(i); });
+      nav.appendChild(b);
+    });
+
+    load(0);
+  }
+
+  if (window.PhotoSphereViewer && webglOK()) {
+    try {
+      var viewer = new PhotoSphereViewer.Viewer({
+      container: document.querySelector("#viewer"),
+      adapter: PhotoSphereViewer.EquirectangularTilesAdapter,
+      panorama: tiled("/assets/images/quanjing", 8192),
+      defaultZoomLvl: 0,
+      loadingTxt: "加载中……",
+      mousewheelCtrlKey: true,
+      mousewheel: false,
+      plugins: [
+        //多图
+        [PhotoSphereViewer.GalleryPlugin, {
           visibleOnLoad: true,
           items: [
-              {
-                  id: '1',
-                  name: '前广场',
-                  thumbnail: '/assets/images/360/qianguangchangs.jpg',
-                  panorama: tiled("/assets/images/360/qianguangchang", 8000),
-              },
-              {
-                  id: '2',
-                  name: '足球场',
-                  thumbnail: '/assets/images/360/zuqiuchangs.jpg',
-                  panorama: tiled("/assets/images/360/zuqiuchang", 8000),
-              },
-              {
-                  id: '3',
-                  name: '羽毛球场',
-                  thumbnail: '/assets/images/360/yumaoqiuchangs.jpg',
-                  panorama: tiled("/assets/images/360/yumaoqiuchang", 8000),
-              },
-              {
-                  id: '4',
-                  name: '篮球场',
-                  thumbnail: '/assets/images/360/lanqiuchangs.jpg',
-                  panorama: tiled("/assets/images/360/lanqiuchang", 8000),
-              },
-              {
-                  id: '5',
-                  name: '教室',
-                  thumbnail: '/assets/images/360/jiaoshis.jpg',
-                  panorama: tiled("/assets/images/360/jiaoshi", 8000),
-              },
-              {
-                  id: '6',
-                  name: '机房',
-                  thumbnail: '/assets/images/360/jifangs.jpg',
-                  panorama: tiled("/assets/images/360/jifang", 8000),
-              },
-              {
-                  id: '7',
-                  name: '新能源汽车实训室',
-                  thumbnail: '/assets/images/360/xinnengyuanqicheshixunshis.jpg',
-                  panorama: tiled("/assets/images/360/xinnengyuanqicheshixunshi", 8000),
-              },
-              {
-                  id: '8',
-                  name: '美容美体实训室',
-                  thumbnail: '/assets/images/360/meirongmeitishixunshis.jpg',
-                  panorama: tiled("/assets/images/360/meirongmeitishixunshi", 8000),
-              },
-              {
-                  id: '9',
-                  name: '食堂',
-                  thumbnail: '/assets/images/360/shitangs.jpg',
-                  panorama: tiled("/assets/images/360/shitang", 8000),
-              },              
-              {
-                  id: '10',
-                  name: '宿舍1',
-                  thumbnail: '/assets/images/360/sushe1s.jpg',
-                  panorama: tiled("/assets/images/360/sushe1", 8000),
-              },
-              {
-                  id: '11',
-                  name: '宿舍2',
-                  thumbnail: '/assets/images/360/sushe2s.jpg',
-                  panorama: tiled("/assets/images/360/sushe2", 8000),
-              }
+            {
+              id: '1',
+              name: '前广场',
+              thumbnail: '/assets/images/360/qianguangchangs.jpg',
+              panorama: tiled("/assets/images/360/qianguangchang", 8000),
+            },
+            {
+              id: '2',
+              name: '足球场',
+              thumbnail: '/assets/images/360/zuqiuchangs.jpg',
+              panorama: tiled("/assets/images/360/zuqiuchang", 8000),
+            },
+            {
+              id: '3',
+              name: '羽毛球场',
+              thumbnail: '/assets/images/360/yumaoqiuchangs.jpg',
+              panorama: tiled("/assets/images/360/yumaoqiuchang", 8000),
+            },
+            {
+              id: '4',
+              name: '篮球场',
+              thumbnail: '/assets/images/360/lanqiuchangs.jpg',
+              panorama: tiled("/assets/images/360/lanqiuchang", 8000),
+            },
+            {
+              id: '5',
+              name: '教室',
+              thumbnail: '/assets/images/360/jiaoshis.jpg',
+              panorama: tiled("/assets/images/360/jiaoshi", 8000),
+            },
+            {
+              id: '6',
+              name: '机房',
+              thumbnail: '/assets/images/360/jifangs.jpg',
+              panorama: tiled("/assets/images/360/jifang", 8000),
+            },
+            {
+              id: '7',
+              name: '新能源汽车实训室',
+              thumbnail: '/assets/images/360/xinnengyuanqicheshixunshis.jpg',
+              panorama: tiled("/assets/images/360/xinnengyuanqicheshixunshi", 8000),
+            },
+            {
+              id: '8',
+              name: '美容美体实训室',
+              thumbnail: '/assets/images/360/meirongmeitishixunshis.jpg',
+              panorama: tiled("/assets/images/360/meirongmeitishixunshi", 8000),
+            },
+            {
+              id: '9',
+              name: '食堂',
+              thumbnail: '/assets/images/360/shitangs.jpg',
+              panorama: tiled("/assets/images/360/shitang", 8000),
+            },
+            {
+              id: '10',
+              name: '宿舍1',
+              thumbnail: '/assets/images/360/sushe1s.jpg',
+              panorama: tiled("/assets/images/360/sushe1", 8000),
+            },
+            {
+              id: '11',
+              name: '宿舍2',
+              thumbnail: '/assets/images/360/sushe2s.jpg',
+              panorama: tiled("/assets/images/360/sushe2", 8000),
+            },
           ],
-      }],
-    ],
-  });
+        }],
+      ],
+    });
+      return;
+    } catch (err) {
+      if (window.console) console.warn('[pano] 3D 初始化失败，改用平面模式', err);
+    }
+  }
+
+  flatMode();
+})();
 </script>
 </p>
 <h1 id="报名预约指南">报名预约指南</h1>

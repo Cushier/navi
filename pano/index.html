@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta name="robots" content="noindex, nofollow">
-<title>全景相框 - 青年科技学习导航</title>
+<title>全景分享 - 青年科技学习导航</title>
 <link rel="icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico">
 <link rel="apple-touch-icon" href="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/favicon.ico">
 <link rel="preconnect" href="https://comment.qnkjxx.top" crossorigin="anonymous">
@@ -67,6 +67,12 @@ header .back:hover { color: #3a7afe; border-color: #b9cdf5; }
 	transition: transform .35s ease;
 }
 .shot:active img { transform: scale(1.02); }
+.shot .lost {
+	position: absolute; inset: 0;
+	display: flex; align-items: center; justify-content: center;
+	color: #98a2ad; font-size: 13px; background: #eef1f4;
+	font-weight: 400;
+}
 .shot .hint {
 	position: absolute; right: 10px; bottom: 10px;
 	background: rgba(0,0,0,.42);
@@ -202,7 +208,7 @@ header .back:hover { color: #3a7afe; border-color: #b9cdf5; }
 	background: rgba(255,255,255,.14); border: 0; color: #fff;
 	font-size: 12.5px; font-family: inherit; padding: 6px 12px; border-radius: 16px; cursor: pointer;
 }
-#sphere { flex: 1; min-height: 0; position: relative; }
+#sphere { flex: 1; min-height: 0; position: relative; overflow: hidden; overscroll-behavior: contain; touch-action: none; }
 #sphere canvas { display: block; }
 .viewer .vfoot {
 	flex: none; text-align: center; color: #9aa1a7; font-size: 11.5px;
@@ -252,6 +258,172 @@ html.io-black-mode .pick.has { background: #23272d; border-color: #3a4a63; }
 html.io-black-mode .btn.ghost { background: #262a30; border-color: #3a4250; color: #7ea6ff; }
 html.io-black-mode .prog { background: #2a2e35; }
 
+/* ---------- 搜索 / 标签 ---------- */
+.filter { margin: 0 0 14px; }
+.filter-row { display: flex; gap: 8px; align-items: center; }
+.filter-row input {
+	flex: 1; border: 1px solid #e3e6ea; border-radius: 20px;
+	padding: 9px 14px; font-size: 13px; font-family: inherit;
+	background: #fff; color: #333; outline: none;
+}
+.filter-row input:focus { border-color: #9dbdf7; }
+.filter-row button { padding: 7px 14px; border-radius: 18px; flex: none; }
+.tagrow { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+.tagrow:empty { display: none; }
+.tag {
+	background: #fff; border: 1px solid #e3e6ea; color: #6b7178;
+	font-size: 12px; padding: 4px 10px; border-radius: 14px; cursor: pointer;
+	font-family: inherit;
+}
+.tag.on { background: #eaf1ff; border-color: #b9cdf5; color: #2f6ae8; }
+.tag .n { color: #a6acb2; margin-left: 4px; font-size: 11px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip {
+	font-size: 11.5px; color: #4a7ddb; background: #f1f5ff;
+	border-radius: 10px; padding: 2px 8px; cursor: pointer;
+	border: 0; font-family: inherit;
+}
+.shot .count {
+	position: absolute; left: 10px; bottom: 10px;
+	background: rgba(0,0,0,.42); color: #fff;
+	font-size: 11.5px; padding: 4px 9px; border-radius: 12px;
+	backdrop-filter: blur(2px); pointer-events: none;
+}
+
+/* ---------- 九宫格选图 ---------- */
+.grid9 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.cell {
+	position: relative; aspect-ratio: 1; border-radius: 10px; overflow: hidden;
+	background: #f3f5f7; border: 1px dashed #cdd4db;
+	display: flex; align-items: center; justify-content: center;
+	font-size: 21px; color: #b3b9c0; cursor: pointer;
+}
+.cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cell.busy { opacity: .55; }
+.cell.on { box-shadow: 0 0 0 2px #3a7afe inset; }
+.cell .del {
+	position: absolute; right: 3px; top: 3px; width: 20px; height: 20px;
+	border-radius: 50%; background: rgba(0,0,0,.52); color: #fff;
+	border: 0; font-size: 12px; line-height: 20px; text-align: center;
+	cursor: pointer; padding: 0; font-family: inherit;
+}
+.cell .badge {
+	position: absolute; left: 4px; bottom: 4px;
+	background: rgba(0,0,0,.5); color: #fff; font-size: 10.5px;
+	padding: 1px 6px; border-radius: 8px;
+}
+
+/* ---------- 帖子详情 ---------- */
+.thread-sheet { max-width: 520px; padding: 16px 18px 18px; }
+.thead { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.thead .who-line { flex: 1; display: flex; gap: 8px; align-items: baseline; }
+.vg { background: none; border: 0; color: #9aa1a7; font-size: 12.5px; cursor: pointer; font-family: inherit; padding: 4px; }
+.tgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin: 10px 0 4px; }
+.tgrid .g {
+	position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden;
+	background: #eef1f4; cursor: pointer;
+}
+.tgrid .g img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.tgrid .g.wide { aspect-ratio: 2 / 1; }
+.tgrid .g .k {
+	position: absolute; right: 4px; bottom: 4px;
+	background: rgba(0,0,0,.45); color: #fff; font-size: 10.5px;
+	padding: 1px 5px; border-radius: 7px;
+}
+.tgrid .g .k.zero { display: none; }
+.tgrid .g .flat { position: absolute; left: 4px; top: 4px; background: rgba(0,0,0,.45); color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 7px; }
+.tbar { display: flex; gap: 10px; margin: 12px 0 4px; }
+.tbar .btn { font-size: 12.5px; padding: 7px 14px; }
+
+/* ---------- 查看器里的评论抽屉 ---------- */
+.viewer .vpanel {
+	display: none; flex: none; max-height: 44vh; overflow: auto;
+	background: #14161a; color: #d5dae0;
+	padding: 10px 16px 12px;
+	border-top: 1px solid #24282e;
+	-webkit-overflow-scrolling: touch;
+}
+.viewer .vpanel.on { display: block; }
+.viewer .vpanel .cmt { border-top-color: #24282e; }
+.viewer .vpanel .cmt .who { color: #7d858e; }
+.viewer .vpanel .cmt .who b { color: #c3c9d0; }
+.viewer .vpanel .cmt .txt { color: #aab0b8; }
+.viewer .vpanel .cmt-form { border-top-color: #24282e; }
+.viewer .vpanel .cmt-form input, .viewer .vpanel .cmt-form textarea {
+	background: #1c1f24; border-color: #2c3138; color: #cfd4da;
+}
+.viewer .vpanel .cmt-form .act .msg { color: #e0796b; }
+.viewer .vfoot .acts { display: flex; gap: 12px; justify-content: center; margin-bottom: 6px; }
+.viewer .vfoot .acts button {
+	background: rgba(255,255,255,.12); border: 0; color: #d5dae0;
+	font-size: 12px; padding: 6px 14px; border-radius: 15px;
+	font-family: inherit; cursor: pointer;
+}
+
+html.io-black-mode .filter-row input { background: #23272d; border-color: #2f343b; color: #cfd4da; }
+html.io-black-mode .tag { background: #1e2126; border-color: #333840; color: #8b939c; }
+html.io-black-mode .tag.on { background: #22303f; border-color: #37527a; color: #7ea6ff; }
+html.io-black-mode .chip { background: #232a36; color: #7ea6ff; }
+html.io-black-mode .cell { background: #23272d; border-color: #333840; color: #5f666e; }
+html.io-black-mode .thread-sheet { background: #1e2126; }
+html.io-black-mode .tgrid .g { background: #262a30; }
+html.io-black-mode .cmt .who .fig { background: #22303f; color: #7ea6ff; }
+html.io-black-mode .shot .lost { background: #23272d; color: #8b939c; }
+
+/* 图级评论的「第 n 张」标记 */
+.cmt .who .fig {
+	display: inline-block; margin-left: 6px;
+	background: #eef2ff; color: #3a7afe; font-weight: 400;
+	font-size: 10.5px; padding: 1px 6px; border-radius: 8px;
+	vertical-align: 1px;
+}
+
+/* 复制链接后的浮动提示 */
+.toast {
+	position: fixed; left: 50%; bottom: 88px; z-index: 90;
+	transform: translateX(-50%) translateY(8px);
+	background: rgba(24,26,30,.93); color: #fff;
+	font-size: 13px; padding: 9px 16px; border-radius: 18px;
+	max-width: 84vw; opacity: 0;
+	transition: opacity .2s ease, transform .2s ease;
+	pointer-events: none;
+}
+.toast.on { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* 微信里转发只能手动点右上角，用这层指一下 */
+.wxh {
+	position: fixed; inset: 0; z-index: 88;
+	background: rgba(10,12,16,.62);
+	-webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+	opacity: 0; pointer-events: none;
+	transition: opacity .18s ease;
+}
+.wxh.on { opacity: 1; pointer-events: auto; }
+.wxh-card {
+	position: absolute; left: 14px; right: 14px; top: 112px;
+	background: rgba(24,26,30,.96); color: #fff;
+	border-radius: 14px; padding: 15px 16px 13px;
+	box-shadow: 0 14px 40px rgba(0,0,0,.4);
+	transform: translateY(-8px); transition: transform .2s ease;
+}
+.wxh.on .wxh-card { transform: translateY(0); }
+.wxh-card b { display: block; font-size: 15px; font-weight: 600; margin-bottom: 7px; }
+.wxh-card p { margin: 0; font-size: 13px; line-height: 1.7; color: #c8ced8; }
+.wxh-card p i { font-style: normal; color: #fff; font-weight: 600; letter-spacing: 1px; }
+.wxh-act { display: flex; gap: 9px; margin-top: 13px; }
+.wxh-act button {
+	flex: 1; font: inherit; font-size: 13px; padding: 9px 0; border-radius: 10px; cursor: pointer;
+	border: 1px solid rgba(255,255,255,.2); background: transparent; color: #dfe4ec;
+}
+.wxh-act button.main { background: #3a7afe; border-color: #3a7afe; color: #fff; font-weight: 600; }
+.wxh-arrow {
+	position: absolute; right: 14px; top: 42px; width: 78px; height: 58px;
+	pointer-events: none; animation: wxhBob 1.15s ease-in-out infinite alternate;
+}
+@keyframes wxhBob { from { transform: translateY(0); } to { transform: translateY(-7px); } }
+@media (prefers-reduced-motion: reduce) { .wxh-arrow { animation: none; } }
+
 @media (max-width: 480px) {
 	body { padding: 16px 10px 92px; }
 	header h1 { font-size: 22px; }
@@ -262,12 +434,20 @@ html.io-black-mode .prog { background: #2a2e35; }
 <body>
 <div class="wrap">
 	<header>
-		<h1>全景相框</h1>
+		<h1>全景分享</h1>
 		<p>这里放几张站在原地转一圈拍下的全景。<br>点开图可以用手拖着看四周，喜欢就留句话。</p>
 		<a class="back" href="/">← 回导航</a>
 	</header>
 
-	<div id="feed"></div>
+	<div class="filter">
+	<div class="filter-row">
+		<input type="search" id="q" placeholder="搜说明、标签、昵称" autocomplete="off">
+		<button class="btn ghost" id="qClear" style="display:none">清</button>
+	</div>
+	<div class="tagrow" id="tagRow"></div>
+</div>
+
+<div id="feed"></div>
 	<div class="more-wrap" id="moreWrap" style="display:none">
 		<button class="btn ghost" id="moreBtn">再看几张</button>
 	</div>
@@ -280,7 +460,7 @@ html.io-black-mode .prog { background: #2a2e35; }
 </div>
 
 <div class="pubbar">
-	<button class="btn" id="pubBtn">放一张全景</button>
+	<button class="btn" id="pubBtn">发一条</button>
 </div>
 
 <!-- 口令 -->
@@ -302,17 +482,22 @@ html.io-black-mode .prog { background: #2a2e35; }
 <!-- 发布 -->
 <div class="modal" id="composer">
 	<div class="sheet">
-		<h3>放一张全景</h3>
-		<p class="sub">选手机相册里那张横着扫的长条，页面会把它转成可拖动的球面。图片直传图床，不经本站。</p>
+		<h3 id="cpTitle">发一条</h3>
+		<p class="sub">最多九张。长条全景会自动转成能拖动的球面，普通照片原样放进来。图片直传图床，不经本站。</p>
 		<div class="field">
-			<div class="pick" id="pick">点这里选照片</div>
-			<input type="file" id="file" accept="image/*" style="display:none">
+			<div class="grid9" id="grid9"></div>
+			<input type="file" id="file" accept="image/*" multiple style="display:none">
 		</div>
-		<div class="prog" id="prog"><i></i></div>
-		<div class="field">
+		<div class="field" id="capBox">
 			<label>说两句（可留空）</label>
 			<textarea id="capText" placeholder="这是哪儿、什么时候拍的、当时在干嘛"></textarea>
 		</div>
+		<div class="field" id="itemBox" style="display:none">
+			<label id="itemLabel">这张的标签</label>
+			<input type="text" id="itemTags" placeholder="用空格分开，比如 山 日落 老地方">
+			<input type="text" id="itemNote" placeholder="这一张的说明（可留空）" style="margin-top:8px">
+		</div>
+		<div class="prog" id="prog"><i></i></div>
 		<div class="tip" id="pubTip"></div>
 		<div class="foot">
 			<button class="btn ghost" id="pubCancel">取消</button>
@@ -321,13 +506,48 @@ html.io-black-mode .prog { background: #2a2e35; }
 	</div>
 </div>
 
+<!-- 微信内置浏览器：转发只能走右上角菜单 -->
+<div class="wxh" id="wxTip" hidden>
+	<svg class="wxh-arrow" viewBox="0 0 78 58" fill="none" aria-hidden="true">
+		<path d="M4 53 C26 52,46 37,59 12" stroke="rgba(255,255,255,.9)" stroke-width="2.4"
+			stroke-linecap="round" stroke-dasharray="7 6"/>
+		<path d="M46 13 L62 11 L60 28" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>
+	</svg>
+	<div class="wxh-card">
+		<b>微信里得自己点一下</b>
+		<p>点右上角的 <i>···</i> ，再选「发送给朋友」或「分享到朋友圈」。<br>网页没法替你打开微信的转发面板。</p>
+		<div class="wxh-act">
+			<button type="button" id="wxCopy">复制链接</button>
+			<button type="button" class="main" id="wxClose">知道了</button>
+		</div>
+	</div>
+</div>
+
+<!-- 帖子详情 -->
+<div class="modal" id="thread">
+	<div class="sheet thread-sheet">
+		<div class="thead">
+			<div class="who-line"><b class="nick" id="tNick"></b><span class="time" id="tTime"></span></div>
+			<button class="vg" id="tClose">关闭</button>
+		</div>
+		<div class="desc" id="tDesc"></div>
+		<div class="tgrid" id="tGrid"></div>
+		<div class="tbar">
+			<button class="btn ghost" id="tShare">🔗 分享这条</button>
+		</div>
+		<div id="tCmts"></div>
+	</div>
+</div>
+
 <!-- 查看器 -->
 <div class="viewer" id="viewer">
 	<div class="vhead">
 		<span class="t" id="vTitle"></span>
+		<button id="vShare">分享</button>
 		<button id="vClose">关闭</button>
 	</div>
 	<div id="sphere"></div>
+	<div class="vpanel" id="vPanel"></div>
 	<div class="vfoot" id="vFoot">按住拖动看四周，双指或滚轮缩放</div>
 </div>
 
@@ -338,12 +558,32 @@ html.io-black-mode .prog { background: #2a2e35; }
 'use strict';
 
 /* ========== 配置 ========== */
-var API = 'https://comment.qnkjxx.top/api';
+/* 接口基址：正式环境走 https://comment.qnkjxx.top/api。
+   用内网 IP 打开（手机连电脑热点调试）时，Waline 的来源白名单会直接 403，
+   这时自动改用本机小代理 _tools/waline_lan_proxy.py（默认 8139）；
+   也可以用 URL 上的 ?api= 手动指定别的地址。 */
+var API = (function () {
+	var m = location.search.match(/[?&]api=([^&#]+)/);
+	if (m) return decodeURIComponent(m[1]).replace(/\/+$/, '');
+	if (/^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname)) {
+		return 'http://' + location.hostname + ':8139/api';
+	}
+	return 'https://comment.qnkjxx.top/api';
+})();
 var PAGE_PATH = (function () {
 	var m = location.search.match(/[?&]path=([^&#]+)/);
 	return m ? decodeURIComponent(m[1]) : '/pano/';
 })();
 var PAGE_SIZE = 10;
+/* 分享链接：?p=帖子id 打开详情，"&i=n" 直接打开第 n 张 */
+var JUMP_P = (function () {
+	var m = location.search.match(/[?&]p=(\d+)/);
+	return m ? Number(m[1]) : 0;
+})();
+var JUMP_I = (function () {
+	var m = location.search.match(/[?&]i=(\d+)/);
+	return m ? Number(m[1]) : 0;
+})();
 var CLOUD_NAME = 'sqrrg30h';
 var UPLOAD_PRESET = 'pano_unsigned';
 var PASS_HASH = '88eea08d184bf65d34c956593b85c77c55e993f7296ebccfaf1430bf5871268e';
@@ -354,12 +594,22 @@ var DPR = Math.min(3, window.devicePixelRatio || 1);
 /* 列表缩略按屏幕密度取，660 在高分屏上是糊的 */
 var THUMB_W = Math.min(1280, Math.max(660, Math.round(464 * DPR)));
 
-var S = { page: 1, totalPages: 1, loading: false, posts: [], viewer: null, soft: null, pendingBlob: null, pendingUrl: '' };
+var S = {
+	page: 1, totalPages: 1, loading: false, posts: [],
+	viewer: null, soft: null, cur: null,
+	pendingBlob: null, pendingUrl: '',
+	q: '', tag: '', jump: null, jumpIdx: 0, panoW: 0
+};
 
 var feedEl = document.getElementById('feed');
 var moreWrap = document.getElementById('moreWrap');
 var moreBtn = document.getElementById('moreBtn');
 var emptyEl = document.getElementById('empty');
+var qEl = document.getElementById('q');
+var qClear = document.getElementById('qClear');
+var tagRow = document.getElementById('tagRow');
+
+if (JUMP_P) { S.jump = { p: JUMP_P }; S.jumpIdx = JUMP_I; }
 
 /* ========== 工具 ========== */
 function esc(s) {
@@ -450,14 +700,80 @@ function errText(m) {
 	return '没发出去：' + (s || '未知错误');
 }
 
-/* Waline 评论是 HTML，取纯文本与第一张图 */
-function parsePost(c) {
+/* ---------- 编码约定 ----------
+   一条顶层评论 = 一个帖子：
+     帖级说明
+     ![全景](图址)
+     〔标签1|标签2〕 这张的说明
+     ![全景](图址2)
+     ...
+     ⟦签名⟧
+   子评论开头写 〔图n〕 表示这条是针对第 n 张的，否则算帖子整体评论。
+   标签用全角六角括号包起来，Markdown 不会把它当标题，访客在后台也看得懂。 */
+var TAG_RE = /\u3014([^\u3015]{0,80})\u3015/g;
+var SIG_RE = /\u27E6[^\u27E7]{0,40}\u27E7/g;
+var IMG_SRC_RE = '<img[^>]*src\\s*=\\s*"([^"]+)"[^>]*>';
+
+function htmlToText(h) {
+	var t = String(h || '')
+		.replace(/<br\s*\/?>/gi, '\n')
+		.replace(/<\/(p|div|li|h\d)>/gi, '\n')
+		.replace(/<[^>]+>/g, '');
+	var doc = new DOMParser().parseFromString('<!doctype html><body>' + t, 'text/html');
+	return (doc.body.textContent || '');
+}
+
+/* 一段文本 → { tags, text } */
+function splitMeta(raw) {
+	var tags = [];
+	var t = String(raw || '').replace(SIG_RE, ' ');
+	t = t.replace(/\u3014([^\u3015]{0,80})\u3015/g, function (_, g) {
+		g.split('|').forEach(function (x) { x = x.trim(); if (x) tags.push(x.slice(0, 14)); });
+		return ' ';
+	});
+	t = t.replace(/\s+/g, ' ').trim();
+	return { tags: tags.slice(0, 8), text: t };
+}
+
+/* 一条顶层评论 → 帖子结构 */
+function parseThread(c) {
 	var html = String(c.comment || '');
-	var doc = new DOMParser().parseFromString('<!doctype html><body>' + html, 'text/html');
-	var img = doc.querySelector('img');
-	var imgUrl = img ? (img.getAttribute('src') || '') : '';
-	var text = (doc.body.textContent || '').replace(/\u27E6[^\u27E7]{0,40}\u27E7/g, '').replace(/\s+$/g, '');
-	return { img: imgUrl, text: text };
+	var segs = [];
+	var re = new RegExp(IMG_SRC_RE, 'gi');
+	var last = 0, m;
+	while ((m = re.exec(html))) {
+		segs.push({ src: m[1], text: html.slice(last, m.index) });
+		last = re.lastIndex;
+	}
+	if (!segs.length) return { head: splitMeta(htmlToText(html)).text, tags: [], items: [], cover: '' };
+	segs.push({ src: '', text: html.slice(last) });
+	var head = splitMeta(htmlToText(segs[0].text));
+	var items = [];
+	for (var i = 0; i < segs.length - 1; i++) {
+		var meta = splitMeta(htmlToText(segs[i + 1].text));
+		items.push({ url: segs[i].src, tags: meta.tags, note: meta.text });
+	}
+	return { head: head.text, tags: head.tags, items: items, cover: items[0].url };
+}
+
+/* 子评论：〔图n〕 → 归属第 n 张 */
+var PIC_RE = /^\u3014图(\d{1,2})\u3015/;
+function parseKid(k) {
+	var t = htmlToText(k.comment || '').replace(SIG_RE, '').replace(/\s+/g, ' ').trim();
+	var m = t.match(PIC_RE);
+	var pic = m ? Number(m[1]) : 0;
+	if (m) t = t.slice(m[0].length).trim();
+	return { pic: pic, text: t };
+}
+
+/* 帖子里所有标签（含每张图的），用于搜索与筛选 */
+function threadTags(p) {
+	var out = [];
+	p.tags.forEach(function (t) { if (out.indexOf(t) < 0) out.push(t); });
+	p.items.forEach(function (it) {
+		it.tags.forEach(function (t) { if (out.indexOf(t) < 0) out.push(t); });
+	});
+	return out;
 }
 
 /* ========== 接口 ========== */
@@ -525,25 +841,81 @@ function renderAll(all) {
 		kidsBy[k].sort(function (a, b) { return (a.time || 0) - (b.time || 0); });
 	});
 
-	var rendered = 0;
+	S.posts = [];
 	tops.forEach(function (c) {
-		var p = parsePost(c);
-		if (!p.img) return;
-		feedEl.appendChild(renderCard(c, p, kidsBy[String(c.objectId)] || []));
-		rendered++;
+		var p = parseThread(c);
+		if (!p.items.length) return;
+		S.posts.push({ c: c, p: p, kids: kidsBy[String(c.objectId)] || [] });
 	});
+	buildTagRow();
 
-	if (!rendered) {
-		emptyEl.style.display = 'block';
-		emptyEl.innerHTML = '还没有人放照片。<br>等第一张全景上线吧。';
-	} else {
-		emptyEl.style.display = 'none';
+	/* 分享链接直达：先把列表画出来，再把详情层/查看器叠上去。
+	   否则列表区停在「正在读照片…」的空态，关掉详情层就一片空白，只能刷新。 */
+	var jumpHit = null, jumpTo = 0;
+	if (S.jump) {
+		var id = Number(S.jump.p);
+		var jumpIdx = S.jumpIdx || 0;
+		var hit = null;
+		S.posts.forEach(function (e) { if (Number(e.c.objectId) === id) hit = e; });
+		S.jump = null;
+		S.jumpIdx = 0;
+		if (hit) { jumpHit = hit; jumpTo = jumpIdx; }
+	}
+	paintFeed();
+	if (jumpHit) {
+		if (jumpTo) openPic(jumpHit, jumpTo - 1);
+		else openThread(jumpHit);
 	}
 }
 
+function buildTagRow() {
+	var cnt = {};
+	S.posts.forEach(function (e) {
+		threadTags(e.p).forEach(function (t) { cnt[t] = (cnt[t] || 0) + 1; });
+	});
+	var keys = Object.keys(cnt).sort(function (a, b) { return cnt[b] - cnt[a] || (a < b ? -1 : 1); }).slice(0, 16);
+	tagRow.innerHTML = '';
+	keys.forEach(function (t) {
+		var b = document.createElement('button');
+		b.className = 'tag' + (S.tag === t ? ' on' : '');
+		b.innerHTML = esc(t) + '<span class="n">' + cnt[t] + '</span>';
+		b.addEventListener('click', function () {
+			S.tag = (S.tag === t) ? '' : t;
+			buildTagRow();
+			paintFeed();
+		});
+		tagRow.appendChild(b);
+	});
+}
+
+function paintFeed() {
+	var list = S.posts.filter(function (e) {
+		var p = e.p;
+		if (S.tag && threadTags(p).indexOf(S.tag) < 0) return false;
+		if (S.q) {
+			var hay = [p.head, (e.c.nick || ''), threadTags(p).join(' ')]
+				.concat(p.items.map(function (it) { return it.note; }))
+				.join(' ').toLowerCase();
+			if (hay.indexOf(S.q.toLowerCase()) < 0) return false;
+		}
+		return true;
+	});
+
+	feedEl.innerHTML = '';
+	if (!list.length) {
+		emptyEl.style.display = 'block';
+		emptyEl.innerHTML = (S.q || S.tag)
+			? '没找到。换个词试试，或者点一下已选中的标签取消筛选。'
+			: '还没有人放照片。<br>等第一张全景上线吧。';
+		return;
+	}
+	emptyEl.style.display = 'none';
+	list.forEach(function (e) { feedEl.appendChild(renderCard(e)); });
+}
+
 /* ========== 卡片 ========== */
-function renderCard(c, p, kids) {
-	kids = kids || [];
+function renderCard(e) {
+	var c = e.c, p = e.p, kids = e.kids;
 	var card = document.createElement('div');
 	card.className = 'card';
 
@@ -551,14 +923,26 @@ function renderCard(c, p, kids) {
 	shot.className = 'shot';
 	var im = document.createElement('img');
 	im.loading = 'lazy';
-	im.alt = '全景';
-	im.src = thumbUrl(p.img, THUMB_W);
-	im.addEventListener('click', function () { openViewer(p.img, p.text); });
+	im.alt = '照片';
+	im.src = thumbUrl(p.cover, THUMB_W);
+	im.onerror = function () {
+		im.style.display = 'none';
+		var lost = document.createElement('div');
+		lost.className = 'lost';
+		lost.textContent = '这张图没取到';
+		shot.appendChild(lost);
+	};
 	shot.appendChild(im);
+
 	var hint = document.createElement('span');
-	hint.className = 'hint';
-	hint.textContent = '点开转一圈';
+	hint.className = p.items.length > 1 ? 'count' : 'hint';
+	hint.textContent = p.items.length > 1 ? (p.items.length + ' 张') : '点开看';
 	shot.appendChild(hint);
+
+	shot.addEventListener('click', function () {
+		if (p.items.length > 1) openThread(e);
+		else openPic(e, 0);
+	});
 
 	var body = document.createElement('div');
 	body.className = 'card-body';
@@ -572,69 +956,129 @@ function renderCard(c, p, kids) {
 	tm.className = 'time';
 	tm.textContent = fmtTime(c.time);
 	row.appendChild(nk); row.appendChild(tm);
-
-	var desc = document.createElement('div');
-	desc.className = 'desc';
-	var full = p.text || '';
-	desc.textContent = full;
-
 	body.appendChild(row);
-	if (full) body.appendChild(desc);
+
+	var text = p.head || (p.items[0] && p.items[0].note) || '';
+	if (text) {
+		var desc = document.createElement('div');
+		desc.className = 'desc';
+		desc.textContent = text;
+		body.appendChild(desc);
+		if (text.length > 80) {
+			desc.classList.add('clamp');
+			var more = document.createElement('span');
+			more.className = 'more';
+			more.textContent = ' 展开';
+			more.addEventListener('click', function () {
+				if (desc.classList.contains('clamp')) { desc.classList.remove('clamp'); more.textContent = ''; }
+			});
+			desc.appendChild(more);
+		}
+	}
+
+	var tags = threadTags(p);
+	if (tags.length) body.appendChild(chipsRow(tags, 5));
+
+	card.appendChild(shot);
+	card.appendChild(body);
 
 	var bar = document.createElement('div');
 	bar.className = 'cmt-bar';
 	var btn = document.createElement('button');
-	var label = function () { return '💬 ' + (kids.length ? ('评论 ' + kids.length) : '评论'); };
-	btn.textContent = label();
+	btn.textContent = '💬 ' + (kids.length ? ('评论 ' + kids.length) : '评论');
 	var grow = document.createElement('span');
 	grow.className = 'grow';
+	var shareBtn = document.createElement('button');
+	shareBtn.textContent = '🔗 分享';
+	shareBtn.addEventListener('click', function () { shareThread(c.objectId, 0); });
 	bar.appendChild(btn);
 	bar.appendChild(grow);
+	bar.appendChild(shareBtn);
+	card.appendChild(bar);
 
 	var listBox = document.createElement('div');
 	listBox.className = 'cmt-list';
 	listBox.style.display = 'none';
-
-	card.appendChild(shot);
-	card.appendChild(body);
-	card.appendChild(bar);
 	card.appendChild(listBox);
-
-	if (full.length > 90) {
-		desc.classList.add('clamp');
-		var more = document.createElement('span');
-		more.className = 'more';
-		more.textContent = ' 展开';
-		more.addEventListener('click', function () {
-			if (desc.classList.contains('clamp')) { desc.classList.remove('clamp'); more.textContent = ''; }
-		});
-		desc.appendChild(more);
-	}
 
 	var opened = false;
 	btn.addEventListener('click', function () {
 		if (!opened) {
 			opened = true;
 			listBox.style.display = 'block';
-			fillComments(listBox, c, kids, label);
+			fillComments(listBox, e, null);
 		} else {
-			var st = listBox.style.display === 'none';
-			listBox.style.display = st ? 'block' : 'none';
+			listBox.style.display = listBox.style.display === 'none' ? 'block' : 'none';
 		}
 	});
 
 	return card;
 }
 
-function fillComments(box, post, kids, relabel) {
+function chipsRow(tags, max) {
+	var wrap = document.createElement('div');
+	wrap.className = 'chips';
+	tags.slice(0, max || 99).forEach(function (t) {
+		var b = document.createElement('button');
+		b.className = 'chip';
+		b.textContent = '#' + t;
+		b.addEventListener('click', function (ev) {
+			ev.stopPropagation();
+			S.tag = t;
+			S.q = '';
+			qEl.value = '';
+			qClear.style.display = 'none';
+			buildTagRow();
+			paintFeed();
+			window.scrollTo(0, 0);
+		});
+		wrap.appendChild(b);
+	});
+	return wrap;
+}
+
+/* ---------- 搜索 ---------- */
+var qTimer = 0;
+qEl.addEventListener('input', function () {
+	qClear.style.display = qEl.value ? 'block' : 'none';
+	clearTimeout(qTimer);
+	qTimer = setTimeout(function () {
+		S.q = qEl.value.trim();
+		paintFeed();
+	}, 260);
+});
+qEl.addEventListener('keydown', function (ev) {
+	if (ev.key === 'Enter') {
+		clearTimeout(qTimer);
+		S.q = qEl.value.trim();
+		paintFeed();
+	}
+});
+qClear.addEventListener('click', function () {
+	qEl.value = '';
+	S.q = '';
+	qClear.style.display = 'none';
+	paintFeed();
+	qEl.focus();
+});
+
+function fillComments(box, e, picIdx) {
+	var post = e.c;
+	var kids = e.kids.filter(function (k) {
+		var pk = parseKid(k);
+		if (picIdx === null || picIdx === undefined) return true;
+		return pk.pic === picIdx + 1;
+	});
 	box.innerHTML = '';
 	if (!kids.length) {
 		var no = document.createElement('div');
 		no.className = 'cmt';
-		no.innerHTML = '<div class="txt" style="color:#9aa1a7">还没人说话，来第一句。</div>';
+		no.innerHTML = '<div class="txt" style="color:#9aa1a7">' +
+			(picIdx === null || picIdx === undefined ? '还没人说话，来第一句。' : '这一张还没人评论。') + '</div>';
 		box.appendChild(no);
 	}
 	kids.forEach(function (k) {
+		var pk = parseKid(k);
 		var one = document.createElement('div');
 		one.className = 'cmt';
 		var av = document.createElement('img');
@@ -646,11 +1090,16 @@ function fillComments(box, post, kids, relabel) {
 		who.className = 'who';
 		who.innerHTML = '<b>' + esc(k.nick || GUEST_NICK) + '</b> · ' + esc(fmtTime(k.time)) +
 			(k.addr ? ' · ' + esc(k.addr) : '');
+		if (pk.pic) {
+			var fg = document.createElement('span');
+			fg.className = 'fig';
+			fg.textContent = '第 ' + pk.pic + ' 张';
+			who.appendChild(fg);
+		}
 		var txt = document.createElement('div');
 		txt.className = 'txt';
-		var doc = new DOMParser().parseFromString('<!doctype html><body>' + String(k.comment || ''), 'text/html');
-		var pic = doc.querySelector('img');
-		txt.textContent = (doc.body.textContent || '').trim();
+		txt.textContent = pk.text;
+		var pic = new DOMParser().parseFromString('<!doctype html><body>' + String(k.comment || ''), 'text/html').querySelector('img');
 		if (pic) {
 			var pi = document.createElement('img');
 			pi.src = pic.getAttribute('src');
@@ -669,7 +1118,8 @@ function fillComments(box, post, kids, relabel) {
 	var nk = document.createElement('input');
 	nk.type = 'text'; nk.placeholder = '怎么称呼你（可留空）'; nk.maxLength = 24;
 	var tx = document.createElement('textarea');
-	tx.placeholder = '说两句'; tx.maxLength = 400;
+	tx.placeholder = (picIdx === null || picIdx === undefined) ? '说两句' : '说说这一张';
+	tx.maxLength = 400;
 	var act = document.createElement('div');
 	act.className = 'act';
 	var msg = document.createElement('span');
@@ -687,11 +1137,12 @@ function fillComments(box, post, kids, relabel) {
 		send.disabled = true;
 		msg.className = 'msg';
 		msg.textContent = '发送中…';
+		var prefix = (picIdx === null || picIdx === undefined) ? '' : ('\u3014图' + (picIdx + 1) + '\u3015');
 		fetch(API + '/comment', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({
-				comment: body,
+				comment: prefix + body,
 				nick: (nk.value.trim() || GUEST_NICK),
 				mail: GUEST_MAIL,
 				url: PAGE_PATH,
@@ -729,19 +1180,67 @@ function hasWebGL() {
 	} catch (e) { return false; }
 }
 
-function openViewer(rawUrl, title) {
-	vTitle.textContent = title ? title.slice(0, 40) : '全景';
+var vShare = document.getElementById('vShare');
+var vPanel = document.getElementById('vPanel');
+
+/* 某张图下的评论条数 */
+function cntFor(e, idx) {
+	var n = 0;
+	(e.kids || []).forEach(function (k) { if (parseKid(k).pic === idx + 1) n++; });
+	return n;
+}
+
+function openPic(e, idx) {
+	var p = e.p;
+	var it = p.items[idx];
+	if (!it) return;
+	S.cur = { e: e, idx: idx };
+	vTitle.textContent = (it.note || p.head || '照片').slice(0, 40);
 	viewerEl.classList.add('on');
+	vPanel.classList.remove('on');
+	vPanel.innerHTML = '';
+
+	var n = cntFor(e, idx);
+	vFoot.innerHTML = '<div class="acts">' +
+		'<button id="vCmtBtn">💬 ' + (n ? ('评论 ' + n) : '评论') + '</button>' +
+		'<button id="vShareBtn">🔗 分享这张</button>' +
+		'</div><span id="vTip">正在取图…</span>';
+
+	document.getElementById('vCmtBtn').addEventListener('click', function () {
+		if (vPanel.classList.contains('on')) { vPanel.classList.remove('on'); return; }
+		vPanel.classList.add('on');
+		fillComments(vPanel, e, idx);
+	});
+	document.getElementById('vShareBtn').addEventListener('click', function () {
+		shareThread(e.c.objectId, idx + 1);
+	});
+	vShare.onclick = function () { shareThread(e.c.objectId, idx + 1); };
+
+	/* 先探一下比例：转出来的全景是 2:1，普通照片保持原比例 */
 	sphereEl.innerHTML = '<div class="loading">正在取图…</div>';
+	var probe = new Image();
+	probe.onload = function () {
+		if (probe.naturalWidth / Math.max(1, probe.naturalHeight) > 1.8) showSphere(it.url);
+		else showFlat(it.url);
+	};
+	probe.onerror = function () { showFlat(it.url); };
+	probe.src = thumbUrl(it.url, 480);
+}
+
+function showSphere(rawUrl) {
+	if (S.viewer) { try { S.viewer.destroy(); } catch (e) {} S.viewer = null; }
+	if (S.soft) { S.soft.alive = false; S.soft = null; }
+	sphereEl.innerHTML = '<div class="loading">正在取图…</div>';
+	var tip = document.getElementById('vTip');
+	if (tip) tip.innerHTML = '按住拖动看四周，双指或滚轮缩放 · <a href="' +
+		esc(thumbUrl(rawUrl, 6144)) + '" target="_blank" rel="noopener">看大图</a>';
 	/* 按 GPU 纹理上限取图，别一律压到 2048 */
 	var tex = Math.min(maxTexSize(), 6144);
 	var big = thumbUrl(rawUrl, tex);
-	vFoot.innerHTML = '按住拖动看四周，双指或滚轮缩放 · <a href="' + esc(thumbUrl(rawUrl, 6144)) + '" target="_blank" rel="noopener">直接看大图</a>';
 
 	if (window.PhotoSphereViewer && window.THREE && hasWebGL()) {
 		sphereEl.innerHTML = '';
 		try {
-			if (S.viewer) { try { S.viewer.destroy(); } catch (e) {} S.viewer = null; }
 			S.viewer = new PhotoSphereViewer.Viewer({
 				container: sphereEl,
 				panorama: big,
@@ -749,15 +1248,115 @@ function openViewer(rawUrl, title) {
 				loadingImg: false,
 				touchmoveTwoFingers: false,
 				mousewheelCtrlKey: false,
+				/* 松手就停：默认的惯性会按松手瞬间的速度向量继续滑，
+					横向拖动时手上那点垂直位移也会被放大成上下漂 */
+				moveInertia: false,
 				defaultYaw: 0,
 				defaultPitch: 0,
 				minFov: 25,
 				maxFov: 90
 			});
+			/* 调试句柄：便于在控制台/自动化里读位置、试惯性 */
+			try { window.__psv = S.viewer; } catch (e) {}
+			setupInertia(S.viewer, sphereEl);
 			return;
 		} catch (e) {}
 	}
 	showSoft(thumbUrl(rawUrl, Math.min(3072, Math.round(430 * DPR * 2))));
+}
+
+/* 松手后的惯性：自己实现，只按水平方向的实际转动速度续滑。
+   查看器自带的 moveInertia 会把松手瞬间的速度向量整段延续，方向取的是
+   手指轨迹末段切线 —— 松开前几下那点竖向抖动常被当成主方向，竖屏下
+   pitch 的每像素角速度又比 yaw 大（高度/宽度 倍），于是"横着拖、松手上下漂"。
+   这里改成：每帧采样真实 yaw 变化率，松手按它续滑并逐帧衰减，pitch 一律
+   保持不动，所以上下不会自己走。 */
+function setupInertia(viewer, box) {
+	if (!viewer || !box || box.__inertia) return;
+	box.__inertia = true;
+
+	var st = { id: null, multi: false, yaw: 0, t: 0, vy: 0, raf: 0 };
+
+	function curYaw() {
+		try {
+			var p = viewer.getPosition();
+			return p ? p.yaw : null;
+		} catch (e) { return null; }
+	}
+
+	function stop() {
+		if (st.raf) { cancelAnimationFrame(st.raf); st.raf = 0; }
+	}
+
+	function glide(vy) {
+		stop();
+		var last = performance.now();
+		function step(now) {
+			var dt = Math.min(50, Math.max(1, now - last));
+			last = now;
+			vy *= Math.pow(0.92, dt / 16);
+			var p = viewer.getPosition();
+			viewer.rotate({ yaw: p.yaw + vy * dt, pitch: p.pitch });
+			if (Math.abs(vy) >= 0.00035) st.raf = requestAnimationFrame(step);
+			else st.raf = 0;
+		}
+		st.raf = requestAnimationFrame(step);
+	}
+
+	box.addEventListener('pointerdown', function (e) {
+		if (st.id !== null) { st.multi = true; return; }
+		st.id = e.pointerId;
+		st.multi = false;
+		st.vy = 0;
+		st.yaw = curYaw();
+		st.t = performance.now();
+		stop();
+	});
+
+	box.addEventListener('pointermove', function (e) {
+		if (e.pointerId !== st.id) return;
+		var y = curYaw(), now = performance.now();
+		if (y === null) return;
+		var dt = now - st.t;
+		if (dt >= 6) {
+			/* 单帧抖动大，做一次滑动平均 */
+			st.vy = st.vy * 0.55 + ((y - st.yaw) / dt) * 0.45;
+			st.yaw = y;
+			st.t = now;
+		}
+	});
+
+	function end(e) {
+		if (e.pointerId !== st.id) return;
+		var multi = st.multi, vy = st.vy;
+		st.id = null;
+		st.multi = false;
+		st.vy = 0;
+		if (multi) return;
+		/* 0.0004 弧度/毫秒 ≈ 23°/秒，比这慢就当是手停住了；上限防异常值 */
+		if (Math.abs(vy) > 0.0004 && Math.abs(vy) < 0.02) glide(vy);
+	}
+
+	box.addEventListener('pointerup', end);
+	box.addEventListener('pointercancel', end);
+}
+
+function showFlat(rawUrl) {
+	if (S.viewer) { try { S.viewer.destroy(); } catch (e) {} S.viewer = null; }
+	if (S.soft) { S.soft.alive = false; S.soft = null; }
+	sphereEl.innerHTML = '<div class="loading">正在取图…</div>';
+	var tip2 = document.getElementById('vTip');
+	if (tip2) tip2.innerHTML = '这张是普通照片，不是全景 · <a href="' +
+		esc(thumbUrl(rawUrl, 6144)) + '" target="_blank" rel="noopener">看大图</a>';
+	var im = new Image();
+	im.onload = function () {
+		sphereEl.innerHTML = '';
+		im.alt = '照片';
+		im.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;background:#000';
+		sphereEl.appendChild(im);
+	};
+	im.onerror = function () { sphereEl.innerHTML = '<div class="loading">图片没取到，点下面「看大图」</div>'; };
+	im.src = thumbUrl(rawUrl, Math.min(2048, Math.round(430 * DPR * 2)));
 }
 
 function closeViewer() {
@@ -768,7 +1367,156 @@ function closeViewer() {
 }
 
 document.getElementById('vClose').addEventListener('click', closeViewer);
-window.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeViewer(); });
+window.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeViewer(); closeThread(); } });
+
+/* ---------- 帖子详情层 ---------- */
+var threadEl = document.getElementById('thread');
+var tNick = document.getElementById('tNick');
+var tTime = document.getElementById('tTime');
+var tDesc = document.getElementById('tDesc');
+var tGrid = document.getElementById('tGrid');
+var tCmts = document.getElementById('tCmts');
+var tShare = document.getElementById('tShare');
+
+function openThread(e) {
+	var c = e.c, p = e.p;
+	tNick.textContent = c.nick || DEFAULT_NICK;
+	tTime.textContent = fmtTime(c.time);
+
+	tDesc.innerHTML = '';
+	if (p.head) {
+		var d = document.createElement('div');
+		d.className = 'desc';
+		d.textContent = p.head;
+		tDesc.appendChild(d);
+	}
+	var tags = threadTags(p);
+	if (tags.length) tDesc.appendChild(chipsRow(tags, 9));
+
+	tGrid.innerHTML = '';
+	tGrid.style.gridTemplateColumns = 'repeat(' + Math.min(3, p.items.length || 1) + ', 1fr)';
+	p.items.forEach(function (it, i) {
+		var g = document.createElement('div');
+		g.className = 'g' + (p.items.length === 1 ? ' wide' : '');
+		var im = new Image();
+		im.loading = 'lazy';
+		im.alt = '第 ' + (i + 1) + ' 张';
+		im.src = thumbUrl(it.url, Math.round(180 * DPR));
+		g.appendChild(im);
+		var k = document.createElement('span');
+		var n = cntFor(e, i);
+		k.className = 'k' + (n ? '' : ' zero');
+		k.textContent = n ? ('💬 ' + n) : '💬';
+		g.appendChild(k);
+		g.addEventListener('click', function () { openPic(e, i); });
+		tGrid.appendChild(g);
+	});
+
+	tCmts.innerHTML = '';
+	fillComments(tCmts, e, null);
+	tShare.onclick = function () { shareThread(c.objectId, 0); };
+
+	threadEl.classList.add('on');
+	threadEl.scrollTop = 0;
+}
+
+function closeThread() {
+	if (!threadEl.classList.contains('on')) return;
+	threadEl.classList.remove('on');
+	if (location.search.indexOf('p=') >= 0) {
+		try { history.replaceState(null, '', location.pathname); } catch (e) {}
+	}
+	/* 从分享链接直达时列表可能还没画过，这里补一次，别留空态 */
+	if (!feedEl.children.length && S.posts.length) paintFeed();
+}
+
+document.getElementById('tClose').addEventListener('click', closeThread);
+threadEl.addEventListener('click', function (e) {
+	if (e.target === threadEl) closeThread();
+});
+
+/* ---------- 分享 ---------- */
+/* 微信内置浏览器（X5 / WKWebView）既没有 Web Share，也没有任何 JS 接口能
+   唤起「发送给朋友」面板——那个面板是微信自己攥着的，公众号 JS-SDK 也只
+   能改转发卡片的标题和图片，同样弹不出来。所以微信里点分享时，给一层
+   指向右上角菜单的指引。?wx=1 仅供在电脑上预览这层的样子。 */
+var IN_WX = /MicroMessenger/i.test(navigator.userAgent) || /[?&]wx=1/.test(location.search);
+
+function postUrl(id, pic) {
+	return location.origin + location.pathname + '?p=' + id + (pic ? '&i=' + pic : '');
+}
+
+function shareThread(id, pic) {
+	var u = postUrl(id, pic);
+	if (IN_WX) { wxAsk(u); return; }
+	if (navigator.share) {
+		navigator.share({ title: '全景相框', text: pic ? '第 ' + pic + ' 张照片' : '', url: u })
+			.catch(function (err) {
+				/* 用户自己按了取消，不要再补一次复制 */
+				if (err && err.name === 'AbortError') return;
+				copyText(u);
+			});
+		return;
+	}
+	copyText(u);
+}
+
+/* 微信里的转发指引层 */
+var wxEl = null, wxUrl = '';
+
+function wxAsk(u) {
+	wxUrl = u;
+	if (!wxEl) wxEl = document.getElementById('wxTip');
+	wxEl.hidden = false;
+	requestAnimationFrame(function () { wxEl.classList.add('on'); });
+}
+
+function wxHide() {
+	if (!wxEl) return;
+	wxEl.classList.remove('on');
+	setTimeout(function () { wxEl.hidden = true; }, 200);
+}
+
+function copyText(u) {
+	var done = function () {
+		toast(IN_WX ? '链接已复制，回到聊天窗口粘贴发送'
+			: (navigator.share ? '链接已复制' : '链接已复制，换成正式网址就能直接分享'));
+	};
+	if (navigator.clipboard && navigator.clipboard.writeText) {
+		navigator.clipboard.writeText(u).then(done).catch(function () { fallbackCopy(u, done); });
+	} else {
+		fallbackCopy(u, done);
+	}
+}
+
+document.getElementById('wxTip').addEventListener('click', function (e) {
+	if (e.target === this) wxHide();
+});
+document.getElementById('wxClose').addEventListener('click', wxHide);
+document.getElementById('wxCopy').addEventListener('click', function () {
+	wxHide();
+	copyText(wxUrl);
+});
+
+function fallbackCopy(u, done) {
+	var ta = document.createElement('textarea');
+	ta.value = u;
+	ta.style.cssText = 'position:fixed;left:-9999px;top:0';
+	document.body.appendChild(ta);
+	ta.select();
+	try { document.execCommand('copy'); done(); } catch (e) { toast(u); }
+	ta.remove();
+}
+
+function toast(msg) {
+	var el = document.createElement('div');
+	el.className = 'toast';
+	el.textContent = msg;
+	document.body.appendChild(el);
+	requestAnimationFrame(function () { el.classList.add('on'); });
+	setTimeout(function () { el.classList.remove('on'); }, 2200);
+	setTimeout(function () { el.remove(); }, 2800);
+}
 
 /* ---------- 没有 WebGL 时的软件球面 ---------- */
 function showSoft(url) {
@@ -942,45 +1690,159 @@ gatePass.addEventListener('keydown', function (e) { if (e.key === 'Enter') gateS
 
 /* ========== 发布 ========== */
 var composerEl = document.getElementById('composer');
-var pickEl = document.getElementById('pick');
 var fileEl = document.getElementById('file');
 var capText = document.getElementById('capText');
 var pubTip = document.getElementById('pubTip');
 var pubGo = document.getElementById('pubGo');
 var progEl = document.getElementById('prog');
 var progBar = progEl.querySelector('i');
+var gridEl = document.getElementById('grid9');
+var itemBox = document.getElementById('itemBox');
+var itemLabel = document.getElementById('itemLabel');
+var itemTags = document.getElementById('itemTags');
+var itemNote = document.getElementById('itemNote');
+
+var draft = [];
+var selIdx = -1;
 
 function openComposer() {
 	composerEl.classList.add('on');
 	pubTip.textContent = '';
-	pubGo.disabled = true;
+	pubTip.className = 'tip';
+	composerEl.scrollTop = 0;
+	renderGrid();
+	syncItem();
+	syncGo();
 }
 document.getElementById('pubCancel').addEventListener('click', function () { composerEl.classList.remove('on'); });
 composerEl.addEventListener('click', function (e) { if (e.target === composerEl) composerEl.classList.remove('on'); });
 
-pickEl.addEventListener('click', function () { fileEl.click(); });
+function syncGo() {
+	pubGo.disabled = !draft.length;
+}
+
+function renderGrid() {
+	gridEl.innerHTML = '';
+	for (var i = 0; i < 9; i++) {
+		(function (i) {
+			var d = draft[i];
+			var cell = document.createElement('div');
+			if (d) {
+				cell.className = 'cell' + (selIdx === i ? ' on' : '');
+				var im = new Image();
+				im.src = d.url;
+				im.alt = '第 ' + (i + 1) + ' 张';
+				cell.appendChild(im);
+				if (d.tags.length) {
+					var bd = document.createElement('span');
+					bd.className = 'badge';
+					bd.textContent = d.tags.length + ' 标';
+					cell.appendChild(bd);
+				}
+				var del = document.createElement('button');
+				del.type = 'button';
+				del.className = 'del';
+				del.textContent = '×';
+				del.addEventListener('click', function (ev) {
+					ev.stopPropagation();
+					try { URL.revokeObjectURL(d.url); } catch (er) {}
+					draft.splice(i, 1);
+					if (selIdx >= draft.length) selIdx = draft.length - 1;
+					renderGrid();
+					syncItem();
+					syncGo();
+				});
+				cell.appendChild(del);
+				cell.addEventListener('click', function () {
+					stashItem();
+					selIdx = i;
+					renderGrid();
+					syncItem();
+				});
+			} else {
+				cell.className = 'cell add';
+				cell.innerHTML = '<span>＋</span>';
+				cell.addEventListener('click', function () { fileEl.click(); });
+			}
+			gridEl.appendChild(cell);
+		})(i);
+	}
+}
+
+function syncItem() {
+	var d = draft[selIdx];
+	if (!d) { itemBox.style.display = 'none'; return; }
+	itemBox.style.display = 'block';
+	itemLabel.textContent = '第 ' + (selIdx + 1) + ' 张的标签';
+	itemTags.value = d.tags.join(' ');
+	itemNote.value = d.note;
+}
+
+function stashItem() {
+	var d = draft[selIdx];
+	if (!d) return;
+	d.tags = parseTags(itemTags.value);
+	d.note = itemNote.value.trim().slice(0, 60);
+}
+
+itemTags.addEventListener('input', function () { stashItem(); renderGrid(); });
+itemNote.addEventListener('input', function () { stashItem(); });
+
+function parseTags(s) {
+	return String(s || '')
+		.split(/[\s,，、]+/)
+		.map(function (x) { return x.replace(/^#+/, '').replace(/[\u3014\u3015\u27E6\u27E7|]/g, '').trim().slice(0, 14); })
+		.filter(Boolean)
+		.slice(0, 8);
+}
+
 fileEl.addEventListener('change', function () {
-	var f = fileEl.files && fileEl.files[0];
+	var fs = Array.prototype.slice.call(fileEl.files || []);
 	fileEl.value = '';
-	if (!f) return;
-	pubTip.textContent = '处理中…';
-	pubGo.disabled = true;
-	prepare(f).then(function (o) {
-		var blob = o.blob;
-		S.pendingBlob = blob;
-		S.pendingUrl = URL.createObjectURL(blob);
-		pickEl.classList.add('has');
-		pickEl.innerHTML = '';
-		var pv = document.createElement('img');
-		pv.src = S.pendingUrl;
-		pickEl.appendChild(pv);
-		pubTip.textContent = '图准备好了 ' + o.w + '×' + o.h + '，' + Math.round(blob.size / 1024) + ' KB';
-		pubTip.className = 'tip ok';
-		pubGo.disabled = false;
-	}).catch(function (err) {
+	if (!fs.length) return;
+	var room = 9 - draft.length;
+	if (room <= 0) { pubTip.className = 'tip'; pubTip.textContent = '最多 9 张'; return; }
+	if (fs.length > room) {
 		pubTip.className = 'tip';
-		pubTip.textContent = err.message;
-	});
+		pubTip.textContent = '只收前 ' + room + ' 张，凑满 9 张了';
+		fs = fs.slice(0, room);
+	}
+	stashItem();
+	pubGo.disabled = true;
+	var bad = [];
+	var i = 0;
+	var step = function () {
+		if (i >= fs.length) {
+			renderGrid();
+			syncGo();
+			if (selIdx < 0 && draft.length) { selIdx = 0; syncItem(); }
+			if (bad.length) {
+				pubTip.className = 'tip';
+				pubTip.textContent = bad.length + ' 张没处理成：' + bad[0];
+			} else {
+				pubTip.className = 'tip ok';
+				pubTip.textContent = '共 ' + draft.length + ' 张 · ' +
+					draft.map(function (d) { return Math.round(d.blob.size / 1024) + 'KB'; }).join(' / ') +
+					'，点格子给单张加标签';
+			}
+			return;
+		}
+		var f = fs[i];
+		pubTip.className = 'tip';
+		pubTip.textContent = '正在处理第 ' + (i + 1) + ' / ' + fs.length + ' 张…';
+		i++;
+		prepare(f, draft.length ? 4096 : 0).then(function (o) {
+			draft.push({
+				blob: o.blob, w: o.w, h: o.h, pano: o.pano,
+				url: URL.createObjectURL(o.blob), tags: [], note: ''
+			});
+			step();
+		}).catch(function (err) {
+			bad.push(err && err.message ? err.message : '处理失败');
+			step();
+		});
+	};
+	step();
 });
 
 /* 边缘取色：给上下补的天顶/脚底一个接近的颜色 */
@@ -1005,8 +1867,8 @@ function softStretch(ctx, src, sx, sy, sw, sh, dx, dy, dw, dh, k) {
 }
 
 /* 横向长条 → 2:1 等距柱状：实拍带放中间，上下用边缘拉伸 + 同色雾补满 */
-function toEquirect(band, bandRatio) {
-	var maxW = maxPanoWidth();
+function toEquirect(band, bandRatio, capW) {
+	var maxW = Math.min(maxPanoWidth(), capW || maxPanoWidth());
 	var W = Math.min(maxW, Math.max(2400, Math.round(band.width / 2) * 2));
 	if (W > maxW) W = Math.max(2400, maxW - (maxW % 2));
 	var H = Math.round(W / 2);
@@ -1038,12 +1900,12 @@ function toEquirect(band, bandRatio) {
 }
 
 /* 2:1 输入按设备上限缩成等距柱状；其它比例居中裁成 2:1 */
-function toEquirectDirect(img) {
+function toEquirectDirect(img, capW) {
 	var r = img.naturalWidth / img.naturalHeight;
 	var sw, sh, sx, sy;
 	if (r > 2) { sh = img.naturalHeight; sw = sh * 2; sx = (img.naturalWidth - sw) / 2; sy = 0; }
 	else { sw = img.naturalWidth; sh = sw / 2; sx = 0; sy = (img.naturalHeight - sh) / 2; }
-	var W = Math.min(maxPanoWidth(), Math.round(sw / 2) * 2);
+	var W = Math.min(maxPanoWidth(), capW || maxPanoWidth(), Math.round(sw / 2) * 2);
 	var H = Math.round(W / 2);
 	var cv = document.createElement('canvas');
 	cv.width = W; cv.height = H;
@@ -1078,77 +1940,133 @@ function encodeUnder(cv, cap) {
 	});
 }
 
-function prepare(file) {
+/* 普通照片：等比缩到长边以内，不放大 */
+function fitPhoto(img, maxSide, capW) {
+	var w = img.naturalWidth, h = img.naturalHeight;
+	var lim = Math.min(maxSide, capW || maxSide);
+	var s = Math.min(1, lim / Math.max(w, h));
+	var W = Math.max(1, Math.round(w * s));
+	var H = Math.max(1, Math.round(h * s));
+	var cv = document.createElement('canvas');
+	cv.width = W; cv.height = H;
+	cv.getContext('2d').drawImage(img, 0, 0, W, H);
+	return cv;
+}
+
+/* 长条（比例 ≥1.7）转等距柱状；普通照片等比缩小。capW 用来控单张体积 */
+function prepare(file, capW) {
 	return new Promise(function (res, rej) {
 		var u = URL.createObjectURL(file);
 		loadImg(u).then(function (img) {
 			var w = img.naturalWidth, h = img.naturalHeight;
 			var r = w / h;
-			if (r < 1.7) { URL.revokeObjectURL(u); rej(new Error('这张不是长条（' + w + '×' + h + '），请选手机相机「全景」模式扫出来的那张')); return; }
-			var cv = (r > 2.3) ? toEquirect(img, 0.55) : toEquirectDirect(img);
+			var pano = r >= 1.7;
+			var cv = pano
+				? ((r > 2.3) ? toEquirect(img, 0.55, capW) : toEquirectDirect(img, capW))
+				: fitPhoto(img, 2048, capW);
 			URL.revokeObjectURL(u);
 			encodeUnder(cv, 9.6 * 1024 * 1024).then(function (b) {
-				res({ blob: b, w: cv.width, h: cv.height });
+				res({ blob: b, w: cv.width, h: cv.height, pano: pano });
 			}).catch(rej);
 		}).catch(function (e) { URL.revokeObjectURL(u); rej(e); });
 	});
 }
 
+function uploadOne(item) {
+	var fd = new FormData();
+	fd.append('file', item.blob, 'pano-' + Date.now() + '.jpg');
+	fd.append('upload_preset', UPLOAD_PRESET);
+	fd.append('folder', 'pano');
+	return fetch('https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/image/upload', { method: 'POST', body: fd })
+		.then(function (r) { return r.json(); })
+		.then(function (res) {
+			if (!res.secure_url) throw new Error(res.error && res.error.message ? res.error.message : '上传失败');
+			return res.secure_url;
+		});
+}
+
+/* 一条帖子的正文：说明 + 每张图 + 每张图的 〔标签〕 说明 */
+function buildBody(urls) {
+	var cap = capText.value.trim();
+	var lines = [];
+	if (cap) { lines.push(cap); lines.push(''); }
+	draft.forEach(function (d, i) {
+		if (!urls[i]) return;
+		lines.push('![全景](' + urls[i] + ')');
+		var meta = '';
+		if (d.tags.length) meta += '\u3014' + d.tags.join('|') + '\u3015';
+		if (d.note) meta += (meta ? ' ' : '') + d.note;
+		if (meta) lines.push(meta);
+		lines.push('');
+	});
+	return lines.join('\n').trim();
+}
+
 pubGo.addEventListener('click', function () {
-	if (!S.pendingBlob) return;
+	if (!draft.length) return;
 	if (CLOUD_NAME === 'CLOUD_NAME_PLACEHOLDER' || !CLOUD_NAME) {
 		pubTip.className = 'tip';
 		pubTip.textContent = '图床还没接上（缺 Cloudinary 的 cloud name），暂时发不了';
 		return;
 	}
+	stashItem();
 	pubGo.disabled = true;
 	pubGo.textContent = '上传中…';
 	progEl.classList.add('on');
-	progBar.style.width = '8%';
+	progBar.style.width = '4%';
 	pubTip.className = 'tip';
 	pubTip.textContent = '';
 
-	var fd = new FormData();
-	fd.append('file', S.pendingBlob);
-	fd.append('upload_preset', UPLOAD_PRESET);
-	fd.append('folder', 'pano');
+	var urls = [];
+	var n = draft.length;
+	var i = 0;
 
-	fetch('https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/image/upload', { method: 'POST', body: fd })
-		.then(function (r) { return r.json(); })
-		.then(function (res) {
-			if (!res.secure_url) throw new Error(res.error && res.error.message ? res.error.message : '上传失败');
-			progBar.style.width = '70%';
-			return signOf(res.secure_url).then(function (sig) {
-				var cap = capText.value.trim();
-				var body = (cap ? cap + '\n\n' : '') + '![' + '全景' + '](' + res.secure_url + ')\n\n\u27E6' + sig + '\u27E7';
-				return fetch(API + '/comment', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({
-						comment: body,
-						nick: DEFAULT_NICK,
-						mail: GUEST_MAIL,
-						url: PAGE_PATH,
-						path: PAGE_PATH,
-						ua: navigator.userAgent
-					})
-				}).then(function (r) { return r.json(); });
-			});
-		})
-		.then(function (res) {
+	var fail = function (err) {
+		pubTip.className = 'tip';
+		pubTip.textContent = errText(err && err.message);
+		pubGo.disabled = false;
+		pubGo.textContent = '发布';
+		progEl.classList.remove('on');
+	};
+
+	var done = function () {
+		pubTip.textContent = '图片传完了，正在写帖子…';
+		progBar.style.width = '72%';
+		var body = buildBody(urls);
+		/* 签名用第一张图的地址，便于以后核对 */
+		signOf(urls[0]).then(function (sig) {
+			return fetch(API + '/comment', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					comment: body + '\n\n\u27E6' + sig + '\u27E7',
+					nick: DEFAULT_NICK,
+					mail: GUEST_MAIL,
+					url: PAGE_PATH,
+					path: PAGE_PATH,
+					ua: navigator.userAgent
+				})
+			}).then(function (r) { return r.json(); });
+		}).then(function (res) {
 			if (!res || res.errno !== 0) throw new Error((res && res.errmsg) || '发布失败');
 			progBar.style.width = '100%';
 			pubTip.className = 'tip ok';
 			pubTip.textContent = '发布成功，正在回到列表…';
 			setTimeout(function () { location.reload(); }, 1200);
-		})
-		.catch(function (err) {
-			pubTip.className = 'tip';
-			pubTip.textContent = errText(err && err.message);
-			pubGo.disabled = false;
-			pubGo.textContent = '发布';
-			progEl.classList.remove('on');
-		});
+		}).catch(fail);
+	};
+
+	var next = function () {
+		if (i >= n) { done(); return; }
+		pubTip.textContent = '正在上传第 ' + (i + 1) + ' / ' + n + ' 张…';
+		uploadOne(draft[i]).then(function (u) {
+			urls.push(u);
+			i++;
+			progBar.style.width = Math.round(4 + 62 * i / n) + '%';
+			next();
+		}).catch(fail);
+	};
+	next();
 });
 
 /* ========== 起 ========== */
@@ -1168,25 +2086,29 @@ if (/diag=1/.test(location.search)) {
 	}, 1500);
 }
 
-/* 调试用：本地造两条假数据，验证卡片/评论/查看器，不写入评论系统 */
+/* 调试用：本地造一条假数据，验证卡片/详情层/查看器，不写入评论系统 */
 if (/demo=1/.test(location.search)) {
-	var demoHtml = '<p>教学楼三楼走廊，下午四点的光斜着进来。</p>\n' +
-		'<img src="https://res.cloudinary.com/demo/image/upload/sample.jpg" />';
-	var demoChild = { nick: '访客', time: Date.now() - 2 * 3600 * 1000, addr: '江西', comment: '<p>这个转角接得挺自然</p>', avatar: 'https://seccdn.libravatar.org/avatar/0' };
+	var demoC = {
+		comment: '<p>教学楼三楼走廊，下午四点的光斜着进来。</p>\n' +
+			'<img src="https://res.cloudinary.com/demo/image/upload/sample.jpg" />\n' +
+			'<p>\u3014走廊|光\u3015 这个角度拍过很多次</p>',
+		nick: '站长', time: Date.now() - 5 * 3600 * 1000, objectId: 1
+	};
+	var demoE = {
+		c: demoC,
+		p: parseThread(demoC),
+		kids: [
+			{ nick: '访客', time: Date.now() - 2 * 3600 * 1000, addr: '江西', comment: '<p>\u3014图1\u3015这个转角接得挺自然</p>', avatar: 'https://seccdn.libravatar.org/avatar/0' },
+			{ nick: '路人', time: Date.now() - 3600 * 1000, addr: '广东', comment: '<p>哪栋楼啊</p>', avatar: 'https://seccdn.libravatar.org/avatar/1' }
+		]
+	};
 	var demoNote = document.createElement('div');
 	demoNote.style.cssText = 'text-align:center;font-size:12px;color:#9aa1a7;margin:-8px 0 12px';
 	demoNote.textContent = '演示数据，不来自评论系统';
 	feedEl.parentNode.insertBefore(demoNote, feedEl);
-	feedEl.appendChild(renderCard(
-		{ comment: demoHtml, nick: '站长', time: Date.now() - 5 * 3600 * 1000, objectId: 1 },
-		parsePost({ comment: demoHtml }),
-		[demoChild]
-	));
-	if (/open=1/.test(location.search)) {
-		setTimeout(function () {
-			openViewer('https://res.cloudinary.com/demo/image/upload/sample.jpg', '教学楼三楼走廊');
-		}, 600);
-	}
+	feedEl.appendChild(renderCard(demoE));
+	if (/open=1/.test(location.search)) setTimeout(function () { openPic(demoE, 0); }, 600);
+	if (/thread=1/.test(location.search)) setTimeout(function () { openThread(demoE); }, 600);
 }
 
 })();
