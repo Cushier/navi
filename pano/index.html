@@ -191,49 +191,58 @@ header .back:hover { color: #3a7afe; border-color: #b9cdf5; }
 .prog i { display: block; height: 100%; width: 0; background: #3a7afe; transition: width .25s; }
 
 /* ---------- 查看器 ---------- */
+/* 图区直接铺满整个视口，标题和底部按钮浮在画面上（像微信看图那样），上下不再有任何黑边 */
 .viewer {
 	position: fixed; inset: 0; z-index: 60;
 	background: #000;
 	display: none;
-	flex-direction: column;
 }
-.viewer.on { display: flex; }
+.viewer.on { display: block; }
 .viewer .vhead {
 	display: flex; align-items: center; gap: 10px;
-	padding: 10px 14px calc(6px);
-	color: #fff; font-size: 13px; flex: none;
-	position: relative; z-index: 3;
+	padding: calc(10px + env(safe-area-inset-top)) 14px 14px;
+	color: #fff; font-size: 13px;
+	position: absolute; top: 0; left: 0; right: 0; z-index: 3;
+	background: linear-gradient(rgba(0,0,0,.55), rgba(0,0,0,0));
 }
-.viewer.flat .vhead { background: linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,0)); }
 .viewer .vhead .t { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #e8ebef; }
 .viewer .vhead button {
 	background: rgba(255,255,255,.14); border: 0; color: #fff;
 	font-size: 12.5px; font-family: inherit; padding: 6px 12px; border-radius: 16px; cursor: pointer;
 }
-#sphere { flex: 1; min-height: 0; position: relative; overflow: hidden; overscroll-behavior: contain; touch-action: none; }
+.viewer .vhead button.icon {
+	width: 32px; height: 28px; padding: 0; display: inline-flex; align-items: center; justify-content: center;
+}
+.viewer .vhead button.icon svg, .viewer .vexit svg { width: 16px; height: 16px; display: block; }
+#sphere { position: absolute; inset: 0; overflow: hidden; overscroll-behavior: contain; touch-action: none; }
 #sphere canvas { display: block; }
-/* 普通照片：同一张图放大模糊铺满整个视口（连上下栏后面也有），主体按原比例完整显示，不再是一片死黑 */
+/* 普通照片：同一张图放大模糊铺满整个视口当底，主体按原比例完整显示，不再是死黑 */
 .flatbg {
-	position: fixed; inset: -48px; pointer-events: none; background: center/cover no-repeat;
+	position: absolute; inset: -48px; pointer-events: none; background: center/cover no-repeat;
 	filter: blur(26px) brightness(.6) saturate(1.15); transform: scale(1.08); z-index: 0;
 }
 .flatimg {
 	position: relative; width: 100%; height: 100%; object-fit: contain; display: block;
-	cursor: zoom-in; background: transparent;
+	background: transparent; touch-action: none; will-change: transform;
 }
-/* 沉浸：收起上下栏，图片铺到整屏，再点一下回来 */
+.viewer .vfoot {
+	position: absolute; bottom: 0; left: 0; right: 0; z-index: 3;
+	text-align: center; color: #cfd4da; font-size: 11.5px;
+	padding: 10px 14px calc(12px + env(safe-area-inset-bottom));
+	line-height: 1.7;
+	background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.72) 42%);
+}
+.viewer .vfoot a { color: #a8c0ff; text-decoration: none; }
+/* 全屏：收起上下栏，只留图和右上角的退出按钮 */
 .viewer .vhead, .viewer .vfoot { transition: opacity .18s ease; }
 .viewer.immersive .vhead, .viewer.immersive .vfoot { opacity: 0; visibility: hidden; pointer-events: none; }
-.viewer.immersive #sphere { position: fixed; inset: 0; }
-.viewer.immersive .flatimg { cursor: zoom-out; }
-.viewer .vfoot {
-	flex: none; text-align: center; color: #9aa1a7; font-size: 11.5px;
-	padding: 8px 14px calc(12px + env(safe-area-inset-bottom));
-	line-height: 1.7;
-	position: relative; z-index: 3;
+.viewer .vexit {
+	position: absolute; top: calc(10px + env(safe-area-inset-top)); right: 12px; z-index: 5;
+	width: 36px; height: 36px; border-radius: 50%; border: 0; cursor: pointer;
+	background: rgba(0,0,0,.42); color: #fff; display: none;
+	align-items: center; justify-content: center; padding: 0;
 }
-.viewer.flat .vfoot { background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.5)); }
-.viewer .vfoot a { color: #9ab6f5; text-decoration: none; }
+.viewer.immersive .vexit { display: flex; }
 .viewer .loading {
 	position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
 	color: #9aa1a7; font-size: 13px; background: #000;
@@ -565,12 +574,14 @@ html.io-black-mode .shot .lost { background: #23272d; color: #8b939c; }
 <div class="viewer" id="viewer">
 	<div class="vhead">
 		<span class="t" id="vTitle"></span>
+		<button id="vFullBtn" class="icon" title="全屏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 9V4h5"/><path d="M20 9V4h-5"/><path d="M4 15v5h5"/><path d="M20 15v5h-5"/></svg></button>
 		<button id="vShare">分享</button>
 		<button id="vClose">关闭</button>
 	</div>
 	<div id="sphere"></div>
 	<div class="vpanel" id="vPanel"></div>
 	<div class="vfoot" id="vFoot">按住拖动看四周，双指或滚轮缩放</div>
+	<button id="vExit" class="vexit" title="退出全屏"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 4v5H4"/><path d="M15 4v5h5"/><path d="M9 20v-5H4"/><path d="M15 20v-5h5"/></svg></button>
 </div>
 
 <script src="https://cdn.staticfile.org/three.js/0.160.0/three.min.js"></script>
@@ -1253,7 +1264,6 @@ function openPic(e, idx) {
 	/* 单张分享：标题用帖子的总说明，描述用这张图自己的说明 */
 	setShareMeta((p.head || it.note || '全景照片').slice(0, 30), shareThumb(it.url), it.note);
 	viewerEl.classList.remove('immersive');
-	viewerEl.classList.remove('flat');
 	viewerEl.classList.add('on');
 	vPanel.classList.remove('on');
 	vPanel.innerHTML = '';
@@ -1288,7 +1298,7 @@ function openPic(e, idx) {
 function showSphere(rawUrl) {
 	if (S.viewer) { try { S.viewer.destroy(); } catch (e) {} S.viewer = null; }
 	if (S.soft) { S.soft.alive = false; S.soft = null; }
-	viewerEl.classList.remove('flat');
+	S.resetZoom = null;
 	sphereEl.innerHTML = '<div class="loading">正在取图…</div>';
 	var tip = document.getElementById('vTip');
 	if (tip) tip.innerHTML = '按住拖动看四周，双指或滚轮缩放 · <a href="#" id="dlTip">下载原图</a>';
@@ -1320,14 +1330,13 @@ function showSphere(rawUrl) {
 function showFlat(rawUrl) {
 	if (S.viewer) { try { S.viewer.destroy(); } catch (e) {} S.viewer = null; }
 	if (S.soft) { S.soft.alive = false; S.soft = null; }
-	viewerEl.classList.add('flat');
 	sphereEl.innerHTML = '<div class="loading">正在取图…</div>';
 	var tip2 = document.getElementById('vTip');
-	if (tip2) tip2.innerHTML = '普通照片 · 点图铺满整屏 · <a href="#" id="dlTip">下载原图</a>';
+	if (tip2) tip2.innerHTML = '普通照片 · <a href="#" id="dlTip">下载原图</a>';
 	var im = new Image();
 	im.onload = function () {
 		sphereEl.innerHTML = '';
-		/* 底下垫同一张图的模糊放大版，上下不是死黑，主体还是完整的原比例 */
+		/* 底下垫同一张图的模糊放大版，画面铺满整屏，主体还是完整的原比例 */
 		var bg = document.createElement('div');
 		bg.className = 'flatbg';
 		bg.style.backgroundImage = 'url("' + thumbUrl(rawUrl, 480) + '")';
@@ -1335,19 +1344,96 @@ function showFlat(rawUrl) {
 		im.alt = '照片';
 		im.className = 'flatimg';
 		sphereEl.appendChild(im);
-		im.addEventListener('click', function () {
-			var on = viewerEl.classList.toggle('immersive');
-			toast(on ? '点一下图片退回带按钮的界面' : '已退出全屏');
-		});
+		bindZoom(im);
 	};
 	im.onerror = function () { sphereEl.innerHTML = '<div class="loading">图片没取到，点下面「下载原图」试试</div>'; };
 	im.src = thumbUrl(rawUrl, Math.min(2048, Math.round(430 * DPR * 2)));
 }
 
+/* 普通照片的手势：双指缩放、放大后单指拖动、双击放大/复位。球面那套交给官方 PSV，这里不插手 */
+function bindZoom(im) {
+	var s = 1, tx = 0, ty = 0, MAXS = 5;
+	var pts = {}, lastX = 0, lastY = 0, dragging = false, baseS = 1, lastDist = 0, lastTap = 0;
+
+	function clampMove() {
+		var cw = im.clientWidth || 1, ch = im.clientHeight || 1;
+		var iw = im.naturalWidth || cw, ih = im.naturalHeight || ch;
+		var k = Math.min(cw / iw, ch / ih);
+		var maxX = Math.max(0, (iw * k * s - cw) / 2);
+		var maxY = Math.max(0, (ih * k * s - ch) / 2);
+		tx = Math.max(-maxX, Math.min(maxX, tx));
+		ty = Math.max(-maxY, Math.min(maxY, ty));
+	}
+	function apply() {
+		if (s < 1.02) { s = 1; tx = 0; ty = 0; }
+		clampMove();
+		im.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + s + ')';
+	}
+	function reset() { s = 1; tx = 0; ty = 0; im.style.transform = ''; }
+	S.resetZoom = reset;
+
+	function dist() {
+		var p = Object.keys(pts).map(function (k2) { return pts[k2]; });
+		return Math.sqrt(Math.pow(p[0].x - p[1].x, 2) + Math.pow(p[0].y - p[1].y, 2));
+	}
+
+	im.addEventListener('pointerdown', function (ev) {
+		pts[ev.pointerId] = { x: ev.clientX, y: ev.clientY };
+		var n = Object.keys(pts).length;
+		if (n === 1) {
+			dragging = true; lastX = ev.clientX; lastY = ev.clientY;
+		} else if (n === 2) {
+			dragging = false; baseS = s; lastDist = dist();
+		}
+		try { im.setPointerCapture(ev.pointerId); } catch (e) {}
+	});
+
+	im.addEventListener('pointermove', function (ev) {
+		if (!pts[ev.pointerId]) return;
+		pts[ev.pointerId] = { x: ev.clientX, y: ev.clientY };
+		var n = Object.keys(pts).length;
+		if (n >= 2) {
+			var d = dist();
+			if (lastDist > 0) s = Math.max(1, Math.min(MAXS, baseS * d / lastDist));
+			apply();
+		} else if (dragging && s > 1) {
+			tx += ev.clientX - lastX;
+			ty += ev.clientY - lastY;
+			lastX = ev.clientX; lastY = ev.clientY;
+			clampMove();
+			im.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + s + ')';
+		}
+	});
+
+	function up(ev) {
+		if (pts[ev.pointerId]) delete pts[ev.pointerId];
+		if (Object.keys(pts).length < 2) lastDist = 0;
+		if (Object.keys(pts).length === 0) dragging = false;
+	}
+	im.addEventListener('pointerup', function (ev) {
+		/* 手指抬起且没怎么动，按双击处理（移动端 dblclick 不稳） */
+		if (Object.keys(pts).length === 1 && s <= 1.02) {
+			var now = Date.now();
+			if (now - lastTap < 280) { s = 2.5; tx = 0; ty = 0; apply(); lastTap = 0; }
+			else lastTap = now;
+		}
+		up(ev);
+	});
+	im.addEventListener('pointercancel', up);
+	im.addEventListener('dblclick', function () {
+		if (s > 1) reset(); else { s = 2.5; tx = 0; ty = 0; apply(); }
+	});
+	im.addEventListener('wheel', function (ev) {
+		ev.preventDefault();
+		s = Math.max(1, Math.min(MAXS, s * (ev.deltaY > 0 ? 0.9 : 1.1)));
+		apply();
+	}, { passive: false });
+}
+
 function closeViewer() {
 	viewerEl.classList.remove('on');
 	viewerEl.classList.remove('immersive');
-	viewerEl.classList.remove('flat');
+	S.resetZoom = null;
 	if (S.viewer) { try { S.viewer.destroy(); } catch (e) {} S.viewer = null; }
 	if (S.soft) { S.soft.alive = false; S.soft = null; }
 	sphereEl.innerHTML = '';
@@ -1363,6 +1449,13 @@ function closeViewer() {
 }
 
 document.getElementById('vClose').addEventListener('click', closeViewer);
+/* 全屏按钮：收起上下栏只留图，右上角出退出按钮（和招生页 PSV 那个全屏按钮是一个意思） */
+document.getElementById('vFullBtn').addEventListener('click', function () {
+	viewerEl.classList.add('immersive');
+});
+document.getElementById('vExit').addEventListener('click', function () {
+	viewerEl.classList.remove('immersive');
+});
 window.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeViewer(); closeThread(); } });
 
 /* ---------- 帖子详情层 ---------- */
@@ -1606,7 +1699,6 @@ function toast(msg) {
 
 /* ---------- 没有 WebGL 时的软件球面 ---------- */
 function showSoft(url) {
-	viewerEl.classList.remove('flat');
 	sphereEl.innerHTML = '<div class="loading">这台设备没开 3D 加速，正在用软渲染</div>';
 	var tipS = document.getElementById('vTip');
 	if (tipS) tipS.innerHTML = '按住拖动看四周，双指或滚轮缩放 · <a href="#" id="dlTip">下载原图</a>';
