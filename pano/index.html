@@ -560,20 +560,14 @@ html.io-black-mode .shot .lost { background: #23272d; color: #8b939c; }
 /* ========== 配置 ========== */
 /* 接口基址：正式环境走 https://comment.qnkjxx.top/api。
    用内网 IP 打开（手机连电脑热点调试）时，Waline 的来源白名单会直接 403，
-   这时自动改用本机小代理 _tools/waline_lan_proxy.py（默认 8139）；
-   也可以用 URL 上的 ?api= 手动指定别的地址。 */
+   这时自动改用本机小代理 _tools/waline_lan_proxy.py（默认 8139）。 */
 var API = (function () {
-	var m = location.search.match(/[?&]api=([^&#]+)/);
-	if (m) return decodeURIComponent(m[1]).replace(/\/+$/, '');
 	if (/^(192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(location.hostname)) {
 		return 'http://' + location.hostname + ':8139/api';
 	}
 	return 'https://comment.qnkjxx.top/api';
 })();
-var PAGE_PATH = (function () {
-	var m = location.search.match(/[?&]path=([^&#]+)/);
-	return m ? decodeURIComponent(m[1]) : '/pano/';
-})();
+var PAGE_PATH = '/pano/';
 var PAGE_SIZE = 10;
 /* 分享链接：?p=帖子id 打开详情，"&i=n" 直接打开第 n 张 */
 var JUMP_P = (function () {
@@ -1011,7 +1005,11 @@ function renderCard(e) {
 	grow.className = 'grow';
 	var shareBtn = document.createElement('button');
 	shareBtn.textContent = '🔗 分享';
-	shareBtn.addEventListener('click', function () { shareThread(c.objectId, 0); });
+	shareBtn.addEventListener('click', function () {
+		shareThread(c.objectId, 0,
+			(p.head || (p.items[0] && p.items[0].note) || '').slice(0, 30),
+			p.cover ? shareThumb(p.cover) : '');
+	});
 	bar.appendChild(btn);
 	bar.appendChild(grow);
 	bar.appendChild(shareBtn);
@@ -1276,8 +1274,6 @@ function showSphere(rawUrl) {
 				minFov: 25,
 				maxFov: 90
 			});
-			/* 调试句柄：便于在控制台/自动化里读位置 */
-			try { window.__psv = S.viewer; } catch (e) {}
 			return;
 		} catch (e) {}
 	}
@@ -1426,8 +1422,8 @@ function shareThumb(u) {
 /* 微信内置浏览器（X5 / WKWebView）既没有 Web Share，也没有任何 JS 接口能
    唤起「发送给朋友」面板——那个面板是微信自己攥着的，公众号 JS-SDK 也只
    能改转发卡片的标题和图片，同样弹不出来。所以微信里点分享时，给一层
-   指向右上角菜单的指引。?wx=1 仅供在电脑上预览这层的样子。 */
-var IN_WX = /MicroMessenger/i.test(navigator.userAgent) || /[?&]wx=1/.test(location.search);
+   指向右上角菜单的指引。 */
+var IN_WX = /MicroMessenger/i.test(navigator.userAgent);
 
 function postUrl(id, pic) {
 	/* 在内网/本机调试时分享出去的链接要换成正式域名，否则别人打不开 */
@@ -1437,9 +1433,24 @@ function postUrl(id, pic) {
 	return base + '?p=' + id + (pic ? '&i=' + pic : '');
 }
 
-function shareThread(id, pic) {
+/* 微信里点分享：光弹指引没用——微信抓的是地址栏。所以先把地址换成这一条
+   （列表里点卡片分享时地址还停在首页），再让用户点右上角转发，带出去的就
+   是这条帖子；从详情层/看图里分享时地址本来已经同步过，不用重复改。 */
+var wxRestore = false;
+
+function shareThread(id, pic, title, img) {
 	var u = postUrl(id, pic);
-	if (IN_WX) { wxAsk(u); return; }
+	if (IN_WX) {
+		var onThread = threadEl && threadEl.classList.contains('on');
+		var onPic = viewerEl && viewerEl.classList.contains('on');
+		if (!onThread && !onPic) {
+			syncAddress(id, pic);
+			setShareMeta(title || '', img || '');
+			wxRestore = true;
+		}
+		wxAsk(u);
+		return;
+	}
 	if (navigator.share) {
 		navigator.share({ title: '全景相框', text: pic ? '第 ' + pic + ' 张照片' : '', url: u })
 			.catch(function (err) {
@@ -1466,6 +1477,12 @@ function wxHide() {
 	if (!wxEl) return;
 	wxEl.classList.remove('on');
 	setTimeout(function () { wxEl.hidden = true; }, 200);
+	/* 从列表里点分享临时改过地址，关掉指引就退回首页，别让地址一直指着某一条 */
+	if (wxRestore) {
+		wxRestore = false;
+		syncAddress(0);
+		setShareMeta('');
+	}
 }
 
 function copyText(u) {
@@ -1822,7 +1839,9 @@ fileEl.addEventListener('change', function () {
 		pubTip.className = 'tip';
 		pubTip.textContent = '正在处理第 ' + (i + 1) + ' / ' + fs.length + ' 张…';
 		i++;
-		prepare(f, draft.length ? 4096 : 0).then(function (o) {
+		/* 每张都按同一上限处理：以前只有第一张走 maxPanoWidth()，后面的被卡到 4096，
+		   选多张时第二张起明显比第一张小一圈 */
+		prepare(f, 0).then(function (o) {
 			draft.push({
 				blob: o.blob, w: o.w, h: o.h, pano: o.pano,
 				url: URL.createObjectURL(o.blob), tags: [], note: ''
@@ -1952,6 +1971,14 @@ function prepare(file, capW) {
 			var w = img.naturalWidth, h = img.naturalHeight;
 			var r = w / h;
 			var pano = r >= 1.7;
+			/* 原图优先：普通照片（非全景）、JPG/PNG、且没超图床 9.6MB 上限时，
+			   直接把原文件交给图床，不重画不重编码，分辨率和画质原样保留。
+			   全景长条必须转成 2:1 才看得动，HEIC 有些浏览器认不了，这两类照旧走下面。 */
+			if (!pano && /^image\/(jpeg|png)$/.test(file.type) && file.size <= 9.6 * 1024 * 1024) {
+				URL.revokeObjectURL(u);
+				res({ blob: file, w: w, h: h, pano: false, raw: true });
+				return;
+			}
 			var cv = pano
 				? ((r > 2.3) ? toEquirect(img, 0.55, capW) : toEquirectDirect(img, capW))
 				: fitPhoto(img, 2048, capW);
@@ -1965,7 +1992,9 @@ function prepare(file, capW) {
 
 function uploadOne(item) {
 	var fd = new FormData();
-	fd.append('file', item.blob, 'pano-' + Date.now() + '.jpg');
+	/* 原图直传时可能是 PNG，扩展名跟着实际类型走，别一律按 .jpg 传 */
+	var ext = item.blob.type === 'image/png' ? '.png' : '.jpg';
+	fd.append('file', item.blob, 'pano-' + Date.now() + ext);
 	fd.append('upload_preset', UPLOAD_PRESET);
 	fd.append('folder', 'pano');
 	return fetch('https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/image/upload', { method: 'POST', body: fd })
