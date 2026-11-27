@@ -79,6 +79,13 @@
   }
   .qdl:hover:not(:disabled){background:var(--accent);color:#fff}
   .qdl:disabled{opacity:.5;cursor:not-allowed}
+  .qop{flex:none;display:flex;gap:6px}
+  .qplay{
+    flex:none;font-size:12px;padding:4px 10px;border-radius:7px;border:1px solid var(--line);
+    background:transparent;color:var(--text);cursor:pointer;
+  }
+  .qplay:hover:not(:disabled){border-color:var(--accent);color:var(--accent)}
+  .qplay:disabled{opacity:.5;cursor:not-allowed}
   #run,#srun{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600}
   #run:disabled,#srun:disabled,#stop:disabled,#copy:disabled,#retest:disabled{opacity:.5;cursor:not-allowed}
 
@@ -219,11 +226,6 @@
 
   /* 搜索来源 */
   .srcs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;flex:1 1 100%}
-  .srcbtn{
-    padding:5px 11px;border-radius:7px;border:1px solid var(--line);
-    background:var(--card);color:var(--sub);font-size:12.5px;cursor:pointer;
-  }
-  .srcbtn[data-on="1"]{border-color:var(--accent);color:var(--accent);font-weight:500}
   .srchint{font-size:11.5px;color:var(--sub)}
 
   /* 歌词 */
@@ -308,11 +310,7 @@
   <div class="panel" id="panel-search">
     <input id="kw" placeholder="歌名或歌手，例如 孤勇者 陈奕迅">
     <button id="srun">搜索并检测</button>
-    <div class="srcs">
-      <button class="srcbtn" data-src="nc" data-on="1">网易云</button>
-      <button class="srcbtn" data-src="qq">QQ 音乐</button>
-      <span class="srchint">QQ 曲库能挖到一些网易云没有的歌；能放能下的会自动换成网易云那版</span>
-    </div>
+    <div class="srcs"><span class="srchint">只搜网易云曲库</span></div>
   </div>
 
   <div class="sum" id="sum"></div>
@@ -371,15 +369,26 @@
     <p class="picksong" id="dlsong">—</p>
     <div class="plist" id="dllevels"></div>
     <div id="dlgdbox" style="display:none;margin-bottom:12px"></div>
-    <div class="plist" id="dlqqlist" style="display:none"></div>
-    <p class="dlalt" id="dlqinfo" style="display:none"></p>
+    <p class="dlalt" id="dlinfo" style="display:none"></p>
     <p class="dlalt" id="dlalt"></p>
     <div class="row" id="dlother" style="margin-bottom:10px">
       <button id="dlgd">无损直取</button>
-      <button id="dlqq">在 QQ 音乐找这首</button>
     </div>
     <div class="row">
       <button class="primary" id="dlclose">关掉</button>
+    </div>
+  </div>
+</div>
+
+<div class="mask" id="jxmask">
+  <div class="dlg pick">
+    <h2 id="jxtitle">JOOX 曲库</h2>
+    <p class="picksong" id="jxsong">—</p>
+    <div class="plist" id="jxlist"></div>
+    <p class="dlalt" id="jxinfo" style="display:none"></p>
+    <div class="row">
+      <button id="jxagain">重搜一次</button>
+      <button class="primary" id="jxclose">关掉</button>
     </div>
   </div>
 </div>
@@ -412,7 +421,6 @@
   var SEARCH_API = NC_API + '/search?keywords=';
   var NC_SONG_URL = NC_API + '/song/url?id=';   // 现取试听直链（免费曲不用登录）
   var NC_LYRIC = NC_API + '/lyric?id=';
-  var QQ_SEARCH_PAGE = 10;                      // QQ 搜索一次 10 条，page 是页码
   var APIs = [
     'https://api.qijieya.cn/meting/?type=playlist&id=',
     'https://api.injahow.cn/meting/?type=playlist&id='
@@ -436,6 +444,8 @@
   var m3uBtn = document.getElementById('m3u');
   var moreBtn = document.getElementById('more');
   var pagerEl = document.getElementById('pager');
+  var tableWrapEl = document.querySelector('.tablewrap');
+  var footEl = document.querySelector('.foot');
   var pageinfoEl = document.getElementById('pageinfo');
   var noteEl = document.getElementById('note');
   var acctBtn = document.getElementById('acct');
@@ -476,15 +486,20 @@
   var panelSearch = document.getElementById('panel-search');
 
   var currentMode = 'search';
-  var searchSource = 'nc';                        // nc=网易云, qq=QQ 音乐
   var modeState = { list: null, search: null };   // 各模式自己留一份结果
 
   function emptyTip(){
     return currentMode === 'search'
-      ? '上面填歌名或歌手，点「搜索并检测」。<br>' + (searchSource === 'qq'
-        ? 'QQ 音乐这个源暂时用不了了（接口停了），切回上面的「网易云」就行。'
-        : '现在搜的是网易云曲库，搜不到就换个关键词，或者去掉「翻唱」「Live」这类后缀。')
+      ? '上面填歌名或歌手，点「搜索并检测」。<br>搜不到就换个关键词，或者去掉「翻唱」「Live」这类后缀；网易云曲库里没有的歌，会自动去 JOOX 曲库再找一次。'
       : '上面填歌单 ID 或链接，点「开始检测」。<br>登录之后可以直接从下拉里挑自己的歌单。';
+  }
+
+  // 没有结果时收起表格骨架和批量按钮，别让页面空荡荡地堆控件
+  function syncChrome(){
+    var has = rows.length > 0;
+    if (tableWrapEl) tableWrapEl.style.display = has ? '' : 'none';
+    if (pagerEl) pagerEl.style.display = (has && currentMode === 'search') ? 'flex' : 'none';
+    if (footEl) footEl.style.display = has ? '' : 'none';
   }
 
   function renderAll(){
@@ -497,6 +512,7 @@
       ph.innerHTML = '<td colspan="8">' + (running ? '正在取歌曲列表…' : emptyTip()) + '</td>';
       tbody.appendChild(ph);
     }
+    syncChrome();
     if (rows.length) renderSum(); else sumEl.innerHTML = '';
     refreshHearts();
     renderPageinfo();
@@ -526,7 +542,7 @@
     noteEl.textContent = keep
       ? keep.note
       : (isSearch
-        ? '结果会顺手验一遍能不能播；搜不到原唱就切「QQ 音乐」再搜一遍，两边曲库不一样。'
+        ? '结果会顺手验一遍能不能播；网易云曲库里一首都没有，会自动去 JOOX 曲库再找一次。'
         : '八首并行探测，单首 5 秒没响应就记“未知”，点「重测未知」可以再来一次。');
   }
   tabList.onclick = function(){ setMode('list'); };
@@ -567,13 +583,11 @@
 
   function searchSongs(keyword, page){
     // page 是「从第几条开始」：page=1 前 10 条，page=11 接着第 11 条起
-    if (searchSource === 'qq') return searchQQ(keyword, page);
-
     var start = Math.max(1, page || 1);
     var url = SEARCH_API + encodeURIComponent(keyword) + '&limit=10&offset=' + (start - 1);
     return fetchJson(url, 10000).then(function(res){
       var songs = (res && res.result && res.result.songs) || [];
-      if (!songs.length) throw new Error('没搜到结果');
+      if (!songs.length) return [];   // 空结果照常返回，由上层给「去别家直取」的入口
       return songs.filter(function(it){ return it && it.id; }).map(function(it){
         return {
           name: it.name || '(无名)', artist: artistsOf(it), id: String(it.id || ''),
@@ -589,16 +603,7 @@
       .filter(Boolean).join(' / ');
   }
 
-  function searchQQ(keyword, page){
-    // QQ 源也走 api.vkeys.cn，同一把刀下同样不回包（2026-11-27），别让用户白等 8 秒。
-    // 哪天 vkeys 恢复跨域，把下面这行换回原来的 searchQQ 实现即可（原参数：QQ_SEARCH + word + '&page='）。
-    return Promise.reject(new Error('QQ 搜索接口停了（api.vkeys.cn 不再接受跨域请求），先用网易云源，或点「去 QQ 音乐搜」到那边找'));
-    /* 原实现：
-    var pageNo = Math.max(1, Math.ceil((page || 1) / QQ_SEARCH_PAGE));
-    var url = QQ_SEARCH + encodeURIComponent(keyword) + '&page=' + pageNo;
-    return fetchJson(url, 8000).then(function(res){ ... });
-    */
-  }
+  // 搜索只走网易云曲库
 
   // ---------- 探测 ----------
   function probe(url){
@@ -652,81 +657,17 @@
   }
 
   function resolveUrl(r){
-    if (r.id) return ncSongUrl(r.id);            // 有网易云 id 的一律走网易云（含 QQ 行对上的同名版）
-    if (r.mid) return Promise.resolve(QQ_STREAM + encodeURIComponent(r.mid));
-    return Promise.resolve('');
+    return r.id ? ncSongUrl(r.id) : Promise.resolve('');
   }
 
-  // 一行能不能播：QQ 的行先对一下网易云有没有同一个版本，对上了就用网易云的文件
+  // 一行能不能播：取直链出来试一下
   function probeRow(r){
-    if (r.source === 'qq' && !r.id) {
-      return matchAlt(r).then(function(cands){
-        if (!cands || !cands.length) return { state: 'bad', ms: 0, tag: '去 QQ 听' };
-        var best = null;   // 只能拿到几十秒片段的，先记着，找不到完整版再退回它
-        var use = function(c, p, tag){
-          r.id = c.id; r.altName = c.name; r.altArtist = c.artist; r.alt = true;
-          return { state: 'ok', ms: p.ms, dur: p.dur, tag: tag || '' };
-        };
-        // 候选一个个试，两分钟以上的才算完整曲
-        var tryOne = function(k){
-          if (k >= cands.length) {
-            return Promise.resolve(best ? use(best.c, best.p, '只有片段')
-                                        : { state: 'bad', ms: 0, tag: '去 QQ 听' });
-          }
-          var c = cands[k];
-          return ncSongUrl(c.id).then(function(u){
-            if (!u) return tryOne(k + 1);
-            return probe(u).then(function(p){
-              if (p.state === 'ok') {
-                if (p.dur >= 100) return use(c, p, '');
-                if (!best) best = { c: c, p: p };
-              }
-              return tryOne(k + 1);
-            });
-          }).catch(function(){ return tryOne(k + 1); });
-        };
-        return tryOne(0);
-      });
-    }
     return resolveUrl(r).then(function(u){
       return u ? probe(u) : { state: 'bad', ms: 0 };
     }).catch(function(){ return { state: 'unknown', ms: 0 }; });
   }
 
   // 歌名去掉括号里的补充说明、只留主干；歌手去掉分隔符，两边互相包含就算同一人
-  function normName(s){
-    return String(s || '').toLowerCase()
-      .replace(/[（(【\[][^）)】\]]*[）)】\]]/g, '')
-      .replace(/[^\w\u4e00-\u9fa5]/g, '');
-  }
-  function normArtist(s){
-    return String(s || '').toLowerCase()
-      .replace(/\s+/g, '')
-      .replace(/[·\/,，&_-]/g, '')
-      .replace(/feat\.?|ft\.?/g, '');
-  }
-
-  function matchAlt(r){
-    var kw = (r.name || '') + ' ' + (r.artist || '');
-    var n = normName(r.name), a = normArtist(r.artist);
-    if (!n) return Promise.resolve([]);
-    return fetchJson(SEARCH_API + encodeURIComponent(kw) + '&limit=10&offset=0', 8000).then(function(res){
-      var songs = (res && res.result && res.result.songs) || [];
-      if (!songs.length) return [];
-      var out = [];
-      for (var i = 0; i < songs.length && out.length < 4; i++) {
-        var it = songs[i];
-        if (!it || !it.id) continue;
-        if (normName(it.name) !== n) continue;
-        var ca = normArtist(artistsOf(it));
-        if (!ca) continue;
-        if (ca.indexOf(a) < 0 && a.indexOf(ca) < 0) continue;
-        out.push({ id: String(it.id), name: it.name || r.name, artist: artistsOf(it) });
-      }
-      return out;
-    }).catch(function(){ return []; });
-  }
-
   var LABEL = { ok:'可用', bad:'不可用', unknown:'未知', waiting:'检测中' };
 
   var ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.2l11.6 6.8-11.6 6.8z"/></svg>';
@@ -740,21 +681,20 @@
     if (!tr) return;
     var cls = r.state;
     var text = r.tag || LABEL[cls];
-    if (r.tag === '付费' || r.tag === '去 QQ 听' || r.tag === '只有片段') cls = 'pay';
+    if (r.tag === '付费' || r.tag === '只有片段') cls = 'pay';
     var tip = '';
-    if (r.alt) tip = 'QQ 音乐那版拿不到文件，放的是网易云同名版：' + (r.altArtist || '');
     if (r.tag === '只有片段') tip = '这首在这只能拿到几十秒的试听片段，完整文件下不了';
     tr.children[3].innerHTML = '<span class="st ' + cls + '"' + (tip ? ' title="' + esc(tip) + '"' : '') + '><span class="dot"></span>' + esc(text) + '</span>';
     tr.children[4].textContent = r.ms ? (r.ms / 1000).toFixed(1) + 's' : '';
     var cell6 = tr.children[5];
     var play = cell6 && cell6.querySelector('.play');
     if (play) {
-      play.disabled = !(r.state === 'ok' && (r.id || r.mid));
+      play.disabled = !(r.state === 'ok' && r.id);
       play.innerHTML = (playIdx === i && !player.paused) ? ICON_PAUSE : ICON_PLAY;
       play.classList.toggle('on', playIdx === i);
     }
     var dl = cell6 && cell6.querySelector('.dl');
-    if (dl) dl.disabled = !(r.id || r.mid);   // 播不通的也能点，进去看别的通道
+    if (dl) dl.disabled = !r.id;   // 播不通的也能点，进去看别的通道
     var cell7 = tr.children[6];
     if (r.id && cell7 && !cell7.querySelector('.heart')) {
       cell7.innerHTML = '<button class="heart" title="点一下挑个歌单收藏">♡</button>';
@@ -763,9 +703,8 @@
 
   function renderSum(){
     var c = { ok:0, bad:0, unknown:0, waiting:0 };
-    var qqonly = 0, clip = 0;
+    var clip = 0;
     rows.forEach(function(r){
-      if (r.tag === '去 QQ 听') { qqonly++; return; }   // 只能去 QQ 听的，不算进"播不了"
       if (r.tag === '只有片段') { clip++; return; }     // 只有片段的单独算，不掺进"可播"
       c[r.state] = (c[r.state] || 0) + 1;
     });
@@ -774,7 +713,6 @@
     if (c.ok) parts.push('<span class="tag" style="color:var(--ok)">可播 <b>' + c.ok + '</b></span>');
     if (c.bad) parts.push('<span class="tag" style="color:var(--bad)">播不了 <b>' + c.bad + '</b></span>');
     if (clip) parts.push('<span class="tag" style="color:var(--sub)">只有片段 <b>' + clip + '</b></span>');
-    if (qqonly) parts.push('<span class="tag" style="color:var(--sub)">只能去 QQ 听 <b>' + qqonly + '</b></span>');
     if (c.unknown) parts.push('<span class="tag" style="color:var(--unknown)">未知 <b>' + c.unknown + '</b></span>');
     sumEl.innerHTML = parts.join(' ');
   }
@@ -826,11 +764,8 @@
   // ---------- 列表渲染 ----------
   function makeTr(r, i){
     var tr = document.createElement('tr');
-    var qq = r.source === 'qq';
     var link = '';
-    if (qq && r.mid) {
-      link = '<a class="lnk" href="https://y.qq.com/n/ryqq/songDetail/' + esc(r.mid) + '" target="_blank" rel="noopener" title="在 QQ 音乐打开这一首">' + ICON_LINK + '</a>';
-    } else if (r.id) {
+    if (r.id) {
       link = '<a class="lnk" href="https://music.163.com/song?id=' + r.id + '" target="_blank" rel="noopener" title="在网易云打开这一首">' + ICON_LINK + '</a>';
     }
     tr.innerHTML = '<td>' + (i + 1) + '</td>' +
@@ -846,7 +781,7 @@
 
   function mkRow(item){
     return {
-      name: item.name, artist: item.artist, id: item.id || '', mid: item.mid || '',
+      name: item.name, artist: item.artist, id: item.id || '',
       pic: item.pic || '', pay: item.pay || '', dur: item.dur || '',
       source: item.source || 'nc', key: item.key || '', state: 'waiting', ms: 0
     };
@@ -866,6 +801,7 @@
 
     renderSum();
     refreshHearts();   // 已经收藏过的歌，一出来就是实心
+    syncChrome();
     noteEl.textContent = noteText;
   }
 
@@ -886,6 +822,7 @@
 
     renderSum();
     refreshHearts();
+    syncChrome();
     return idxs;
   }
 
@@ -936,33 +873,33 @@
     noteEl.textContent = '正在搜索…';
 
     searchKw = kw;
-    var srcName = searchSource === 'qq' ? 'QQ 音乐' : '网易云';
-    sumEl.innerHTML = '正在 ' + srcName + ' 里搜…';
-    noteEl.textContent = '正在 ' + srcName + ' 里搜…';
+    var srcName = '网易云';
+    sumEl.innerHTML = '正在网易云里搜…';
+    noteEl.textContent = '正在网易云里搜…';
 
     searchSongs(kw, 1).then(function(list){
-      buildRows(list, srcName + '搜到 ' + list.length + ' 首，正在逐首验能不能播。');
+      buildRows(list, '网易云搜到 ' + list.length + ' 首，正在逐首验能不能播。');
       renderPageinfo();
+      if (!list.length) {
+        noteEl.textContent = '网易云曲库没有「' + kw + '」，换 JOOX 曲库再找一次。';
+        openJx(kw);
+        return Promise.resolve();
+      }
       return runQueue(rows.map(function(_, i){ return i; }));
     }).catch(function(err){
       sumEl.innerHTML = '';
       rows = [];
       pageinfoEl.textContent = '';
-      noteEl.textContent = '搜索失败：' + (err && err.message ? err.message : '未知错误') +
-        (searchSource === 'qq'
-          ? '（QQ 源现在已经用不了了，切回「网易云」搜同一首歌就行）'
-          : '（多半是接口临时限流，等一会儿再点一次）');
+      noteEl.textContent = '网易云接口这会儿没响应（' + ((err && err.message) || '网络问题') + '），换 JOOX 曲库再找一次。';
+      syncChrome();
+      openJx(kw);
     }).then(function(){
       running = false;
       refreshButtons();
       renderPageinfo();
       if (!cancelled && rows.length) {
-        var alt = rows.filter(function(r){ return r.alt; }).length;
-        var qqonly = rows.filter(function(r){ return r.tag === '去 QQ 听'; }).length;
         noteEl.textContent = '共 ' + rows.length + ' 首，能播 ' + okRows().length + ' 首' +
-          (alt ? '；' + alt + ' 首放的是网易云同名版' : '') +
-          (qqonly ? '；' + qqonly + ' 首只能去 QQ 听' : '') +
-          '。不够就「再加载 10 首」，点 ▶ 试听，点 ↗ 去' + srcName + '。';
+          '。不够就「再加载 10 首」，点 ▶ 试听，点 ↗ 去网易云。';
         refreshHearts();
       }
     });
@@ -993,8 +930,7 @@
       refreshButtons();
       renderPageinfo();
       if (!empty && !cancelled && rows.length) {
-        noteEl.textContent = '共 ' + rows.length + ' 首，能播 ' + okRows().length + ' 首；不够就「再加载 10 首」，点 ▶ 试听，点 ↗ 去' +
-          (searchSource === 'qq' ? 'QQ 音乐' : '网易云') + '。';
+        noteEl.textContent = '共 ' + rows.length + ' 首，能播 ' + okRows().length + ' 首；不够就「再加载 10 首」，点 ▶ 试听，点 ↗ 去网易云。';
       }
     });
   };
@@ -1050,8 +986,7 @@
   function showPlayer(r){
     plBox.classList.add('on');
     pTitle.textContent = r.name;
-    pSub.textContent = (r.artist || '') +
-      (r.source === 'qq' ? (r.alt ? ' · QQ 曲库，放的是网易云同名版' : ' · QQ 音乐') : '');
+    pSub.textContent = r.artist || '';
     if (r.pic) {
       pCover.src = String(r.pic).replace(/^http:/, 'https://');
       pCover.style.display = '';
@@ -1064,6 +999,7 @@
   function stopPlay(hide){
     player.pause();
     playIdx = -1;
+    jxPlaying = false;
     renderPlays();
     if (hide !== false) {
       plBox.classList.remove('on');
@@ -1090,6 +1026,7 @@
     }
 
     playIdx = i;
+    jxPlaying = false;
     showPlayer(r);
     renderPlays();
     noteEl.textContent = '正在取「' + r.name + '」的音频…';
@@ -1103,7 +1040,7 @@
     }).then(function(){
       renderPlays();
       showLyric(r);
-      noteEl.textContent = '正在播放「' + r.name + '」' + (r.source === 'qq' ? '（QQ 音乐）' : '') + '。';
+      noteEl.textContent = '正在播放「' + r.name + '」。';
     }).catch(function(err){
       var name = err && err.name;
       if (name === 'NotAllowedError') {
@@ -1163,9 +1100,7 @@
     lyricLines = []; lyricCur = -1;
 
     if (!r.id) {
-      llinesEl.innerHTML = '<div class="lnone">' + (r.mid
-        ? 'QQ 音乐不对外开放歌词，去平台上听吧'
-        : '这首没有歌词数据') + '</div>';
+      llinesEl.innerHTML = '<div class="lnone">这首没有歌词数据</div>';
       return;
     }
 
@@ -1191,6 +1126,10 @@
     lyricOn = !lyricOn;
     lyricBox.classList.toggle('on', lyricOn);
     if (!lyricOn) return;
+    if (jxPlaying) {
+      llinesEl.innerHTML = '<div class="lnone">这首来自 JOOX 曲库，没有歌词数据</div>';
+      return;
+    }
     if (playIdx >= 0 && !lyricLines.length) showLyric(rows[playIdx]);
     else hlLyric();
   };
@@ -1206,6 +1145,7 @@
   player.onpause = function(){ renderPlays(); };
 
   player.onended = function(){
+    if (jxPlaying) { stopPlay(); return; }
     var next = -1;
     for (var k = playIdx + 1; k < rows.length; k++) {
       if (rows[k].state === 'ok') { next = k; break; }
@@ -1714,11 +1654,9 @@
   var dlListEl = document.getElementById('dllevels');
   var dlAltEl = document.getElementById('dlalt');
   var dlTitleEl = document.getElementById('dltitle');
-  var dlQqListEl = document.getElementById('dlqqlist');
-  var dlQInfoEl = document.getElementById('dlqinfo');
+  var dlInfoEl = document.getElementById('dlinfo');
   var dlGdBoxEl = document.getElementById('dlgdbox');
   var dlGdBtnEl = document.getElementById('dlgd');
-  var dlQqBtn = document.getElementById('dlqq');
   var dlOtherEl = document.getElementById('dlother');
   var dlIdx = -1;
   var dlFound = [];
@@ -1738,26 +1676,89 @@
     }).join('');
   }
 
-  // QQ 音乐：原来 vkeys 出搜索结果（带 songmid 和收不收费），qijieya 的 meting 用 songmid 换 302 直链。
-  // 2026-11-27 起 vkeys 对带 Origin 的跨域请求不回包，浏览器里这条通道整体不可用，先快速失败给明确提示。
-  var QQ_SEARCH = 'https://api.vkeys.cn/v2/music/tencent?word=';
-  var QQ_STREAM = 'https://api.qijieya.cn/meting/?server=tencent&type=url&id=';
+  // 备用通道：不认网易云登录，直接问聚合接口这首能拿到的最音质那份（VIP 曲也能出 FLAC）
+  // 这站是全站公用的号池，忙起来会整片回 503，而且 nginx 的 503 页不带 CORS 头，
+  // 浏览器读不到状态码，只能报 Failed to fetch —— 所以固定自动重试几次再放弃。
+  var GD_BASE = 'https://music-api.gdstudio.xyz/api.php';
+  var GD_API = GD_BASE + '?types=url&source=netease&id=';
+  var GD_JOOX_URL = GD_BASE + '?types=url&source=joox&id=';
+  var GD_JOOX_SEARCH = GD_BASE + '?types=search&source=joox&name=';
+  var GD_ROUND = 4;
+  var GD_WAYS = 2;
+  var gdState = null;
+  var gdCtrls = [];
+  var gdSeq = 0;
 
-  function qqSearch(kw){
-    return Promise.reject(new Error('QQ 音乐接口停了（api.vkeys.cn 不再接受跨域请求）'));
-    /* 原实现：
-    return fetch(QQ_SEARCH + encodeURIComponent(kw), { mode: 'cors' }).then(function(res){
-      if (!res.ok) throw new Error('返回 ' + res.status);
-      return res.json();
-    }).then(function(j){
-      return (j && j.data) || [];
-    });
-    */
+  function gdStop(){
+    gdSeq++;
+    gdCtrls.forEach(function(c){ try { c.abort(); } catch (e) {} });
+    gdCtrls = [];
   }
 
-  // 备用通道：不认网易云登录，直接问聚合接口这首能拿到的最音质那份（VIP 曲也能出 FLAC）
-  var GD_API = 'https://music-api.gdstudio.xyz/api.php?types=url&source=netease&id=';
-  var gdState = null;
+  // 一轮同时发两路：503 是随机的节点/号池问题，两路里总有一条能落到活的
+  function raceJson(url, register){
+    var ctrls = [];
+    var mk = function(){
+      var c = new AbortController();
+      ctrls.push(c);
+      if (register) register(c);
+      var timer = setTimeout(function(){ try { c.abort(); } catch (e) {} }, 15000);
+      var done = function(){ clearTimeout(timer); };
+      return fetch(url, { mode: 'cors', signal: c.signal, cache: 'no-store' })
+        .then(function(res){
+          done();
+          if (!res.ok) throw new Error('接口返回 ' + res.status);
+          return res.json();
+        }, function(err){
+          done();
+          throw err;
+        });
+    };
+    var ways = [];
+    for (var i = 0; i < GD_WAYS; i++) ways.push(mk());
+    var kill = function(){ ctrls.forEach(function(c){ try { c.abort(); } catch (e) {} }); };
+    return Promise.any(ways).then(function(j){ kill(); return j; }, function(agg){
+      kill();
+      var errs = (agg && agg.errors) || [];
+      throw errs[0] || agg;
+    });
+  }
+
+  function gdRound(url, seq){
+    if (seq !== gdSeq) return Promise.reject(new Error('gd-cancel'));
+    return raceJson(url, function(c){ gdCtrls.push(c); });
+  }
+
+  function gdFetch(url, n, seq, t0){
+    if (seq !== gdSeq) return Promise.reject(new Error('gd-cancel'));
+    return gdRound(url, seq).catch(function(err){
+      if (seq !== gdSeq) throw new Error('gd-cancel');
+      if (n >= GD_ROUND || Date.now() - t0 > 25000) throw err;
+      dlInfo('备用通道这会儿挤（第 ' + n + ' 轮没成），自动再试…', true);
+      return new Promise(function(ok){ setTimeout(ok, 250 * n); }).then(function(){
+        if (seq !== gdSeq) throw new Error('gd-cancel');
+        return gdFetch(url, n + 1, seq, t0);
+      });
+    });
+  }
+
+  function gdErrText(err){
+    var m = (err && err.message) || '';
+    if (!m || /abort|failed to fetch|load failed|networkerror|返回 (429|5\d\d)/i.test(m)) {
+      return '备用通道这会儿整个连不上（全站公用的接口，忙起来会整片挂掉）。过十几秒再点「重试」，多半就通了。';
+    }
+    if (m === '这首备用通道也拿不到') return '这首备用通道也拿不到，换个版本，或者去别的平台搜。';
+    return '备用通道没取到：' + m + '。过十几秒再点「重试」试试。';
+  }
+
+  // 文件服务器那边挂了，浏览器同样只能报 Failed to fetch，别把英文丢给访客
+  function dlErrText(err){
+    var m = (err && err.message) || '';
+    if (!m || /abort|failed to fetch|load failed|networkerror/i.test(m)) {
+      return '文件服务器这会儿没接上，过几秒再点一次下载。';
+    }
+    return m;
+  }
 
   function gdExt(url){
     var m = String(url || '').match(/\.(flac|mp3|m4a|aac)(?:\?|$)/i);
@@ -1774,17 +1775,17 @@
   }
 
   function gdProbe(r){
+    gdStop();
+    var seq = gdSeq;
     dlGdBtnEl.disabled = true;
     dlGdBtnEl.textContent = '取中…';
     dlGdBoxEl.style.display = 'none';
     dlGdBoxEl.innerHTML = '';
     gdState = null;
-    qqInfo('正在备用通道上取「' + r.name + '」…');
+    dlInfo('正在备用通道上取「' + r.name + '」…', true);
 
-    return fetch(GD_API + encodeURIComponent(r.id), { mode: 'cors' }).then(function(res){
-      if (!res.ok) throw new Error('备用通道返回 ' + res.status);
-      return res.json();
-    }).then(function(j){
+    return gdFetch(GD_API + encodeURIComponent(r.id), 1, seq, Date.now()).then(function(j){
+      if (seq !== gdSeq) return;
       if (!j || !j.url) throw new Error('这首备用通道也拿不到');
       gdState = {
         url: String(j.url).replace(/^http:/, 'https:'),
@@ -1800,11 +1801,13 @@
       if (!dlFound.length) dlTitleEl.textContent = '备用通道取到 ' + gdState.tag;
       dlGdBtnEl.disabled = false;
       dlGdBtnEl.textContent = '重新取一次';
-      qqInfo('备用通道取到 ' + gdState.tag + '（' + mbs + '），点右边的「下载」就存盘。');
+      dlInfo('备用通道取到 ' + gdState.tag + '（' + mbs + '），点右边的「下载」就存盘。', true);
     }).catch(function(err){
+      if (err && err.message === 'gd-cancel') return;
+      if (seq !== gdSeq) return;
       dlGdBtnEl.disabled = false;
       dlGdBtnEl.textContent = '重试';
-      qqInfo('备用通道没取到：' + ((err && err.message) || '网络问题') + '（这个通道偶尔限流，隔一会儿再试）');
+      dlInfo(gdErrText(err), true);
     });
   }
 
@@ -1813,7 +1816,7 @@
     var st = gdState;
     var fname = safeName(r.name + (r.artist ? ' - ' + r.artist : '')) + '.' + st.ext;
     if (btn) { btn.disabled = true; btn.textContent = '存中…'; }
-    qqInfo('正在下载「' + st.tag + '」' + (st.size ? '约 ' + (st.size / 1048576).toFixed(1) + ' MB' : '') + '，别关页面…');
+    dlInfo('正在下载「' + st.tag + '」' + (st.size ? '约 ' + (st.size / 1048576).toFixed(1) + ' MB' : '') + '，别关页面…', true);
 
     return fetch(st.url, { mode: 'cors', referrerPolicy: 'no-referrer' }).then(function(res){
       if (!res.ok) throw new Error('文件服务器返回 ' + res.status);
@@ -1821,92 +1824,191 @@
     }).then(function(blob){
       if (blob.size < 10000) throw new Error('文件不对（' + blob.size + ' 字节）');
       saveBlob(blob, fname);
-      qqInfo('已下载：' + fname + '（' + st.tag + '，' + (blob.size / 1048576).toFixed(1) + ' MB）');
+      dlInfo('已下载：' + fname + '（' + st.tag + '，' + (blob.size / 1048576).toFixed(1) + ' MB）', true);
       if (btn) { btn.disabled = false; btn.textContent = '再下一次'; }
     }).catch(function(err){
-      qqInfo('没下成：' + ((err && err.message) || '网络问题'));
+      dlInfo('没下成：' + dlErrText(err), true);
       if (btn) { btn.disabled = false; btn.textContent = '下载'; }
     });
   }
 
-  function qqInfo(t){
-    dlQInfoEl.textContent = t || '';
-    dlQInfoEl.style.display = t ? '' : 'none';
-    noteEl.textContent = t || '';
+  // ---------- JOOX 曲库：网易云搜不到时的第二个曲库 ----------
+  // 聚合站也维护 joox 源，搜索结果和直链照样会随机 503，所以沿用同一条两路 + 重试的取数路子
+  var jxmaskEl = document.getElementById('jxmask');
+  var jxlistEl = document.getElementById('jxlist');
+  var jxtitleEl = document.getElementById('jxtitle');
+  var jxsongEl = document.getElementById('jxsong');
+  var jxinfoEl = document.getElementById('jxinfo');
+  var jxKw = '', jxRows = [], jxSeq = 0;
+  var jxPlaying = false;
+
+  function jxShort(err){
+    var m = (err && err.message) || '';
+    return (!m || /abort|failed to fetch|load failed|networkerror|返回 (429|5\d\d)/i.test(m))
+      ? '公用接口这会儿忙' : m;
   }
 
-  function qqDownload(mid, name, btn){
-    if (!mid) return;
-    // 行内的 ⤓ 是圆图标按钮，不能往里塞文字，只有弹窗里的文字按钮才改字
-    var round = btn && btn.classList.contains('dl');
-    var setBtn = function(busy, txt){
-      if (!btn) return;
-      btn.disabled = busy;
-      if (!round) btn.textContent = txt;
-    };
-    var url = QQ_STREAM + encodeURIComponent(mid);
-    setBtn(true, '取链接…');
-    qqInfo('正在取「' + name + '」的 QQ 音乐直链…');
+  function jxInfo(t){
+    jxinfoEl.textContent = t || '';
+    jxinfoEl.style.display = t ? '' : 'none';
+  }
 
-    return fetch(url, { mode: 'cors' }).then(function(res){
-      var ct = String(res.headers.get('content-type') || '').toLowerCase();
-      if (ct.indexOf('audio') < 0) throw new Error('QQ 那边没给文件（多半要付费，或这条通道这会儿不通）');
+  function openJx(kw){
+    jxKw = kw;
+    jxRows = [];
+    jxtitleEl.textContent = 'JOOX 曲库';
+    jxsongEl.textContent = '网易云没有「' + kw + '」，这个曲库再找一次。';
+    jxlistEl.innerHTML = '';
+    jxInfo('正在 JOOX 曲库里搜「' + kw + '」…');
+    jxmaskEl.classList.add('on');
+    jxSearch(kw);
+  }
+
+  function closeJx(){
+    jxmaskEl.classList.remove('on');
+    jxSeq++;
+  }
+
+  function jxSearch(kw){
+    var my = ++jxSeq;
+    jxInfo('正在 JOOX 曲库里搜「' + kw + '」…');
+    gdFetch(GD_JOOX_SEARCH + encodeURIComponent(kw) + '&count=20', 1, gdSeq, Date.now()).then(function(j){
+      if (my !== jxSeq) return;
+      var list = (Array.isArray(j) ? j : []).filter(function(x){ return x && x.id && x.name; });
+      if (!list.length) {
+        jxRows = [];
+        jxlistEl.innerHTML = '';
+        jxInfo('JOOX 曲库也没搜到「' + kw + '」。把歌手名和歌名一起写上，或者去掉「Live」「翻唱」这类字再搜一次。');
+        return;
+      }
+      jxRows = list.map(function(x){
+        return {
+          id: String(x.id),
+          name: x.name || '',
+          artist: Array.isArray(x.artist) ? x.artist.filter(Boolean).join(' / ') : String(x.artist || ''),
+          album: x.album || ''
+        };
+      });
+      renderJx();
+      jxInfo('找到 ' + jxRows.length + ' 首。点 ▶ 直接听，点 ↓ 取文件（能出 FLAC 就存 FLAC）。');
+    }).catch(function(err){
+      if (my !== jxSeq) return;
+      jxlistEl.innerHTML = '';
+      jxInfo('JOOX 曲库这会儿没响应（' + jxShort(err) + '）。等十几秒点「重搜一次」，或者关掉去别家搜。');
+    });
+  }
+
+  function renderJx(){
+    jxlistEl.innerHTML = jxRows.map(function(x, i){
+      return '<div class="qitem" data-i="' + i + '"><div class="qmain">' +
+        '<span class="qname">' + esc(x.name) + '</span>' +
+        '<span class="qmeta">' + esc(x.artist) + (x.album ? ' · ' + esc(x.album) : '') + '</span></div>' +
+        '<div class="qop"><button class="qplay" title="试听">▶</button>' +
+        '<button class="qdl" title="取文件">↓</button></div></div>';
+    }).join('');
+  }
+
+  function jxUrl(x){
+    return gdFetch(GD_JOOX_URL + encodeURIComponent(x.id), 1, gdSeq, Date.now()).then(function(j){
+      if (!j || !j.url) throw new Error('这个曲库也没有可下载的文件');
+      return {
+        url: String(j.url).replace(/^http:/, 'https:'),
+        size: Number(j.size) || 0,
+        ext: gdExt(j.url),
+        tag: gdLabel(j)
+      };
+    });
+  }
+
+  function jxPlay(x, btn){
+    if (btn) btn.disabled = true;
+    jxInfo('正在取「' + x.name + '」的音频…');
+    return jxUrl(x).then(function(st){
+      stopPlay(true);
+      jxPlaying = true;
+      showPlayer({ name: x.name, artist: x.artist });
+      pSub.textContent = (x.artist || '') + ' · JOOX 曲库' + (st.tag ? ' · ' + st.tag : '');
+      player.src = st.url;
+      player.currentTime = 0;
+      var p = player.play();
+      return p && p.then ? p : Promise.resolve();
+    }).then(function(){
+      renderPlays();
+      jxInfo('正在播放「' + x.name + '」。');
+    }).catch(function(err){
+      if (err && err.name === 'NotAllowedError') {
+        jxInfo('浏览器拦了一下播放，再点一次这一行的 ▶。');
+        renderPlays();
+        return;
+      }
+      jxInfo('放不了：' + (/可下载的文件/.test((err && err.message) || '') ? '这个曲库里这首也没有文件，换个版本试试' : jxShort(err)) + '。');
+    }).then(function(){ if (btn) btn.disabled = false; });
+  }
+
+  // joox 的文件服务器（hk.stream.music.joox.com）不给页面读的 CORS 头：
+  // 先试常规 blob 存盘，被拦就退回浏览器自己的下载，那条路不受 CORS 限制
+  function jxSave(url, fname){
+    return fetch(url, { mode: 'cors', referrerPolicy: 'no-referrer' }).then(function(res){
+      if (!res.ok) throw new Error('文件服务器返回 ' + res.status);
       return res.blob();
     }).then(function(blob){
-      if (blob.size < 10000) throw new Error('取回来的文件不对（' + blob.size + ' 字节）');
-      var fname = safeName(name) + '.mp3';
+      if (blob.size < 10000) throw new Error('文件不对（' + blob.size + ' 字节）');
       saveBlob(blob, fname);
-      qqInfo('已下载：' + fname + '（QQ 音乐 mp3，' + (blob.size / 1048576).toFixed(1) + ' MB）');
-      setBtn(false, '再下一次');
+      return { viaLink: false, size: blob.size };
     }).catch(function(err){
-      qqInfo('QQ 音乐没下成：' + ((err && err.message) || '网络问题') + '。点 ↗ 能去 QQ 音乐那听。');
-      setBtn(false, '重试');
+      var m = (err && err.message) || '';
+      if (!/failed to fetch|load failed|networkerror/i.test(m)) throw err;
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = fname;
+      a.rel = 'noopener';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      return { viaLink: true, size: 0 };
     });
   }
 
-  function showQQ(r){
-    dlQqBtn.disabled = true;
-    dlQqBtn.textContent = '正在搜…';
-    dlTitleEl.textContent = 'QQ 音乐：' + r.name;
-    dlListEl.style.display = 'none';
-    dlQqListEl.style.display = '';
-    dlQqListEl.innerHTML = '<div class="qitem"><div class="qmain"><span class="qname">正在 QQ 音乐里搜…</span></div></div>';
-    dlAltEl.innerHTML = '';
-    qqInfo('正在用「' + r.name + '」在 QQ 音乐里找…');
-
-    var kw = (r.name + ' ' + (r.artist || '')).trim();
-    qqSearch(kw).then(function(a){
-      return (a && a.length) ? a : qqSearch(r.name);
-    }).then(function(list){
-      if (!list || !list.length) throw new Error('QQ 音乐里没搜到');
-      var shown = list.slice(0, 10);
-      dlQqListEl.innerHTML = shown.map(function(s){
-        var free = (s.pay === '免费');
-        var meta = (s.singer || '') + (s.album ? ' · ' + s.album : '') + (s.time ? ' · ' + s.time : '');
-        return '<div class="qitem">' +
-          '<div class="qmain"><span class="qname">' + esc(s.song) + '</span>' +
-          '<span class="qmeta">' + esc(meta) + '</span></div>' +
-          (free
-            ? '<button class="qdl" data-mid="' + esc(s.mid) + '" data-name="' +
-              esc(s.song + (s.singer ? ' - ' + s.singer : '')) + '">下载</button>'
-            : '<span class="qtag">' + esc(s.pay || '要付费') + '</span>') +
-          '</div>';
-      }).join('');
-      var freeN = shown.filter(function(s){ return s.pay === '免费'; }).length;
-      dlQqBtn.textContent = '重新搜一次';
-      dlQqBtn.disabled = false;
-      noteEl.textContent = 'QQ 音乐搜到 ' + shown.length + ' 首，' + freeN +
-        ' 首能直接下（mp3，128k 档）；标「付费」的这条路拿不到，点 ⤓ 后面的官方搜索去试。';
-      qqInfo('搜到 ' + shown.length + ' 首，' + freeN + ' 首能直接下（mp3）。');
-      dlAltEl.innerHTML = '标「付费」的那几首这里拿不到，得去平台自己那儿：' +
-        '<div class="plks">' + altLinks(r) + '</div>';
+  function jxDl(x, btn){
+    if (btn) { btn.disabled = true; btn.textContent = '…'; }
+    jxInfo('正在取「' + x.name + '」的下载地址…');
+    return jxUrl(x).then(function(st){
+      var fname = safeName(x.name + (x.artist ? ' - ' + x.artist : '')) + '.' + st.ext;
+      jxInfo('正在下载「' + st.tag + '」' + (st.size ? '约 ' + (st.size / 1048576).toFixed(1) + ' MB' : '') + '，别关页面…');
+      return jxSave(st.url, fname).then(function(r){
+        jxInfo(r.viaLink
+          ? '交给浏览器下载了（' + st.tag + (st.size ? '，约 ' + (st.size / 1048576).toFixed(1) + ' MB' : '') +
+            '）。它的文件服务器不让页面读，文件名会是对方给的编号，存完自己改一下就行。'
+          : '已下载：' + fname + '（' + st.tag + '，' + (r.size / 1048576).toFixed(1) + ' MB）');
+      });
     }).catch(function(err){
-      dlQqListEl.innerHTML = '<div class="qitem"><div class="qmain"><span class="qname">这条路暂时不通</span>' +
-        '<span class="qmeta">QQ 接口停了，先看「网易云」源的同名版，或点下面的官方搜索</span></div></div>';
-      qqInfo('QQ 音乐没搜成：' + ((err && err.message) || '网络问题'));
-      dlQqBtn.textContent = '重试';
-      dlQqBtn.disabled = false;
-    });
+      jxInfo(/可下载的文件/.test((err && err.message) || '')
+        ? '这首在 JOOX 里也没给文件，换个版本，或者去别家搜。'
+        : '没下成：' + jxShort(err) + '。过几秒再点一次 ↓。');
+    }).then(function(){ if (btn) { btn.disabled = false; btn.textContent = '↓'; } });
+  }
+
+  jxlistEl.addEventListener('click', function(e){
+    var item = e.target.closest ? e.target.closest('.qitem') : null;
+    if (!item) return;
+    var x = jxRows[parseInt(item.getAttribute('data-i'), 10)];
+    if (!x) return;
+    if (e.target.closest('.qplay')) jxPlay(x, item.querySelector('.qplay'));
+    else if (e.target.closest('.qdl')) jxDl(x, item.querySelector('.qdl'));
+  });
+  document.getElementById('jxclose').onclick = closeJx;
+  jxmaskEl.onclick = function(e){ if (e.target === jxmaskEl) closeJx(); };
+  document.getElementById('jxagain').onclick = function(){
+    if (!jxKw) return;
+    jxRows = [];
+    jxlistEl.innerHTML = '';
+    jxSearch(jxKw);
+  };
+
+  function dlInfo(t, quiet){
+    dlInfoEl.textContent = t || '';
+    dlInfoEl.style.display = t ? '' : 'none';
+    if (!quiet) noteEl.textContent = t || '';
   }
 
   function probeLevel(id, level){
@@ -1951,25 +2053,22 @@
     dlAltEl.innerHTML = '';
     dlListEl.style.display = '';
     dlListEl.innerHTML = '';
-    dlQqListEl.style.display = 'none';
-    dlQqListEl.innerHTML = '';
     dlGdBoxEl.style.display = 'none';
     dlGdBoxEl.innerHTML = '';
     dlGdBtnEl.disabled = false;
     dlGdBtnEl.textContent = '无损直取';
     gdState = null;
-    dlQInfoEl.textContent = '';
-    dlQInfoEl.style.display = 'none';
+    dlInfoEl.textContent = '';
+    dlInfoEl.style.display = 'none';
     dlOtherEl.style.display = '';
-    dlQqBtn.disabled = false;
-    dlQqBtn.textContent = '在 QQ 音乐找这首';
     dlMaskEl.classList.add('on');
 
-    // 网易云的档位要登录才查得到，QQ 音乐那条路不认登录
+    // 网易云的档位要登录才查得到
     if (!cookieStored || !me) {
       dlTitleEl.textContent = '选下载品质';
-      dlAltEl.innerHTML = '网易云这边要先扫码登录，才查得到有哪些档位。下面两条都不用登录：点「无损直取」直接拿音质最好的那份，点「在 QQ 音乐找这首」去那边搜：';
-      noteEl.textContent = cookieStored ? '还在确认登录状态，等两秒档位就出来了；也可以先用 QQ 音乐。' : '没登录网易云，先用 QQ 音乐这条路。';
+      dlAltEl.innerHTML = '网易云这边要先扫码登录，才查得到有哪些档位。不想登录就点「无损直取」，或者去这几家搜：' +
+        '<div class="plks">' + altLinks(r) + '</div>';
+      noteEl.textContent = cookieStored ? '还在确认登录状态，等两秒档位就出来了。' : '没登录网易云，先用「无损直取」。';
       return;
     }
 
@@ -1977,7 +2076,7 @@
     if (r.state !== 'ok') {
       dlListEl.innerHTML = '';
       dlTitleEl.textContent = '这首网易云下不来';
-      dlAltEl.innerHTML = '这首在网易云这边播不通，下载也拿不到。先点「无损直取」试试别的通道，不行再去 QQ 音乐或这几家搜：' +
+      dlAltEl.innerHTML = '这首在网易云这边播不通，下载也拿不到。先点「无损直取」试试别的通道，不行就去这几家搜：' +
         '<div class="plks">' + altLinks(r) + '</div>';
       noteEl.textContent = '「' + r.name + '」状态不可用，已经给出其他平台的搜索入口。';
       return;
@@ -2053,7 +2152,7 @@
       saveBlob(blob, name);
       noteEl.textContent = '已下载：' + name + '（' + tag + '，' + (blob.size / 1048576).toFixed(1) + ' MB）';
     }).catch(function(err){
-      noteEl.textContent = '没下成：' + ((err && err.message) || '网络问题');
+      noteEl.textContent = '没下成：' + dlErrText(err);
     });
   }
 
@@ -2066,7 +2165,7 @@
     if (!item) return;
     var r = rows[dlIdx];
     if (!r) return;
-    dlMaskEl.classList.remove('on');
+    closeDl();
     startDownload(r, item);
   });
   dlGdBtnEl.onclick = function(){
@@ -2081,30 +2180,14 @@
     gdDownload(rows[dlIdx], b);
   });
 
-  dlQqBtn.onclick = function(){
-    var r = rows[dlIdx];
-    if (!r) return;
-    showQQ(r);
-  };
-
-  dlQqListEl.addEventListener('click', function(e){
-    var b = e.target.closest ? e.target.closest('.qdl') : null;
-    if (!b || b.disabled) return;
-    qqDownload(b.getAttribute('data-mid'), b.getAttribute('data-name'), b);
-  });
-
-  document.getElementById('dlclose').onclick = function(){ dlMaskEl.classList.remove('on'); };
-  dlMaskEl.onclick = function(e){ if (e.target === dlMaskEl) dlMaskEl.classList.remove('on'); };
+  function closeDl(){
+    dlMaskEl.classList.remove('on');
+    gdStop();
+  }
+  document.getElementById('dlclose').onclick = closeDl;
+  dlMaskEl.onclick = function(e){ if (e.target === dlMaskEl) closeDl(); };
 
   function dlClick(i, btn){
-    var r = rows[i];
-    // QQ 的行：对上网易云同版本的走网易云档位；对不上的直接把人送到网易云去搜
-    if (r && r.source === 'qq' && !r.id) {
-      var q = encodeURIComponent((r.name + ' ' + (r.artist || '')).trim());
-      window.open('https://music.163.com/#/search/m/?s=' + q + '&type=1', '_blank');
-      noteEl.textContent = '「' + r.name + '」QQ 那版拿不到音频文件，网易云也没对上同版本；已经帮你在网易云开个搜索页，看看有没有别的版本能放。';
-      return;
-    }
     openDl(i);
   }
 
@@ -2225,24 +2308,6 @@
 
   runBtn.onclick = startPlaylist;
   srunBtn.onclick = startSearch;
-
-  // 搜索源切换：换源就清掉上一批结果，别把两个曲库混在一张表里
-  var srcBtns = Array.prototype.slice.call(document.querySelectorAll('.srcbtn'));
-  srcBtns.forEach(function(b){
-    b.onclick = function(){
-      if (running) return;
-      var s = b.getAttribute('data-src');
-      if (s === searchSource) return;
-      searchSource = s;
-      srcBtns.forEach(function(x){ x.setAttribute('data-on', x.getAttribute('data-src') === s ? '1' : '0'); });
-      rows = []; searchKw = ''; tbody.innerHTML = '';
-      renderAll();
-      noteEl.textContent = s === 'qq'
-        ? '现在搜 QQ 音乐，原唱多；标「付费」的这条路拿不到文件，其余能给 mp3。'
-        : '现在搜网易云，中文歌和歌单生态更全；缺版权的只会搜到翻唱。';
-      kwEl.focus();
-    };
-  });
 
   plEl.onkeydown = function(e){ if (e.key === 'Enter') startPlaylist(); };
   kwEl.onkeydown = function(e){ if (e.key === 'Enter') startSearch(); };

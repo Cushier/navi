@@ -608,7 +608,10 @@ var API = (function () {
 	}
 	return 'https://comment.qnkjxx.top/api';
 })();
-var PAGE_PATH = '/pano/';
+/* 帖子存在 Waline，path 字段就是这句。页面 2026-11-27 从 /pano/ 搬到 /quanjing/，
+   path 一起换成 '/quanjing/'：搬之前查过 /pano/ 的评论接口，count 已经是 0（147、142 都不在了），
+   所以直接换干净。若哪天老 path 的数据回来了，读的时候两个 path 都要查。 */
+var PAGE_PATH = '/quanjing/';
 var PAGE_SIZE = 10;
 /* 分享链接：?p=帖子id 打开详情，"&i=n" 直接打开第 n 张 */
 var JUMP_P = (function () {
@@ -1252,7 +1255,7 @@ vFoot.addEventListener('click', function (ev) {
 	if (!cur || !cur.e || !cur.e.p) return;
 	var it = cur.e.p.items[cur.idx];
 	if (!it) return;
-	downloadOriginal(it.url, 'pano-' + cur.e.c.objectId + '-' + (cur.idx + 1));
+	downloadOriginal(it.url, 'quanjing-' + cur.e.c.objectId + '-' + (cur.idx + 1));
 });
 
 /* 某张图下的评论条数 */
@@ -1577,7 +1580,7 @@ function shareThumb(u) {
 /* 下载原图：图床的 fl_attachment 会让响应带 Content-Disposition: attachment，
    浏览器收到就直接存盘（跨域时 <a download> 会被忽略，靠这个头兜底） */
 function attachUrl(u, name) {
-	return String(u).replace('/image/upload/', '/image/upload/fl_attachment:' + (name || 'pano') + '/');
+	return String(u).replace('/image/upload/', '/image/upload/fl_attachment:' + (name || 'quanjing') + '/');
 }
 
 function downloadOriginal(u, name) {
@@ -1591,7 +1594,7 @@ function downloadOriginal(u, name) {
 	}
 	var a = document.createElement('a');
 	a.href = attachUrl(u, name);
-	a.download = (name || 'pano') + ext;
+	a.download = (name || 'quanjing') + ext;
 	a.rel = 'noopener';
 	a.style.display = 'none';
 	document.body.appendChild(a);
@@ -2239,9 +2242,9 @@ function uploadOne(item) {
 	var fd = new FormData();
 	/* 原图直传时可能是 PNG，扩展名跟着实际类型走，别一律按 .jpg 传 */
 	var ext = item.blob.type === 'image/png' ? '.png' : '.jpg';
-	fd.append('file', item.blob, 'pano-' + Date.now() + ext);
+	fd.append('file', item.blob, 'quanjing-' + Date.now() + ext);
 	fd.append('upload_preset', UPLOAD_PRESET);
-	fd.append('folder', 'pano');
+	fd.append('folder', 'pano');   // Cloudinary 目录沿用 pano，老图不用搬
 	return fetch('https://api.cloudinary.com/v1_1/' + CLOUD_NAME + '/image/upload', { method: 'POST', body: fd })
 		.then(function (r) { return r.json(); })
 		.then(function (res) {
