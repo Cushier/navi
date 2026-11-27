@@ -919,6 +919,33 @@
   // 调试句柄：可以在控制台手动触发一次重建，用来验证切片→整张的降级
   try { window.__panoLaunch = launch; } catch (e) {}
 
+  // 自检入口：地址后面加 ?gltest=1，只打印本机 WebGL 支持情况，不建查看器。
+  // 探测完立刻释放上下文，免得占掉名额。手机上看不到控制台，靠这个截图定位。
+  if (/[?&]gltest=1/.test(location.search)) {
+    var dbgBox = document.getElementById('viewer');
+    if (dbgBox) {
+      var dbg = ['UA: ' + navigator.userAgent, 'dpr: ' + (window.devicePixelRatio || 1)];
+      ['webgl2', 'webgl', 'experimental-webgl'].forEach(function (nm) {
+        var c = document.createElement('canvas'), g = null, s = '';
+        try { g = c.getContext(nm); } catch (e) { s = '抛错: ' + (e && e.message); }
+        if (g) {
+          s = '可用';
+          try {
+            s += ' | ' + g.getParameter(g.VERSION) + ' | ' + g.getParameter(g.RENDERER);
+            var lc = g.getExtension('WEBGL_lose_context');
+            if (lc) lc.loseContext();
+          } catch (e2) { s += ' | 版本读取失败'; }
+        } else if (!s) { s = '拿不到（返回 null）'; }
+        dbg.push(nm + ': ' + s);
+      });
+      var pre = document.createElement('pre');
+      pre.style.cssText = 'margin:0;padding:10px;background:#fff;color:#111;font:12px/1.7 monospace;white-space:pre-wrap;word-break:break-all;max-height:60vh;overflow:auto';
+      pre.textContent = dbg.join(String.fromCharCode(10));
+      dbgBox.appendChild(pre);
+    }
+    return;
+  }
+
   if (window.PhotoSphereViewer && !/[?&]nogpu=1/.test(location.search)) {
     if (launch(!MOBILE, MOBILE ? 'img' : 'tiles')) return;
     if (!MOBILE && launch(false, 'img')) return;
