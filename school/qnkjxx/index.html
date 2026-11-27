@@ -719,9 +719,6 @@
   // 而整图只有 2000×1000，几乎所有还能跑 WebGL 的手机都能正常显示。
   var MOBILE = /Android|iPhone|iPad|iPod|Mobile|HarmonyOS/i.test(navigator.userAgent);
   var sphereFail = ''; // 降级原因，显示在平面模式的提示条上，方便拿手机的人反馈
-  var scenePanorama = function (base, width) {
-    return MOBILE ? base + "/low.jpg" : tiled(base, width);
-  };
 
   // 平面模式用的场景表：low 版是 2000×1000 的等距柱状图，拖动即可看一圈
   var SCENES = [
@@ -846,16 +843,27 @@
     load(0);
   }
 
-  // 不再自己探测 WebGL：手机上探测本身会占掉一个上下文，反而让后面的
-  // 查看器取不到；这里只留 ?nogpu=1 强制平面，其余交给查看器自己判断。
-  if (window.PhotoSphereViewer && !/[?&]nogpu=1/.test(location.search)) {
-    try {
-      var viewer = new PhotoSphereViewer.Viewer({
-      container: document.querySelector("#viewer"),
-      adapter: MOBILE ? PhotoSphereViewer.EquirectangularAdapter : PhotoSphereViewer.EquirectangularTilesAdapter,
-      panorama: scenePanorama("/assets/images/quanjing", 8192),
+  // 先试切片，起不来就退到整张图，还是全景；连 3D 都起不来才用平面模式。
+  // 手机（窄屏、弱 GPU）直接走整张，省得先下一堆切片再失败。
+  function galleryItems(useTiles) {
+    return SCENES.slice(1).map(function (s, i) {
+      var b = String(s.flat).replace(/\/low\.jpg$/, '');
+      return {
+        id: String(i + 1),
+        name: s.name,
+        thumbnail: s.thumb,
+        panorama: useTiles ? tiled(b, 8000) : b + '/low.jpg',
+      };
+    });
+  }
+
+  function makeViewer(useTiles) {
+    return new PhotoSphereViewer.Viewer({
+      container: document.querySelector('#viewer'),
+      adapter: useTiles ? PhotoSphereViewer.EquirectangularTilesAdapter : PhotoSphereViewer.EquirectangularAdapter,
+      panorama: useTiles ? tiled('/assets/images/quanjing', 8192) : '/assets/images/quanjing/low.jpg',
       defaultZoomLvl: 0,
-      loadingTxt: "加载中……",
+      loadingTxt: '加载中……',
       mousewheelCtrlKey: true,
       mousewheel: false,
       plugins: [
@@ -863,101 +871,63 @@
         [PhotoSphereViewer.GalleryPlugin, {
           // 手机屏幕窄，一进来就把场景缩略图铺满会挡住全景，改成点底部按钮再看
           visibleOnLoad: !MOBILE,
-          items: [
-            {
-              id: '1',
-              name: '前广场',
-              thumbnail: '/assets/images/360/qianguangchangs.jpg',
-              panorama: scenePanorama("/assets/images/360/qianguangchang", 8000),
-            },
-            {
-              id: '2',
-              name: '足球场',
-              thumbnail: '/assets/images/360/zuqiuchangs.jpg',
-              panorama: scenePanorama("/assets/images/360/zuqiuchang", 8000),
-            },
-            {
-              id: '3',
-              name: '羽毛球场',
-              thumbnail: '/assets/images/360/yumaoqiuchangs.jpg',
-              panorama: scenePanorama("/assets/images/360/yumaoqiuchang", 8000),
-            },
-            {
-              id: '4',
-              name: '篮球场',
-              thumbnail: '/assets/images/360/lanqiuchangs.jpg',
-              panorama: scenePanorama("/assets/images/360/lanqiuchang", 8000),
-            },
-            {
-              id: '5',
-              name: '教室',
-              thumbnail: '/assets/images/360/jiaoshis.jpg',
-              panorama: scenePanorama("/assets/images/360/jiaoshi", 8000),
-            },
-            {
-              id: '6',
-              name: '机房',
-              thumbnail: '/assets/images/360/jifangs.jpg',
-              panorama: scenePanorama("/assets/images/360/jifang", 8000),
-            },
-            {
-              id: '7',
-              name: '新能源汽车实训室',
-              thumbnail: '/assets/images/360/xinnengyuanqicheshixunshis.jpg',
-              panorama: scenePanorama("/assets/images/360/xinnengyuanqicheshixunshi", 8000),
-            },
-            {
-              id: '8',
-              name: '美容美体实训室',
-              thumbnail: '/assets/images/360/meirongmeitishixunshis.jpg',
-              panorama: scenePanorama("/assets/images/360/meirongmeitishixunshi", 8000),
-            },
-            {
-              id: '9',
-              name: '食堂',
-              thumbnail: '/assets/images/360/shitangs.jpg',
-              panorama: scenePanorama("/assets/images/360/shitang", 8000),
-            },
-            {
-              id: '10',
-              name: '宿舍1',
-              thumbnail: '/assets/images/360/sushe1s.jpg',
-              panorama: scenePanorama("/assets/images/360/sushe1", 8000),
-            },
-            {
-              id: '11',
-              name: '宿舍2',
-              thumbnail: '/assets/images/360/sushe2s.jpg',
-              panorama: scenePanorama("/assets/images/360/sushe2", 8000),
-            },
-          ],
+          items: galleryItems(useTiles),
         }],
       ],
     });
+  }
 
-    // PSV 有时候不抛异常，而是自己在容器里画一句 "does not seem to support WebGL"，
-    // 所以等它初始化完再看有没有真的建出 canvas、有没有报这句，出问题就换平面模式。
-    setTimeout(function () {
-      var box = document.querySelector("#viewer");
-      var cv = box && box.querySelector("canvas");
-      var glErr = box && /WebGL/i.test(box.textContent || "");
-      if (!cv || glErr) {
+  var guardTimer = null;
+
+  // 查看器失败时不抛异常，只在容器里画一句 "does not seem to support WebGL"，
+  // 所以等它初始化完再回头看有没有真的建出 canvas。
+  function watch(v, stage) {
+    if (guardTimer) clearTimeout(guardTimer);
+    guardTimer = setTimeout(function () {
+      var box = document.querySelector('#viewer');
+      var cv = box && box.querySelector('canvas');
+      var glErr = box && /WebGL/i.test(box.textContent || '');
+      if (cv && !glErr) return;
+      try { v.destroy(); } catch (e) {}
+      if (stage === 'tiles') {
+        if (window.console) console.warn('[pano] 切片没起来，改用整张');
+        if (launch(false, 'img')) return;
+        sphereFail = '3D 初始化没有成功';
+      } else {
         sphereFail = glErr ? '3D 启动时报了显卡错误' : '3D 没画出画面';
-        if (window.console) console.warn("[pano] 球面没起来（" + sphereFail + "），改用平面模式");
-        try { viewer.destroy(); } catch (e) {}
-        flatMode();
       }
-    }, 2000);
+      if (window.console) console.warn('[pano] ' + sphereFail + '，改用平面模式');
+      flatMode();
+    }, 2500);
+  }
 
-      return;
+  function launch(useTiles, stage) {
+    try {
+      // 切片没起来时要换成整张，旧查看器的画布不能留在容器里，否则会盖一层空白块
+      var box = document.querySelector('#viewer');
+      if (box) box.innerHTML = '';
+      var v = makeViewer(useTiles);
+      try { window.__panoViewer = v; } catch (e) {}
+      watch(v, stage);
+      return true;
     } catch (err) {
-      sphereFail = '3D 初始化没有成功';
-      if (window.console) console.warn('[pano] 3D 初始化失败，改用平面模式', err);
+      if (window.console) console.warn('[pano] 3D 初始化失败', err);
+      return false;
     }
+  }
+
+  // 调试句柄：可以在控制台手动触发一次重建，用来验证切片→整张的降级
+  try { window.__panoLaunch = launch; } catch (e) {}
+
+  if (window.PhotoSphereViewer && !/[?&]nogpu=1/.test(location.search)) {
+    if (launch(!MOBILE, MOBILE ? 'img' : 'tiles')) return;
+    if (!MOBILE && launch(false, 'img')) return;
+    sphereFail = '3D 初始化没有成功';
   }
 
   flatMode();
 })();
+
 </script>
 </p>
 <h1 id="报名预约指南">报名预约指南</h1>
