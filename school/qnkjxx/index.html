@@ -715,6 +715,13 @@
     };
   };
 
+  // 手机端直接用整张 low 图做球面：切片在多块纹理上传时更容易初始化失败，
+  // 而整图只有 2000×1000，几乎所有还能跑 WebGL 的手机都能正常显示。
+  var MOBILE = /Android|iPhone|iPad|iPod|Mobile|HarmonyOS/i.test(navigator.userAgent);
+  var scenePanorama = function (base, width) {
+    return MOBILE ? base + "/low.jpg" : tiled(base, width);
+  };
+
   // 平面模式用的场景表：low 版是 2000×1000 的等距柱状图，拖动即可看一圈
   var SCENES = [
     { name: '校园全景', thumb: '/assets/images/quanjing/low.jpg', flat: '/assets/images/quanjing/low.jpg' },
@@ -852,8 +859,8 @@
     try {
       var viewer = new PhotoSphereViewer.Viewer({
       container: document.querySelector("#viewer"),
-      adapter: PhotoSphereViewer.EquirectangularTilesAdapter,
-      panorama: tiled("/assets/images/quanjing", 8192),
+      adapter: MOBILE ? PhotoSphereViewer.EquirectangularAdapter : PhotoSphereViewer.EquirectangularTilesAdapter,
+      panorama: scenePanorama("/assets/images/quanjing", 8192),
       defaultZoomLvl: 0,
       loadingTxt: "加载中……",
       mousewheelCtrlKey: true,
@@ -861,78 +868,90 @@
       plugins: [
         //多图
         [PhotoSphereViewer.GalleryPlugin, {
-          visibleOnLoad: true,
+          // 手机屏幕窄，一进来就把场景缩略图铺满会挡住全景，改成点底部按钮再看
+          visibleOnLoad: !MOBILE,
           items: [
             {
               id: '1',
               name: '前广场',
               thumbnail: '/assets/images/360/qianguangchangs.jpg',
-              panorama: tiled("/assets/images/360/qianguangchang", 8000),
+              panorama: scenePanorama("/assets/images/360/qianguangchang", 8000),
             },
             {
               id: '2',
               name: '足球场',
               thumbnail: '/assets/images/360/zuqiuchangs.jpg',
-              panorama: tiled("/assets/images/360/zuqiuchang", 8000),
+              panorama: scenePanorama("/assets/images/360/zuqiuchang", 8000),
             },
             {
               id: '3',
               name: '羽毛球场',
               thumbnail: '/assets/images/360/yumaoqiuchangs.jpg',
-              panorama: tiled("/assets/images/360/yumaoqiuchang", 8000),
+              panorama: scenePanorama("/assets/images/360/yumaoqiuchang", 8000),
             },
             {
               id: '4',
               name: '篮球场',
               thumbnail: '/assets/images/360/lanqiuchangs.jpg',
-              panorama: tiled("/assets/images/360/lanqiuchang", 8000),
+              panorama: scenePanorama("/assets/images/360/lanqiuchang", 8000),
             },
             {
               id: '5',
               name: '教室',
               thumbnail: '/assets/images/360/jiaoshis.jpg',
-              panorama: tiled("/assets/images/360/jiaoshi", 8000),
+              panorama: scenePanorama("/assets/images/360/jiaoshi", 8000),
             },
             {
               id: '6',
               name: '机房',
               thumbnail: '/assets/images/360/jifangs.jpg',
-              panorama: tiled("/assets/images/360/jifang", 8000),
+              panorama: scenePanorama("/assets/images/360/jifang", 8000),
             },
             {
               id: '7',
               name: '新能源汽车实训室',
               thumbnail: '/assets/images/360/xinnengyuanqicheshixunshis.jpg',
-              panorama: tiled("/assets/images/360/xinnengyuanqicheshixunshi", 8000),
+              panorama: scenePanorama("/assets/images/360/xinnengyuanqicheshixunshi", 8000),
             },
             {
               id: '8',
               name: '美容美体实训室',
               thumbnail: '/assets/images/360/meirongmeitishixunshis.jpg',
-              panorama: tiled("/assets/images/360/meirongmeitishixunshi", 8000),
+              panorama: scenePanorama("/assets/images/360/meirongmeitishixunshi", 8000),
             },
             {
               id: '9',
               name: '食堂',
               thumbnail: '/assets/images/360/shitangs.jpg',
-              panorama: tiled("/assets/images/360/shitang", 8000),
+              panorama: scenePanorama("/assets/images/360/shitang", 8000),
             },
             {
               id: '10',
               name: '宿舍1',
               thumbnail: '/assets/images/360/sushe1s.jpg',
-              panorama: tiled("/assets/images/360/sushe1", 8000),
+              panorama: scenePanorama("/assets/images/360/sushe1", 8000),
             },
             {
               id: '11',
               name: '宿舍2',
               thumbnail: '/assets/images/360/sushe2s.jpg',
-              panorama: tiled("/assets/images/360/sushe2", 8000),
+              panorama: scenePanorama("/assets/images/360/sushe2", 8000),
             },
           ],
         }],
       ],
     });
+
+    // PSV 有时候不抛异常，而是自己在容器里画一句 "does not seem to support WebGL"，
+    // 所以等它初始化完再看有没有真的建出 canvas，没有就换成平面模式。
+    setTimeout(function () {
+      if (!document.querySelector("#viewer canvas")) {
+        if (window.console) console.warn("[pano] 球面没渲染出来，改用平面模式");
+        try { viewer.destroy(); } catch (e) {}
+        flatMode();
+      }
+    }, 2000);
+
       return;
     } catch (err) {
       if (window.console) console.warn('[pano] 3D 初始化失败，改用平面模式', err);

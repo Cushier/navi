@@ -515,7 +515,7 @@ html.io-black-mode .shot .lost { background: #23272d; color: #8b939c; }
 	</svg>
 	<div class="wxh-card">
 		<b>微信里得自己点一下</b>
-		<p>点右上角的 <i>···</i> ，再选「发送给朋友」或「分享到朋友圈」。<br>网页没法替你打开微信的转发面板。</p>
+		<p>点右上角的 <i>···</i> ，再选「发送给朋友」或「分享到朋友圈」。<br>你现在看的是哪一条，转出去就指向哪一条。</p>
 		<div class="wxh-act">
 			<button type="button" id="wxCopy">复制链接</button>
 			<button type="button" class="main" id="wxClose">知道了</button>
@@ -777,13 +777,31 @@ function threadTags(p) {
 }
 
 /* ========== 接口 ========== */
-function getJSON(url) {
-	return fetch(url).then(function (r) {
+function getJSON(url, tries) {
+	tries = tries || 0;
+	/* 手机上弱网/接口冷启动时 fetch 可能一直挂着不返回，界面就永远停在"正在读照片…"，
+	   所以给每次请求设 12 秒上限，超时按失败处理走重试 */
+	var ctrl = typeof AbortController !== 'undefined' ? new AbortController() : null;
+	var timer = ctrl ? setTimeout(function () { try { ctrl.abort(); } catch (e) {} }, 12000) : null;
+	function done() { if (timer) { clearTimeout(timer); timer = null; } }
+	return fetch(url, ctrl ? { signal: ctrl.signal } : undefined).then(function (r) {
 		if (r.status !== 200) throw new Error('HTTP ' + r.status);
 		return r.json();
 	}).then(function (res) {
+		done();
 		if (res.errno !== 0) throw new Error(res.errmsg || '接口错误');
 		return res.data;
+	}).catch(function (err) {
+		done();
+		/* 手机上弱网、接口冷启动、偶发超时都会走到这里，退避重试两次再报错 */
+		if (tries >= 2) {
+			if (err && err.name === 'AbortError') throw new Error('请求超时');
+			throw err;
+		}
+		var wait = 1200 + tries * 1200;
+		return new Promise(function (ok) { setTimeout(ok, wait); }).then(function () {
+			return getJSON(url, tries + 1);
+		});
 	});
 }
 
@@ -818,7 +836,10 @@ function loadFeed(reset) {
 		.then(function (all) { renderAll(all); })
 		.catch(function (err) {
 			emptyEl.style.display = 'block';
-			emptyEl.innerHTML = '照片列表没读出来：' + esc(err.message) + '<br>稍后刷新试试。';
+			emptyEl.innerHTML = '照片列表没读出来：' + esc(err.message) +
+				'<br><button type="button" id="retryFeed" style="margin-top:8px;padding:6px 14px;border-radius:6px;border:1px solid rgba(128,128,128,.45);background:transparent;color:inherit;font-size:13px">重新加载</button>';
+			var rb = document.getElementById('retryFeed');
+			if (rb) rb.onclick = function () { loadFeed(true); };
 		})
 		.finally(function () { S.loading = false; });
 }
@@ -1196,6 +1217,8 @@ function openPic(e, idx) {
 	if (!it) return;
 	S.cur = { e: e, idx: idx };
 	vTitle.textContent = (it.note || p.head || '照片').slice(0, 40);
+	syncAddress(e.c.objectId, idx + 1);
+	setShareMeta((it.note || p.head || '全景照片').slice(0, 30), shareThumb(it.url));
 	viewerEl.classList.add('on');
 	vPanel.classList.remove('on');
 	vPanel.innerHTML = '';
@@ -1248,97 +1271,17 @@ function showSphere(rawUrl) {
 				loadingImg: false,
 				touchmoveTwoFingers: false,
 				mousewheelCtrlKey: false,
-				/* 松手就停：默认的惯性会按松手瞬间的速度向量继续滑，
-					横向拖动时手上那点垂直位移也会被放大成上下漂 */
-				moveInertia: false,
 				defaultYaw: 0,
 				defaultPitch: 0,
 				minFov: 25,
 				maxFov: 90
 			});
-			/* 调试句柄：便于在控制台/自动化里读位置、试惯性 */
+			/* 调试句柄：便于在控制台/自动化里读位置 */
 			try { window.__psv = S.viewer; } catch (e) {}
-			setupInertia(S.viewer, sphereEl);
 			return;
 		} catch (e) {}
 	}
 	showSoft(thumbUrl(rawUrl, Math.min(3072, Math.round(430 * DPR * 2))));
-}
-
-/* 松手后的惯性：自己实现，只按水平方向的实际转动速度续滑。
-   查看器自带的 moveInertia 会把松手瞬间的速度向量整段延续，方向取的是
-   手指轨迹末段切线 —— 松开前几下那点竖向抖动常被当成主方向，竖屏下
-   pitch 的每像素角速度又比 yaw 大（高度/宽度 倍），于是"横着拖、松手上下漂"。
-   这里改成：每帧采样真实 yaw 变化率，松手按它续滑并逐帧衰减，pitch 一律
-   保持不动，所以上下不会自己走。 */
-function setupInertia(viewer, box) {
-	if (!viewer || !box || box.__inertia) return;
-	box.__inertia = true;
-
-	var st = { id: null, multi: false, yaw: 0, t: 0, vy: 0, raf: 0 };
-
-	function curYaw() {
-		try {
-			var p = viewer.getPosition();
-			return p ? p.yaw : null;
-		} catch (e) { return null; }
-	}
-
-	function stop() {
-		if (st.raf) { cancelAnimationFrame(st.raf); st.raf = 0; }
-	}
-
-	function glide(vy) {
-		stop();
-		var last = performance.now();
-		function step(now) {
-			var dt = Math.min(50, Math.max(1, now - last));
-			last = now;
-			vy *= Math.pow(0.92, dt / 16);
-			var p = viewer.getPosition();
-			viewer.rotate({ yaw: p.yaw + vy * dt, pitch: p.pitch });
-			if (Math.abs(vy) >= 0.00035) st.raf = requestAnimationFrame(step);
-			else st.raf = 0;
-		}
-		st.raf = requestAnimationFrame(step);
-	}
-
-	box.addEventListener('pointerdown', function (e) {
-		if (st.id !== null) { st.multi = true; return; }
-		st.id = e.pointerId;
-		st.multi = false;
-		st.vy = 0;
-		st.yaw = curYaw();
-		st.t = performance.now();
-		stop();
-	});
-
-	box.addEventListener('pointermove', function (e) {
-		if (e.pointerId !== st.id) return;
-		var y = curYaw(), now = performance.now();
-		if (y === null) return;
-		var dt = now - st.t;
-		if (dt >= 6) {
-			/* 单帧抖动大，做一次滑动平均 */
-			st.vy = st.vy * 0.55 + ((y - st.yaw) / dt) * 0.45;
-			st.yaw = y;
-			st.t = now;
-		}
-	});
-
-	function end(e) {
-		if (e.pointerId !== st.id) return;
-		var multi = st.multi, vy = st.vy;
-		st.id = null;
-		st.multi = false;
-		st.vy = 0;
-		if (multi) return;
-		/* 0.0004 弧度/毫秒 ≈ 23°/秒，比这慢就当是手停住了；上限防异常值 */
-		if (Math.abs(vy) > 0.0004 && Math.abs(vy) < 0.02) glide(vy);
-	}
-
-	box.addEventListener('pointerup', end);
-	box.addEventListener('pointercancel', end);
 }
 
 function showFlat(rawUrl) {
@@ -1364,6 +1307,15 @@ function closeViewer() {
 	if (S.viewer) { try { S.viewer.destroy(); } catch (e) {} S.viewer = null; }
 	if (S.soft) { S.soft.alive = false; S.soft = null; }
 	sphereEl.innerHTML = '';
+	/* 退回帖子层：地址也跟着退回这一条，免得分享出去变成首页 */
+	if (S.cur && threadEl.classList.contains('on')) {
+		var pp = S.cur.e.p;
+		syncAddress(S.cur.e.c.objectId);
+		setShareMeta(pp.head ? pp.head.slice(0, 30) : '全景相框', pp.items[0] ? shareThumb(pp.items[0].url) : '');
+	} else {
+		syncAddress(0);
+		setShareMeta('');
+	}
 }
 
 document.getElementById('vClose').addEventListener('click', closeViewer);
@@ -1418,6 +1370,8 @@ function openThread(e) {
 
 	threadEl.classList.add('on');
 	threadEl.scrollTop = 0;
+	syncAddress(c.objectId);
+	setShareMeta(p.head ? p.head.slice(0, 30) : '全景相框', p.items[0] ? shareThumb(p.items[0].url) : '');
 }
 
 function closeThread() {
@@ -1426,6 +1380,7 @@ function closeThread() {
 	if (location.search.indexOf('p=') >= 0) {
 		try { history.replaceState(null, '', location.pathname); } catch (e) {}
 	}
+	setShareMeta('');
 	/* 从分享链接直达时列表可能还没画过，这里补一次，别留空态 */
 	if (!feedEl.children.length && S.posts.length) paintFeed();
 }
@@ -1436,6 +1391,38 @@ threadEl.addEventListener('click', function (e) {
 });
 
 /* ---------- 分享 ---------- */
+/* 微信右上角「··· → 发送给朋友」抓的是当前页面地址，页面自己没法替它把
+   参数塞进去。所以打开帖子/照片时就把地址同步成 ?p=id&i=n，顺手换掉
+   title 和 og 标签 —— 这样在微信里转发出去，对方点开就是这一条，而不是首页。 */
+var BASE_TITLE = document.title;
+
+function syncAddress(id, pic) {
+	try {
+		history.replaceState(null, '', location.pathname + (id ? '?p=' + id + (pic ? '&i=' + pic : '') : ''));
+	} catch (e) {}
+}
+
+function setShareMeta(title, img) {
+	var t = title || BASE_TITLE;
+	document.title = t;
+	var pairs = [['description', t], ['og:title', t], ['og:description', t], ['og:image', img || ''], ['og:url', location.href]];
+	pairs.forEach(function (pr) {
+		var key = pr[0].indexOf(':') >= 0 ? 'property' : 'name';
+		var el = document.head.querySelector('meta[' + key + '="' + pr[0] + '"]');
+		if (!el) {
+			el = document.createElement('meta');
+			el.setAttribute(key, pr[0]);
+			document.head.appendChild(el);
+		}
+		el.setAttribute('content', pr[1]);
+	});
+}
+
+/* 转发卡片缩略图按微信的习惯用方图 */
+function shareThumb(u) {
+	return String(u).replace('/image/upload/', '/image/upload/c_fill,h_400,w_400,q_auto,f_jpg/');
+}
+
 /* 微信内置浏览器（X5 / WKWebView）既没有 Web Share，也没有任何 JS 接口能
    唤起「发送给朋友」面板——那个面板是微信自己攥着的，公众号 JS-SDK 也只
    能改转发卡片的标题和图片，同样弹不出来。所以微信里点分享时，给一层
@@ -1443,7 +1430,11 @@ threadEl.addEventListener('click', function (e) {
 var IN_WX = /MicroMessenger/i.test(navigator.userAgent) || /[?&]wx=1/.test(location.search);
 
 function postUrl(id, pic) {
-	return location.origin + location.pathname + '?p=' + id + (pic ? '&i=' + pic : '');
+	/* 在内网/本机调试时分享出去的链接要换成正式域名，否则别人打不开 */
+	var host = location.hostname;
+	var inner = /^(localhost|127\.0\.0\.1|192\.168\.|10\.|172\.(1[6-9]|2\d|3[01])\.)/.test(host);
+	var base = inner ? 'https://www.qnkjxx.top' + location.pathname : location.origin + location.pathname;
+	return base + '?p=' + id + (pic ? '&i=' + pic : '');
 }
 
 function shareThread(id, pic) {
