@@ -406,8 +406,10 @@
 
 <script>
 (function(){
-  var SEARCH_API = 'https://api.vkeys.cn/v2/music/netease?word=';
-  var NC_API = 'https://zm.wwoyun.cn';   // 公共网易云接口（社区维护），负责扫码登录与收藏
+  var NC_API = 'https://zm.wwoyun.cn';   // 公共网易云接口（社区维护），负责搜索、扫码登录、收藏与直链
+  // 搜索原来走 api.vkeys.cn，2026-11-27 起它对带 Origin 的跨域请求直接不回包（只放行同源/无 Origin 的请求），
+  // 浏览器里必然 8 秒超时 → 搜不到。改成本站已在用的 wwoyun，返回结构与网易云一致（result.songs）。
+  var SEARCH_API = NC_API + '/search?keywords=';
   var NC_SONG_URL = NC_API + '/song/url?id=';   // 现取试听直链（免费曲不用登录）
   var NC_LYRIC = NC_API + '/lyric?id=';
   var QQ_SEARCH_PAGE = 10;                      // QQ 搜索一次 10 条，page 是页码
@@ -480,8 +482,8 @@
   function emptyTip(){
     return currentMode === 'search'
       ? '上面填歌名或歌手，点「搜索并检测」。<br>' + (searchSource === 'qq'
-        ? '现在搜的是 QQ 音乐曲库，原唱大多在这儿。'
-        : '现在搜的是网易云曲库；搜不到原唱就切上面的 QQ 音乐。')
+        ? 'QQ 音乐这个源暂时用不了了（接口停了），切回上面的「网易云」就行。'
+        : '现在搜的是网易云曲库，搜不到就换个关键词，或者去掉「翻唱」「Live」这类后缀。')
       : '上面填歌单 ID 或链接，点「开始检测」。<br>登录之后可以直接从下拉里挑自己的歌单。';
   }
 
@@ -567,31 +569,35 @@
     // page 是「从第几条开始」：page=1 前 10 条，page=11 接着第 11 条起
     if (searchSource === 'qq') return searchQQ(keyword, page);
 
-    var url = SEARCH_API + encodeURIComponent(keyword) + '&page=' + (page || 1);
-    return fetchJson(url, 8000).then(function(res){
-      if (!res || res.code !== 200 || !res.data || !res.data.length) throw new Error('没搜到结果');
-      return res.data.map(function(it){
+    var start = Math.max(1, page || 1);
+    var url = SEARCH_API + encodeURIComponent(keyword) + '&limit=10&offset=' + (start - 1);
+    return fetchJson(url, 10000).then(function(res){
+      var songs = (res && res.result && res.result.songs) || [];
+      if (!songs.length) throw new Error('没搜到结果');
+      return songs.filter(function(it){ return it && it.id; }).map(function(it){
         return {
-          name: it.song || '(无名)', artist: it.singer || '', id: String(it.id || ''),
-          pic: it.cover || '', source: 'nc', key: 'nc' + it.id
+          name: it.name || '(无名)', artist: artistsOf(it), id: String(it.id || ''),
+          pic: '', source: 'nc', key: 'nc' + it.id
         };
       });
     });
   }
 
+  // wwoyun 的歌手字段叫 artists:[{name}]（vkeys 那套是单数 singer）
+  function artistsOf(it){
+    return ((it && it.artists) || []).map(function(a){ return (a && a.name) || ''; })
+      .filter(Boolean).join(' / ');
+  }
+
   function searchQQ(keyword, page){
+    // QQ 源也走 api.vkeys.cn，同一把刀下同样不回包（2026-11-27），别让用户白等 8 秒。
+    // 哪天 vkeys 恢复跨域，把下面这行换回原来的 searchQQ 实现即可（原参数：QQ_SEARCH + word + '&page='）。
+    return Promise.reject(new Error('QQ 搜索接口停了（api.vkeys.cn 不再接受跨域请求），先用网易云源，或点「去 QQ 音乐搜」到那边找'));
+    /* 原实现：
     var pageNo = Math.max(1, Math.ceil((page || 1) / QQ_SEARCH_PAGE));
     var url = QQ_SEARCH + encodeURIComponent(keyword) + '&page=' + pageNo;
-    return fetchJson(url, 8000).then(function(res){
-      if (!res || res.code !== 200 || !res.data || !res.data.length) throw new Error('没搜到结果');
-      return res.data.map(function(it){
-        return {
-          name: it.song || '(无名)', artist: it.singer || '', id: '',
-          mid: String(it.mid || ''), pic: it.cover || '', pay: it.pay || '',
-          dur: it.interval || '', source: 'qq', key: 'qq' + it.mid
-        };
-      });
-    });
+    return fetchJson(url, 8000).then(function(res){ ... });
+    */
   }
 
   // ---------- 探测 ----------
@@ -704,17 +710,18 @@
     var kw = (r.name || '') + ' ' + (r.artist || '');
     var n = normName(r.name), a = normArtist(r.artist);
     if (!n) return Promise.resolve([]);
-    return fetchJson(SEARCH_API + encodeURIComponent(kw) + '&page=1', 8000).then(function(res){
-      if (!res || res.code !== 200 || !res.data) return [];
+    return fetchJson(SEARCH_API + encodeURIComponent(kw) + '&limit=10&offset=0', 8000).then(function(res){
+      var songs = (res && res.result && res.result.songs) || [];
+      if (!songs.length) return [];
       var out = [];
-      for (var i = 0; i < res.data.length && out.length < 4; i++) {
-        var it = res.data[i];
+      for (var i = 0; i < songs.length && out.length < 4; i++) {
+        var it = songs[i];
         if (!it || !it.id) continue;
-        if (normName(it.song) !== n) continue;
-        var ca = normArtist(it.singer);
+        if (normName(it.name) !== n) continue;
+        var ca = normArtist(artistsOf(it));
         if (!ca) continue;
         if (ca.indexOf(a) < 0 && a.indexOf(ca) < 0) continue;
-        out.push({ id: String(it.id), name: it.song || r.name, artist: it.singer || '' });
+        out.push({ id: String(it.id), name: it.name || r.name, artist: artistsOf(it) });
       }
       return out;
     }).catch(function(){ return []; });
@@ -942,7 +949,9 @@
       rows = [];
       pageinfoEl.textContent = '';
       noteEl.textContent = '搜索失败：' + (err && err.message ? err.message : '未知错误') +
-        '（' + srcName + '这个源偶尔不稳，稍后再试，或切另一个源）';
+        (searchSource === 'qq'
+          ? '（QQ 源现在已经用不了了，切回「网易云」搜同一首歌就行）'
+          : '（多半是接口临时限流，等一会儿再点一次）');
     }).then(function(){
       running = false;
       refreshButtons();
@@ -1729,17 +1738,21 @@
     }).join('');
   }
 
-  // QQ 音乐：vkeys 出搜索结果（带 songmid 和收不收费），qijieya 的 meting 用 songmid 换 302 直链
+  // QQ 音乐：原来 vkeys 出搜索结果（带 songmid 和收不收费），qijieya 的 meting 用 songmid 换 302 直链。
+  // 2026-11-27 起 vkeys 对带 Origin 的跨域请求不回包，浏览器里这条通道整体不可用，先快速失败给明确提示。
   var QQ_SEARCH = 'https://api.vkeys.cn/v2/music/tencent?word=';
   var QQ_STREAM = 'https://api.qijieya.cn/meting/?server=tencent&type=url&id=';
 
   function qqSearch(kw){
+    return Promise.reject(new Error('QQ 音乐接口停了（api.vkeys.cn 不再接受跨域请求）'));
+    /* 原实现：
     return fetch(QQ_SEARCH + encodeURIComponent(kw), { mode: 'cors' }).then(function(res){
       if (!res.ok) throw new Error('返回 ' + res.status);
       return res.json();
     }).then(function(j){
       return (j && j.data) || [];
     });
+    */
   }
 
   // 备用通道：不认网易云登录，直接问聚合接口这首能拿到的最音质那份（VIP 曲也能出 FLAC）
@@ -1888,8 +1901,8 @@
       dlAltEl.innerHTML = '标「付费」的那几首这里拿不到，得去平台自己那儿：' +
         '<div class="plks">' + altLinks(r) + '</div>';
     }).catch(function(err){
-      dlQqListEl.innerHTML = '<div class="qitem"><div class="qmain"><span class="qname">没搜到</span>' +
-        '<span class="qmeta">换个歌名再试试，或者点下面的官方搜索</span></div></div>';
+      dlQqListEl.innerHTML = '<div class="qitem"><div class="qmain"><span class="qname">这条路暂时不通</span>' +
+        '<span class="qmeta">QQ 接口停了，先看「网易云」源的同名版，或点下面的官方搜索</span></div></div>';
       qqInfo('QQ 音乐没搜成：' + ((err && err.message) || '网络问题'));
       dlQqBtn.textContent = '重试';
       dlQqBtn.disabled = false;
