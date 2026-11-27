@@ -202,7 +202,9 @@ header .back:hover { color: #3a7afe; border-color: #b9cdf5; }
 	display: flex; align-items: center; gap: 10px;
 	padding: 10px 14px calc(6px);
 	color: #fff; font-size: 13px; flex: none;
+	position: relative; z-index: 3;
 }
+.viewer.flat .vhead { background: linear-gradient(rgba(0,0,0,.45), rgba(0,0,0,0)); }
 .viewer .vhead .t { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #e8ebef; }
 .viewer .vhead button {
 	background: rgba(255,255,255,.14); border: 0; color: #fff;
@@ -210,11 +212,27 @@ header .back:hover { color: #3a7afe; border-color: #b9cdf5; }
 }
 #sphere { flex: 1; min-height: 0; position: relative; overflow: hidden; overscroll-behavior: contain; touch-action: none; }
 #sphere canvas { display: block; }
+/* 普通照片：同一张图放大模糊铺满整个视口（连上下栏后面也有），主体按原比例完整显示，不再是一片死黑 */
+.flatbg {
+	position: fixed; inset: -48px; pointer-events: none; background: center/cover no-repeat;
+	filter: blur(26px) brightness(.6) saturate(1.15); transform: scale(1.08); z-index: 0;
+}
+.flatimg {
+	position: relative; width: 100%; height: 100%; object-fit: contain; display: block;
+	cursor: zoom-in; background: transparent;
+}
+/* 沉浸：收起上下栏，图片铺到整屏，再点一下回来 */
+.viewer .vhead, .viewer .vfoot { transition: opacity .18s ease; }
+.viewer.immersive .vhead, .viewer.immersive .vfoot { opacity: 0; visibility: hidden; pointer-events: none; }
+.viewer.immersive #sphere { position: fixed; inset: 0; }
+.viewer.immersive .flatimg { cursor: zoom-out; }
 .viewer .vfoot {
 	flex: none; text-align: center; color: #9aa1a7; font-size: 11.5px;
 	padding: 8px 14px calc(12px + env(safe-area-inset-bottom));
 	line-height: 1.7;
+	position: relative; z-index: 3;
 }
+.viewer.flat .vfoot { background: linear-gradient(rgba(0,0,0,0), rgba(0,0,0,.5)); }
 .viewer .vfoot a { color: #9ab6f5; text-decoration: none; }
 .viewer .loading {
 	position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
@@ -459,7 +477,7 @@ html.io-black-mode .shot .lost { background: #23272d; color: #8b939c; }
 
 	<div class="foot-note">
 		照片存在第三方图床，文字存在评论系统，本站不留副本。<br>
-		球面看不了？可以点查看器右下角的链接直接看大图。
+		球面看不了？点查看器底部的「下载原图」，拿到的是完整原文件。
 	</div>
 </div>
 
@@ -1206,6 +1224,18 @@ function hasWebGL() {
 var vShare = document.getElementById('vShare');
 var vPanel = document.getElementById('vPanel');
 
+/* 查看器底部的「下载原图」每换一张就重画一次，绑一次事件委托就够 */
+vFoot.addEventListener('click', function (ev) {
+	var a = ev.target && ev.target.id === 'dlTip' ? ev.target : null;
+	if (!a) return;
+	ev.preventDefault();
+	var cur = S.cur;
+	if (!cur || !cur.e || !cur.e.p) return;
+	var it = cur.e.p.items[cur.idx];
+	if (!it) return;
+	downloadOriginal(it.url, 'pano-' + cur.e.c.objectId + '-' + (cur.idx + 1));
+});
+
 /* 某张图下的评论条数 */
 function cntFor(e, idx) {
 	var n = 0;
@@ -1220,7 +1250,10 @@ function openPic(e, idx) {
 	S.cur = { e: e, idx: idx };
 	vTitle.textContent = (it.note || p.head || '照片').slice(0, 40);
 	syncAddress(e.c.objectId, idx + 1);
-	setShareMeta((it.note || p.head || '全景照片').slice(0, 30), shareThumb(it.url));
+	/* 单张分享：标题用帖子的总说明，描述用这张图自己的说明 */
+	setShareMeta((p.head || it.note || '全景照片').slice(0, 30), shareThumb(it.url), it.note);
+	viewerEl.classList.remove('immersive');
+	viewerEl.classList.remove('flat');
 	viewerEl.classList.add('on');
 	vPanel.classList.remove('on');
 	vPanel.innerHTML = '';
@@ -1237,9 +1270,9 @@ function openPic(e, idx) {
 		fillComments(vPanel, e, idx);
 	});
 	document.getElementById('vShareBtn').addEventListener('click', function () {
-		shareThread(e.c.objectId, idx + 1);
+		shareThread(e.c.objectId, idx + 1, (p.head || '').slice(0, 30), shareThumb(it.url), it.note);
 	});
-	vShare.onclick = function () { shareThread(e.c.objectId, idx + 1); };
+	vShare.onclick = function () { shareThread(e.c.objectId, idx + 1, (p.head || '').slice(0, 30), shareThumb(it.url), it.note); };
 
 	/* 先探一下比例：转出来的全景是 2:1，普通照片保持原比例 */
 	sphereEl.innerHTML = '<div class="loading">正在取图…</div>';
@@ -1255,10 +1288,10 @@ function openPic(e, idx) {
 function showSphere(rawUrl) {
 	if (S.viewer) { try { S.viewer.destroy(); } catch (e) {} S.viewer = null; }
 	if (S.soft) { S.soft.alive = false; S.soft = null; }
+	viewerEl.classList.remove('flat');
 	sphereEl.innerHTML = '<div class="loading">正在取图…</div>';
 	var tip = document.getElementById('vTip');
-	if (tip) tip.innerHTML = '按住拖动看四周，双指或滚轮缩放 · <a href="' +
-		esc(thumbUrl(rawUrl, 6144)) + '" target="_blank" rel="noopener">看大图</a>';
+	if (tip) tip.innerHTML = '按住拖动看四周，双指或滚轮缩放 · <a href="#" id="dlTip">下载原图</a>';
 	/* 按 GPU 纹理上限取图，别一律压到 2048 */
 	var tex = Math.min(maxTexSize(), 6144);
 	var big = thumbUrl(rawUrl, tex);
@@ -1287,23 +1320,34 @@ function showSphere(rawUrl) {
 function showFlat(rawUrl) {
 	if (S.viewer) { try { S.viewer.destroy(); } catch (e) {} S.viewer = null; }
 	if (S.soft) { S.soft.alive = false; S.soft = null; }
+	viewerEl.classList.add('flat');
 	sphereEl.innerHTML = '<div class="loading">正在取图…</div>';
 	var tip2 = document.getElementById('vTip');
-	if (tip2) tip2.innerHTML = '这张是普通照片，不是全景 · <a href="' +
-		esc(thumbUrl(rawUrl, 6144)) + '" target="_blank" rel="noopener">看大图</a>';
+	if (tip2) tip2.innerHTML = '普通照片 · 点图铺满整屏 · <a href="#" id="dlTip">下载原图</a>';
 	var im = new Image();
 	im.onload = function () {
 		sphereEl.innerHTML = '';
+		/* 底下垫同一张图的模糊放大版，上下不是死黑，主体还是完整的原比例 */
+		var bg = document.createElement('div');
+		bg.className = 'flatbg';
+		bg.style.backgroundImage = 'url("' + thumbUrl(rawUrl, 480) + '")';
+		sphereEl.appendChild(bg);
 		im.alt = '照片';
-		im.style.cssText = 'width:100%;height:100%;object-fit:contain;display:block;background:#000';
+		im.className = 'flatimg';
 		sphereEl.appendChild(im);
+		im.addEventListener('click', function () {
+			var on = viewerEl.classList.toggle('immersive');
+			toast(on ? '点一下图片退回带按钮的界面' : '已退出全屏');
+		});
 	};
-	im.onerror = function () { sphereEl.innerHTML = '<div class="loading">图片没取到，点下面「看大图」</div>'; };
+	im.onerror = function () { sphereEl.innerHTML = '<div class="loading">图片没取到，点下面「下载原图」试试</div>'; };
 	im.src = thumbUrl(rawUrl, Math.min(2048, Math.round(430 * DPR * 2)));
 }
 
 function closeViewer() {
 	viewerEl.classList.remove('on');
+	viewerEl.classList.remove('immersive');
+	viewerEl.classList.remove('flat');
 	if (S.viewer) { try { S.viewer.destroy(); } catch (e) {} S.viewer = null; }
 	if (S.soft) { S.soft.alive = false; S.soft = null; }
 	sphereEl.innerHTML = '';
@@ -1366,7 +1410,9 @@ function openThread(e) {
 
 	tCmts.innerHTML = '';
 	fillComments(tCmts, e, null);
-	tShare.onclick = function () { shareThread(c.objectId, 0); };
+	tShare.onclick = function () {
+		shareThread(c.objectId, 0, (p.head || '').slice(0, 30), p.items[0] ? shareThumb(p.items[0].url) : '');
+	};
 
 	threadEl.classList.add('on');
 	threadEl.scrollTop = 0;
@@ -1402,10 +1448,12 @@ function syncAddress(id, pic) {
 	} catch (e) {}
 }
 
-function setShareMeta(title, img) {
+function setShareMeta(title, img, desc) {
 	var t = title || BASE_TITLE;
+	/* 标题和描述分开传：单张分享时标题用帖子的"总的说两句"，描述用这张图自己的说明 */
+	var d = (desc && String(desc).trim()) ? String(desc).trim() : t;
 	document.title = t;
-	var pairs = [['description', t], ['og:title', t], ['og:description', t], ['og:image', img || ''], ['og:url', location.href]];
+	var pairs = [['description', d], ['og:title', t], ['og:description', d], ['og:image', img || ''], ['og:url', location.href]];
 	pairs.forEach(function (pr) {
 		var key = pr[0].indexOf(':') >= 0 ? 'property' : 'name';
 		var el = document.head.querySelector('meta[' + key + '="' + pr[0] + '"]');
@@ -1421,6 +1469,32 @@ function setShareMeta(title, img) {
 /* 转发卡片缩略图按微信的习惯用方图 */
 function shareThumb(u) {
 	return String(u).replace('/image/upload/', '/image/upload/c_fill,h_400,w_400,q_auto,f_jpg/');
+}
+
+/* 下载原图：图床的 fl_attachment 会让响应带 Content-Disposition: attachment，
+   浏览器收到就直接存盘（跨域时 <a download> 会被忽略，靠这个头兜底） */
+function attachUrl(u, name) {
+	return String(u).replace('/image/upload/', '/image/upload/fl_attachment:' + (name || 'pano') + '/');
+}
+
+function downloadOriginal(u, name) {
+	var ext = /\.png(\?|$)/i.test(u) ? '.png' : '.jpg';
+	/* 微信里 attachment 头不一定认，直接把原图打开，用户长按就能存相册 */
+	if (IN_WX) {
+		var w = window.open(u, '_blank');
+		if (!w) location.href = u;
+		toast('原图已打开，长按图片存到相册');
+		return;
+	}
+	var a = document.createElement('a');
+	a.href = attachUrl(u, name);
+	a.download = (name || 'pano') + ext;
+	a.rel = 'noopener';
+	a.style.display = 'none';
+	document.body.appendChild(a);
+	a.click();
+	setTimeout(function () { if (a.parentNode) a.parentNode.removeChild(a); }, 200);
+	toast('正在下载原图' + ext);
 }
 
 /* 微信内置浏览器（X5 / WKWebView）既没有 Web Share，也没有任何 JS 接口能
@@ -1442,21 +1516,21 @@ function postUrl(id, pic) {
    是这条帖子；从详情层/看图里分享时地址本来已经同步过，不用重复改。 */
 var wxRestore = false;
 
-function shareThread(id, pic, title, img) {
+function shareThread(id, pic, title, img, desc) {
 	var u = postUrl(id, pic);
 	if (IN_WX) {
 		var onThread = threadEl && threadEl.classList.contains('on');
 		var onPic = viewerEl && viewerEl.classList.contains('on');
 		if (!onThread && !onPic) {
 			syncAddress(id, pic);
-			setShareMeta(title || '', img || '');
+			setShareMeta(title || '', img || '', desc || '');
 			wxRestore = true;
 		}
 		wxAsk(u);
 		return;
 	}
 	if (navigator.share) {
-		navigator.share({ title: '全景相框', text: pic ? '第 ' + pic + ' 张照片' : '', url: u })
+		navigator.share({ title: title || '全景相框', text: desc || (pic ? '第 ' + pic + ' 张照片' : ''), url: u })
 			.catch(function (err) {
 				/* 用户自己按了取消，不要再补一次复制 */
 				if (err && err.name === 'AbortError') return;
@@ -1532,7 +1606,10 @@ function toast(msg) {
 
 /* ---------- 没有 WebGL 时的软件球面 ---------- */
 function showSoft(url) {
+	viewerEl.classList.remove('flat');
 	sphereEl.innerHTML = '<div class="loading">这台设备没开 3D 加速，正在用软渲染</div>';
+	var tipS = document.getElementById('vTip');
+	if (tipS) tipS.innerHTML = '按住拖动看四周，双指或滚轮缩放 · <a href="#" id="dlTip">下载原图</a>';
 	var img = new Image();
 	img.crossOrigin = 'anonymous';
 	img.onload = function () {
@@ -1544,7 +1621,7 @@ function showSoft(url) {
 		cx.drawImage(img, 0, 0, w, h);
 		var data;
 		try { data = cx.getImageData(0, 0, w, h).data; }
-		catch (e) { sphereEl.innerHTML = '<div class="loading">这张图跨域被拦了，点下面「直接看大图」</div>'; return; }
+		catch (e) { sphereEl.innerHTML = '<div class="loading">这张图跨域被拦了，点下面「下载原图」也能存下来</div>'; return; }
 		startSoft({ data: data, w: w, h: h });
 	};
 	img.onerror = function () {
