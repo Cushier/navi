@@ -298,10 +298,14 @@ html.io-black-mode .prog { background: #2a2e35; }
 	background: #f3f5f7; border: 1px dashed #cdd4db;
 	display: flex; align-items: center; justify-content: center;
 	font-size: 21px; color: #b3b9c0; cursor: pointer;
+	/* 横向拖动用来换位，纵向滑动照旧滚页面 */
+	touch-action: pan-y;
 }
-.cell img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cell img { width: 100%; height: 100%; object-fit: cover; display: block; -webkit-user-drag: none; user-select: none; }
 .cell.busy { opacity: .55; }
 .cell.on { box-shadow: 0 0 0 2px #3a7afe inset; }
+.cell.drag { opacity: .9; box-shadow: 0 10px 26px rgba(0,0,0,.3); z-index: 99; }
+.cell.over { outline: 2px solid #3a7afe; outline-offset: -2px; }
 .cell .del {
 	position: absolute; right: 3px; top: 3px; width: 20px; height: 20px;
 	border-radius: 50%; background: rgba(0,0,0,.52); color: #fff;
@@ -483,7 +487,7 @@ html.io-black-mode .shot .lost { background: #23272d; color: #8b939c; }
 <div class="modal" id="composer">
 	<div class="sheet">
 		<h3 id="cpTitle">发一条</h3>
-		<p class="sub">最多九张。长条全景会自动转成能拖动的球面，普通照片原样放进来。图片直传图床，不经本站。</p>
+		<p class="sub">想发几张就加几张，加完按住图片往左右拖能换顺序。长条全景会自动转成能拖的球面，普通照片原样传上来。</p>
 		<div class="field">
 			<div class="grid9" id="grid9"></div>
 			<input type="file" id="file" accept="image/*" multiple style="display:none">
@@ -1712,6 +1716,8 @@ var itemNote = document.getElementById('itemNote');
 
 var draft = [];
 var selIdx = -1;
+/* 上限只防一次传太多（正文长度和手机流量），不是朋友圈那种 9 张 */
+var MAX_PICS = 30;
 
 function openComposer() {
 	composerEl.classList.add('on');
@@ -1729,52 +1735,112 @@ function syncGo() {
 	pubGo.disabled = !draft.length;
 }
 
+/* 已选的照片按顺序排，末尾只留一个"＋"；不再是固定九宫格 */
 function renderGrid() {
 	gridEl.innerHTML = '';
-	for (var i = 0; i < 9; i++) {
-		(function (i) {
-			var d = draft[i];
-			var cell = document.createElement('div');
-			if (d) {
-				cell.className = 'cell' + (selIdx === i ? ' on' : '');
-				var im = new Image();
-				im.src = d.url;
-				im.alt = '第 ' + (i + 1) + ' 张';
-				cell.appendChild(im);
-				if (d.tags.length) {
-					var bd = document.createElement('span');
-					bd.className = 'badge';
-					bd.textContent = d.tags.length + ' 标';
-					cell.appendChild(bd);
-				}
-				var del = document.createElement('button');
-				del.type = 'button';
-				del.className = 'del';
-				del.textContent = '×';
-				del.addEventListener('click', function (ev) {
-					ev.stopPropagation();
-					try { URL.revokeObjectURL(d.url); } catch (er) {}
-					draft.splice(i, 1);
-					if (selIdx >= draft.length) selIdx = draft.length - 1;
-					renderGrid();
-					syncItem();
-					syncGo();
-				});
-				cell.appendChild(del);
-				cell.addEventListener('click', function () {
-					stashItem();
-					selIdx = i;
-					renderGrid();
-					syncItem();
-				});
-			} else {
-				cell.className = 'cell add';
-				cell.innerHTML = '<span>＋</span>';
-				cell.addEventListener('click', function () { fileEl.click(); });
-			}
-			gridEl.appendChild(cell);
-		})(i);
+	draft.forEach(function (d, i) {
+		var cell = document.createElement('div');
+		cell.className = 'cell' + (selIdx === i ? ' on' : '');
+		cell.setAttribute('data-i', i);
+		var im = new Image();
+		im.src = d.url;
+		im.alt = '第 ' + (i + 1) + ' 张';
+		cell.appendChild(im);
+		if (d.tags.length) {
+			var bd = document.createElement('span');
+			bd.className = 'badge';
+			bd.textContent = d.tags.length + ' 标';
+			cell.appendChild(bd);
+		}
+		var del = document.createElement('button');
+		del.type = 'button';
+		del.className = 'del';
+		del.textContent = '×';
+		del.addEventListener('click', function (ev) {
+			ev.stopPropagation();
+			try { URL.revokeObjectURL(d.url); } catch (er) {}
+			draft.splice(i, 1);
+			if (selIdx >= draft.length) selIdx = draft.length - 1;
+			renderGrid();
+			syncItem();
+			syncGo();
+		});
+		cell.appendChild(del);
+		cell.addEventListener('click', function () {
+			if (selIdx === i) return;
+			stashItem();
+			selIdx = i;
+			renderGrid();
+			syncItem();
+		});
+		bindDrag(cell, i);
+		gridEl.appendChild(cell);
+	});
+	if (draft.length < MAX_PICS) {
+		var add = document.createElement('div');
+		add.className = 'cell add';
+		add.innerHTML = '<span>＋</span>';
+		add.addEventListener('click', function () { fileEl.click(); });
+		gridEl.appendChild(add);
 	}
+}
+
+/* 拖动排序：把一张按住往左右拖，落到哪个格子就换到那个位置。
+   竖着滑仍然交给页面滚动，不会把翻页手势吃掉。 */
+function bindDrag(cell, from) {
+	var sx = 0, sy = 0, moved = false, to = from;
+	var clearOver = function () {
+		Array.prototype.forEach.call(gridEl.querySelectorAll('.cell.over'), function (c) { c.classList.remove('over'); });
+	};
+	var onMove = function (e) {
+		var dx = e.clientX - sx, dy = e.clientY - sy;
+		if (!moved) {
+			/* 先横后纵才算拖动 */
+			if (Math.abs(dx) < 22 || Math.abs(dx) <= Math.abs(dy)) return;
+			moved = true;
+			cell.classList.add('drag');
+			/* 拖起来的那张要"透明"，否则它自己挡在手指下面，测出来的落点永远是它自己 */
+			cell.style.pointerEvents = 'none';
+		}
+		cell.style.transform = 'translate(' + dx + 'px,' + dy + 'px)';
+		var el = document.elementFromPoint(e.clientX, e.clientY);
+		var hit = el && el.closest ? el.closest('.cell') : null;
+		var di = hit ? hit.getAttribute('data-i') : null;
+		if (di != null) to = Number(di);
+		clearOver();
+		if (to !== from) {
+			var t = gridEl.querySelector('.cell[data-i="' + to + '"]');
+			if (t) t.classList.add('over');
+		}
+	};
+	var onUp = function () {
+		document.removeEventListener('pointermove', onMove);
+		document.removeEventListener('pointerup', onUp);
+		document.removeEventListener('pointercancel', onUp);
+		if (!moved) return;
+		cell.classList.remove('drag');
+		cell.style.transform = '';
+		cell.style.pointerEvents = '';
+		clearOver();
+		if (to === from || to < 0 || to >= draft.length) return;
+		stashItem();
+		var it = draft.splice(from, 1)[0];
+		draft.splice(to, 0, it);
+		selIdx = to;
+		renderGrid();
+		syncItem();
+	};
+	cell.addEventListener('pointerdown', function (e) {
+		if (e.target && e.target.closest && e.target.closest('.del')) return;
+		if (e.button && e.button !== 0) return;
+		sx = e.clientX; sy = e.clientY; moved = false; to = from;
+		document.addEventListener('pointermove', onMove);
+		document.addEventListener('pointerup', onUp);
+		document.addEventListener('pointercancel', onUp);
+	});
+	cell.addEventListener('click', function (e) {
+		if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; }
+	}, true);
 }
 
 function syncItem() {
@@ -1808,11 +1874,11 @@ fileEl.addEventListener('change', function () {
 	var fs = Array.prototype.slice.call(fileEl.files || []);
 	fileEl.value = '';
 	if (!fs.length) return;
-	var room = 9 - draft.length;
-	if (room <= 0) { pubTip.className = 'tip'; pubTip.textContent = '最多 9 张'; return; }
+	var room = MAX_PICS - draft.length;
+	if (room <= 0) { pubTip.className = 'tip'; pubTip.textContent = '最多 ' + MAX_PICS + ' 张'; return; }
 	if (fs.length > room) {
 		pubTip.className = 'tip';
-		pubTip.textContent = '只收前 ' + room + ' 张，凑满 9 张了';
+		pubTip.textContent = '只收前 ' + room + ' 张，够 ' + MAX_PICS + ' 张了';
 		fs = fs.slice(0, room);
 	}
 	stashItem();
