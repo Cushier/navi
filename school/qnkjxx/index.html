@@ -687,19 +687,7 @@
 <h1 id="学校360全景参观">学校360°全景参观</h1>
 <p>不用到校，手机拖动画面即可完整浏览校园前广场、足球场、羽毛球场、标准教室、计算机实训机房、学生宿舍六大实景区域，直观了解校园食宿、教学环境。
 如需线下实地走访校园，可联系黄老师预约接待：<a href="tel:18720072818" target="_blank">18720072818</a>（微信同号）
-<style>
-.pano2d { position: relative; width: 100%; height: 0; padding-bottom: 50%; background: #0b0d10; overflow: hidden; touch-action: none; cursor: grab; border-radius: 8px; }
-.pano2d .p2-track { position: absolute; top: 0; left: 0; height: 100%; display: flex; will-change: transform; }
-.pano2d .p2-track img { height: 100%; width: auto; display: block; pointer-events: none; user-select: none; }
-.pano2d .p2-hint { position: absolute; left: 0; right: 0; bottom: 0; padding: 7px 10px; font-size: 12px; line-height: 1.6; color: #d7dbe1; background: linear-gradient(transparent, rgba(0,0,0,.72)); pointer-events: none; }
-.pano2d-nav { display: flex; gap: 8px; overflow-x: auto; padding: 10px 2px 2px; -webkit-overflow-scrolling: touch; }
-.pano2d-nav button { flex: none; padding: 0; border: 0; border-radius: 6px; overflow: hidden; background: #1b1e24; cursor: pointer; opacity: .6; transition: opacity .15s; }
-.pano2d-nav button.on { opacity: 1; box-shadow: 0 0 0 2px #3a7afe; }
-.pano2d-nav img { display: block; width: 74px; height: 37px; object-fit: cover; }
-.pano2d-nav span { display: block; padding: 3px 6px 4px; font-size: 11px; color: #cfd4db; white-space: nowrap; }
-</style>
 <p><div id="viewer"></div></p>
-<div id="pano2d" class="pano2d" style="display:none"></div>
 <script>
 (function () {
   // 切片全景：整图按 8 列 4 行切开，先加载 low.jpg 低清底图，再按视野逐块加载高清切片
@@ -715,12 +703,7 @@
     };
   };
 
-  // 手机端直接用整张 low 图做球面：切片在多块纹理上传时更容易初始化失败，
-  // 而整图只有 2000×1000，几乎所有还能跑 WebGL 的手机都能正常显示。
-  var MOBILE = /Android|iPhone|iPad|iPod|Mobile|HarmonyOS/i.test(navigator.userAgent);
-  var sphereFail = ''; // 降级原因，显示在平面模式的提示条上，方便拿手机的人反馈
-
-  // 平面模式用的场景表：low 版是 2000×1000 的等距柱状图，拖动即可看一圈
+  // 场景表：thumb 是底部场景按钮的小图，flat 是该场景的整张低清图（切片目录由它反推）
   var SCENES = [
     { name: '校园全景', thumb: '/assets/images/quanjing/low.jpg', flat: '/assets/images/quanjing/low.jpg' },
     { name: '前广场', thumb: '/assets/images/360/qianguangchangs.jpg', flat: '/assets/images/360/qianguangchang/low.jpg' },
@@ -736,225 +719,26 @@
     { name: '宿舍2', thumb: '/assets/images/360/sushe2s.jpg', flat: '/assets/images/360/sushe2/low.jpg' },
   ];
 
-  // 3D 不可用时的平面全景：两张相同的等距柱状图首尾相接，左右拖动循环看一圈
-  function flatMode() {
-    var holder = document.getElementById('viewer');
-    if (holder) holder.style.display = 'none';
-    var box = document.getElementById('pano2d');
-    if (!box) return;
-    box.style.display = 'block';
+  var galleryItems = SCENES.slice(1).map(function (s, i) {
+    var base = String(s.flat).replace(/\/low\.jpg$/, '');
+    return { id: String(i + 1), name: s.name, thumbnail: s.thumb, panorama: tiled(base, 8000) };
+  });
 
-    var track = document.createElement('div');
-    track.className = 'p2-track';
-    var ia = new Image(), ib = new Image();
-    track.appendChild(ia);
-    track.appendChild(ib);
-    box.appendChild(track);
-
-    var hint = document.createElement('div');
-    hint.className = 'p2-hint';
-    box.appendChild(hint);
-
-    var nav = document.createElement('div');
-    nav.className = 'pano2d-nav';
-    box.parentNode.insertBefore(nav, box.nextSibling);
-
-    var off = 0, w1 = 0, drag = false, lx = 0;
-
-    function width1() {
-      var r = ia.getBoundingClientRect();
-      if (r.width) return r.width;
-      return box.clientHeight * ia.naturalWidth / Math.max(1, ia.naturalHeight) || 0;
-    }
-    function apply() {
-      if (w1) {
-        while (off <= -w1) off += w1;
-        while (off > 0) off -= w1;
-      }
-      track.style.transform = 'translateX(' + Math.round(off) + 'px)';
-    }
-    function load(i) {
-      var s = SCENES[i];
-      var done = function () {
-        w1 = width1();
-        off = 0;
-        apply();
-      };
-      ia.onload = done;
-      ib.onload = done;
-      ia.src = s.flat;
-      ib.src = s.flat;
-      hint.textContent = '这个浏览器没开 3D 加速，已用平面模式，左右拖动看一圈' + (sphereFail ? '（' + sphereFail + '）' : '');
-      for (var k = 0; k < nav.children.length; k++) {
-        nav.children[k].className = (k === i ? 'on' : '');
-      }
-    }
-
-    var stop = function () { drag = false; };
-    if (window.PointerEvent) {
-      box.addEventListener('pointerdown', function (e) {
-        drag = true;
-        lx = e.clientX;
-        try { box.setPointerCapture(e.pointerId); } catch (er) {}
-      });
-      box.addEventListener('pointermove', function (e) {
-        if (!drag) return;
-        off += e.clientX - lx;
-        lx = e.clientX;
-        apply();
-      });
-      box.addEventListener('pointerup', stop);
-      box.addEventListener('pointercancel', stop);
-    } else {
-      // 老内核（部分手机自带浏览器）没有 PointerEvent，退化为 touch
-      box.addEventListener('touchstart', function (e) {
-        drag = true;
-        lx = e.touches[0].clientX;
-      }, { passive: true });
-      box.addEventListener('touchmove', function (e) {
-        if (!drag) return;
-        var x = e.touches[0].clientX;
-        off += x - lx;
-        lx = x;
-        apply();
-        e.preventDefault();
-      }, { passive: false });
-      box.addEventListener('touchend', stop);
-      box.addEventListener('touchcancel', stop);
-    }
-    box.addEventListener('wheel', function (e) {
-      e.preventDefault();
-      off -= e.deltaY;
-      apply();
-    }, { passive: false });
-
-    window.addEventListener('resize', function () {
-      w1 = width1();
-      apply();
-    });
-
-    SCENES.forEach(function (s, i) {
-      var b = document.createElement('button');
-      b.innerHTML = '<a data-fancybox="article-gallery" href="' + s.thumb + '"><img class=" lazy" src="https://qnkjxx.oss-cn-hangzhou.aliyuncs.com/img/loading.gif" data-src="' + s.thumb + '"  alt=""></a><span>' + s.name + '</span>';
-      b.addEventListener('click', function () { load(i); });
-      nav.appendChild(b);
-    });
-
-    load(0);
-  }
-
-  // 先试切片，起不来就退到整张图，还是全景；连 3D 都起不来才用平面模式。
-  // 手机（窄屏、弱 GPU）直接走整张，省得先下一堆切片再失败。
-  function galleryItems(useTiles) {
-    return SCENES.slice(1).map(function (s, i) {
-      var b = String(s.flat).replace(/\/low\.jpg$/, '');
-      return {
-        id: String(i + 1),
-        name: s.name,
-        thumbnail: s.thumb,
-        panorama: useTiles ? tiled(b, 8000) : b + '/low.jpg',
-      };
-    });
-  }
-
-  function makeViewer(useTiles) {
-    return new PhotoSphereViewer.Viewer({
-      container: document.querySelector('#viewer'),
-      adapter: useTiles ? PhotoSphereViewer.EquirectangularTilesAdapter : PhotoSphereViewer.EquirectangularAdapter,
-      panorama: useTiles ? tiled('/assets/images/quanjing', 8192) : '/assets/images/quanjing/low.jpg',
-      defaultZoomLvl: 0,
-      loadingTxt: '加载中……',
-      mousewheelCtrlKey: true,
-      mousewheel: false,
-      plugins: [
-        //多图
-        [PhotoSphereViewer.GalleryPlugin, {
-          // 手机屏幕窄，一进来就把场景缩略图铺满会挡住全景，改成点底部按钮再看
-          visibleOnLoad: !MOBILE,
-          items: galleryItems(useTiles),
-        }],
-      ],
-    });
-  }
-
-  var guardTimer = null;
-
-  // 查看器失败时不抛异常，只在容器里画一句 "does not seem to support WebGL"，
-  // 所以等它初始化完再回头看有没有真的建出 canvas。
-  function watch(v, stage) {
-    if (guardTimer) clearTimeout(guardTimer);
-    guardTimer = setTimeout(function () {
-      var box = document.querySelector('#viewer');
-      var cv = box && box.querySelector('canvas');
-      var glErr = box && /WebGL/i.test(box.textContent || '');
-      if (cv && !glErr) return;
-      try { v.destroy(); } catch (e) {}
-      if (stage === 'tiles') {
-        if (window.console) console.warn('[pano] 切片没起来，改用整张');
-        if (launch(false, 'img')) return;
-        sphereFail = '3D 初始化没有成功';
-      } else {
-        sphereFail = glErr ? '3D 启动时报了显卡错误' : '3D 没画出画面';
-      }
-      if (window.console) console.warn('[pano] ' + sphereFail + '，改用平面模式');
-      flatMode();
-    }, 2500);
-  }
-
-  function launch(useTiles, stage) {
-    try {
-      // 切片没起来时要换成整张，旧查看器的画布不能留在容器里，否则会盖一层空白块
-      var box = document.querySelector('#viewer');
-      if (box) box.innerHTML = '';
-      var v = makeViewer(useTiles);
-      try { window.__panoViewer = v; } catch (e) {}
-      watch(v, stage);
-      return true;
-    } catch (err) {
-      if (window.console) console.warn('[pano] 3D 初始化失败', err);
-      return false;
-    }
-  }
-
-  // 调试句柄：可以在控制台手动触发一次重建，用来验证切片→整张的降级
-  try { window.__panoLaunch = launch; } catch (e) {}
-
-  // 自检入口：地址后面加 ?gltest=1，只打印本机 WebGL 支持情况，不建查看器。
-  // 探测完立刻释放上下文，免得占掉名额。手机上看不到控制台，靠这个截图定位。
-  if (/[?&]gltest=1/.test(location.search)) {
-    var dbgBox = document.getElementById('viewer');
-    if (dbgBox) {
-      var dbg = ['UA: ' + navigator.userAgent, 'dpr: ' + (window.devicePixelRatio || 1)];
-      ['webgl2', 'webgl', 'experimental-webgl'].forEach(function (nm) {
-        var c = document.createElement('canvas'), g = null, s = '';
-        try { g = c.getContext(nm); } catch (e) { s = '抛错: ' + (e && e.message); }
-        if (g) {
-          s = '可用';
-          try {
-            s += ' | ' + g.getParameter(g.VERSION) + ' | ' + g.getParameter(g.RENDERER);
-            var lc = g.getExtension('WEBGL_lose_context');
-            if (lc) lc.loseContext();
-          } catch (e2) { s += ' | 版本读取失败'; }
-        } else if (!s) { s = '拿不到（返回 null）'; }
-        dbg.push(nm + ': ' + s);
-      });
-      var pre = document.createElement('pre');
-      pre.style.cssText = 'margin:0;padding:10px;background:#fff;color:#111;font:12px/1.7 monospace;white-space:pre-wrap;word-break:break-all;max-height:60vh;overflow:auto';
-      pre.textContent = dbg.join(String.fromCharCode(10));
-      dbgBox.appendChild(pre);
-    }
-    return;
-  }
-
-  if (window.PhotoSphereViewer && !/[?&]nogpu=1/.test(location.search)) {
-    if (launch(!MOBILE, MOBILE ? 'img' : 'tiles')) return;
-    if (!MOBILE && launch(false, 'img')) return;
-    sphereFail = '3D 初始化没有成功';
-  }
-
-  flatMode();
+  new PhotoSphereViewer.Viewer({
+    container: document.querySelector('#viewer'),
+    adapter: PhotoSphereViewer.EquirectangularTilesAdapter,
+    panorama: tiled('/assets/images/quanjing', 8192),
+    defaultZoomLvl: 0,
+    loadingTxt: '加载中……',
+    mousewheelCtrlKey: true,
+    mousewheel: false,
+    plugins: [
+      [PhotoSphereViewer.GalleryPlugin, {
+        items: galleryItems,
+      }],
+    ],
+  });
 })();
-
 </script>
 </p>
 <h1 id="报名预约指南">报名预约指南</h1>
