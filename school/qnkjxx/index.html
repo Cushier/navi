@@ -718,6 +718,7 @@
   // 手机端直接用整张 low 图做球面：切片在多块纹理上传时更容易初始化失败，
   // 而整图只有 2000×1000，几乎所有还能跑 WebGL 的手机都能正常显示。
   var MOBILE = /Android|iPhone|iPad|iPod|Mobile|HarmonyOS/i.test(navigator.userAgent);
+  var sphereFail = ''; // 降级原因，显示在平面模式的提示条上，方便拿手机的人反馈
   var scenePanorama = function (base, width) {
     return MOBILE ? base + "/low.jpg" : tiled(base, width);
   };
@@ -737,16 +738,6 @@
     { name: '宿舍1', thumb: '/assets/images/360/sushe1s.jpg', flat: '/assets/images/360/sushe1/low.jpg' },
     { name: '宿舍2', thumb: '/assets/images/360/sushe2s.jpg', flat: '/assets/images/360/sushe2/low.jpg' },
   ];
-
-  // 有的浏览器能拿到 WebGL 上下文却渲染不出东西，所以除了取上下文还要读一个常量
-  function webglOK() {
-    if (/[?&]nogpu=1/.test(location.search)) return false; // 调试：在好设备上也能看平面模式
-    try {
-      var c = document.createElement('canvas');
-      var gl = c.getContext('webgl') || c.getContext('experimental-webgl');
-      return !!(gl && gl.getParameter && gl.getParameter(gl.VERSION));
-    } catch (e) { return false; }
-  }
 
   // 3D 不可用时的平面全景：两张相同的等距柱状图首尾相接，左右拖动循环看一圈
   function flatMode() {
@@ -796,7 +787,7 @@
       ib.onload = done;
       ia.src = s.flat;
       ib.src = s.flat;
-      hint.textContent = '这个浏览器没开 3D 加速，已用平面模式，左右拖动看一圈';
+      hint.textContent = '这个浏览器没开 3D 加速，已用平面模式，左右拖动看一圈' + (sphereFail ? '（' + sphereFail + '）' : '');
       for (var k = 0; k < nav.children.length; k++) {
         nav.children[k].className = (k === i ? 'on' : '');
       }
@@ -855,7 +846,9 @@
     load(0);
   }
 
-  if (window.PhotoSphereViewer && webglOK()) {
+  // 不再自己探测 WebGL：手机上探测本身会占掉一个上下文，反而让后面的
+  // 查看器取不到；这里只留 ?nogpu=1 强制平面，其余交给查看器自己判断。
+  if (window.PhotoSphereViewer && !/[?&]nogpu=1/.test(location.search)) {
     try {
       var viewer = new PhotoSphereViewer.Viewer({
       container: document.querySelector("#viewer"),
@@ -943,10 +936,14 @@
     });
 
     // PSV 有时候不抛异常，而是自己在容器里画一句 "does not seem to support WebGL"，
-    // 所以等它初始化完再看有没有真的建出 canvas，没有就换成平面模式。
+    // 所以等它初始化完再看有没有真的建出 canvas、有没有报这句，出问题就换平面模式。
     setTimeout(function () {
-      if (!document.querySelector("#viewer canvas")) {
-        if (window.console) console.warn("[pano] 球面没渲染出来，改用平面模式");
+      var box = document.querySelector("#viewer");
+      var cv = box && box.querySelector("canvas");
+      var glErr = box && /WebGL/i.test(box.textContent || "");
+      if (!cv || glErr) {
+        sphereFail = glErr ? '3D 启动时报了显卡错误' : '3D 没画出画面';
+        if (window.console) console.warn("[pano] 球面没起来（" + sphereFail + "），改用平面模式");
         try { viewer.destroy(); } catch (e) {}
         flatMode();
       }
@@ -954,6 +951,7 @@
 
       return;
     } catch (err) {
+      sphereFail = '3D 初始化没有成功';
       if (window.console) console.warn('[pano] 3D 初始化失败，改用平面模式', err);
     }
   }
